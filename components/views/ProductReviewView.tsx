@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import ImageUpload from '../common/ImageUpload';
-// FIX: Removed invalid import for 'composeImage'.
-import { type MultimodalContent, generateMultimodalContent, generateVideo } from '../../services/geminiService';
+// FIX: Added missing import for 'generateMultimodalContent'.
+import { type MultimodalContent, generateVideo, generateMultimodalContent } from '../../services/geminiService';
 import { addHistoryItem } from '../../services/historyService';
 import Spinner from '../common/Spinner';
 // FIX: Added missing UserIcon and TikTokIcon to fix 'Cannot find name' errors.
@@ -1076,9 +1076,19 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                             <img src={`data:image/png;base64,${generatedImages[i]}`} alt={`Pratonton babak ${i+1}`} className="w-full h-full object-cover rounded-md"/>
                         )}
                     </div>
-                    <button onClick={() => handleGenerateVideo(i)} disabled={!generatedImages[i] || videoGenerationStatus[i] === 'loading' || isGeneratingVideos} className="w-full text-sm bg-white dark:bg-neutral-700 font-semibold py-2 px-3 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                        {videoGenerationStatus[i] === 'loading' ? <Spinner/> : <><VideoIcon className="w-4 h-4"/> Cipta Video</>}
-                    </button>
+                    <div className="grid grid-cols-1 gap-2">
+                        <button onClick={() => handleGenerateVideo(i)} disabled={!generatedImages[i] || videoGenerationStatus[i] === 'loading' || isGeneratingVideos} className="w-full text-sm bg-white dark:bg-neutral-700 font-semibold py-2 px-3 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                            {videoGenerationStatus[i] === 'loading' ? <Spinner/> : <><VideoIcon className="w-4 h-4"/> Cipta Video</>}
+                        </button>
+                        <button 
+                            onClick={() => handleDownloadVideo(generatedVideos[i], videoFilenames[i]!, i)} 
+                            disabled={videoGenerationStatus[i] !== 'success' || !generatedVideos[i] || downloadingVideoIndex === i}
+                            className="w-full text-sm bg-green-600 text-white font-semibold py-2 px-3 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {downloadingVideoIndex === i ? <Spinner/> : <DownloadIcon className="w-4 h-4"/>}
+                            Muat Turun
+                        </button>
+                    </div>
                 </div>
             ))}
         </div>
