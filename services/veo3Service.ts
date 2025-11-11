@@ -22,7 +22,8 @@ const getProxyBaseUrl = (): string => {
 
 export const generateVideoWithVeo3 = async (
     request: VideoGenerationRequest,
-    onStatusUpdate?: (status: string) => void
+    onStatusUpdate?: (status: string) => void,
+    isHealthCheck = false
 ): Promise<{ operations: any[]; successfulToken: string }> => {
   console.log('🎬 [VEO Service] Preparing generateVideoWithVeo3 request...');
   const { prompt, imageMediaId, config } = request;
@@ -70,8 +71,12 @@ export const generateVideoWithVeo3 = async (
   const endpoint = isImageToVideo ? '/generate-i2v' : '/generate-t2v';
   const url = `${getProxyBaseUrl()}${endpoint}`;
   
+  const logContext = isHealthCheck
+    ? (isImageToVideo ? 'VEO I2V HEALTH CHECK' : 'VEO T2V HEALTH CHECK')
+    : (isImageToVideo ? 'VEO I2V GENERATE' : 'VEO T2V GENERATE');
+  
   // Use executeProxiedRequest which now handles queuing
-  const { data, successfulToken } = await executeProxiedRequest(url, requestBody, isImageToVideo ? 'VEO I2V GENERATE' : 'VEO T2V GENERATE', config.authToken, onStatusUpdate);
+  const { data, successfulToken } = await executeProxiedRequest(url, requestBody, logContext, config.authToken, onStatusUpdate);
   console.log('🎬 [VEO Service] Received operations from API client:', data.operations?.length || 0);
   return { operations: data.operations || [], successfulToken };
 };

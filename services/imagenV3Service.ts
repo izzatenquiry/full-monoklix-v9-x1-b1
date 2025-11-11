@@ -66,7 +66,7 @@ export const uploadImageForImagen = async (base64Image: string, mimeType: string
 };
 
 
-export const generateImageWithImagen = async (request: ImageGenerationRequest, onStatusUpdate?: (status: string) => void) => {
+export const generateImageWithImagen = async (request: ImageGenerationRequest, onStatusUpdate?: (status: string) => void, isHealthCheck = false) => {
   console.log(`🎨 [Imagen Service] Preparing generateImageWithImagen (T2I) request...`);
   const { prompt, config } = request;
   
@@ -86,8 +86,9 @@ export const generateImageWithImagen = async (request: ImageGenerationRequest, o
 
   const url = `${getProxyBaseUrl()}/generate`;
   
+  const logContext = isHealthCheck ? 'IMAGEN HEALTH CHECK' : 'IMAGEN GENERATE';
   console.log(`🎨 [Imagen Service] Sending T2I request to API client.`);
-  const { data: result } = await executeProxiedRequest(url, requestBody, 'IMAGEN GENERATE', config.authToken, onStatusUpdate);
+  const { data: result } = await executeProxiedRequest(url, requestBody, logContext, config.authToken, onStatusUpdate);
   console.log(`🎨 [Imagen Service] Received T2I result with ${result.imagePanels?.length || 0} panels.`);
   return result;
 };
@@ -172,7 +173,7 @@ export const runComprehensiveTokenTest = async (token: string): Promise<TokenTes
                 sampleCount: 1,
                 aspectRatio: '1:1'
             }
-        });
+        }, undefined, true);
         results.push({ service: 'Imagen', success: true, message: 'Operational' });
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
@@ -188,7 +189,7 @@ export const runComprehensiveTokenTest = async (token: string): Promise<TokenTes
                 aspectRatio: 'landscape',
                 useStandardModel: false,
             },
-        });
+        }, undefined, true);
         results.push({ service: 'Veo', success: true, message: 'Operational' });
     } catch (error) {
          const message = error instanceof Error ? error.message : String(error);

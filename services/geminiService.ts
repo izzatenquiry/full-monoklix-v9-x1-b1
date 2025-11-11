@@ -621,7 +621,7 @@ export const runApiHealthCheck = async (keys: { textKey?: string }): Promise<Hea
                         authToken: proxyTokens[i].token,
                         aspectRatio: '1:1',
                     }
-                });
+                }, undefined, true);
                 results.push({ 
                     service: 'Imagen Generation', 
                     model: imagenModel, 
@@ -652,7 +652,7 @@ export const runApiHealthCheck = async (keys: { textKey?: string }): Promise<Hea
     console.log('3. Checking VEO 3.1 Generation (Proxy)...');
     if (proxyTokens.length === 0) {
         results.push({ service: 'VEO 3.1 Generation', model: videoModel, status: 'degraded', message: 'Health check skipped. Auth Token not found.' });
-        console.warn('   ⚠️ VEO check skipped: No Auth Token found.');
+        console.warn('   ⚠️ VEO check skipped: No Auth Token not found.');
     } else {
         let success = false;
         let lastError: any = null;
@@ -668,7 +668,7 @@ export const runApiHealthCheck = async (keys: { textKey?: string }): Promise<Hea
                         aspectRatio: 'landscape',
                         useStandardModel: !videoModel.includes('fast'),
                     },
-                });
+                }, undefined, true);
 
                 if (!initialOperations || initialOperations.length === 0 || (initialOperations[0] as any).error) {
                     throw new Error((initialOperations[0] as any)?.error?.message || 'Initial request failed without specific error.');
