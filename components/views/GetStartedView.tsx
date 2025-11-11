@@ -48,18 +48,18 @@ const GetStartedView: React.FC<GetStartedViewProps> = () => {
                     <p>Sebelum anda bermula, penting untuk memahami dua bahagian perkhidmatan kami. Fikirkan platform kami seperti kereta berprestasi tinggi:</p>
                     <ul className="list-disc pl-5 space-y-2">
                       <li><strong>Platform MONOklix adalah kereta:</strong> Akaun anda memberi anda akses kepada papan pemuka, alatan (seperti Suite Imej dan Video), dan garaj (Galeri anda). Anda berada di tempat duduk pemandu.</li>
-                      <li><strong>API Google AI adalah "bahan api":</strong> Untuk membuat kereta bergerak (untuk menjana kandungan), anda memerlukan bahan api. Ini disediakan oleh enjin AI Google yang berkuasa, dan ia memerlukan **Kunci API** untuk diakses.</li>
+                      <li><strong>Token MONOklix adalah "bahan api":</strong> Untuk membuat kereta bergerak (untuk menjana kandungan), anda memerlukan bahan api. Ini disediakan oleh enjin AI Google yang berkuasa, dan ia memerlukan **Token** untuk diakses.</li>
                     </ul>
                     <p>Panduan ini akan menerangkan bagaimana "bahan api" disediakan secara automatik dan bagaimana perkhidmatan ini berfungsi.</p>
                 </Section>
 
-                <Section title="Bab 1: Akaun & Kunci API" icon={KeyIcon}>
+                <Section title="Bab 1: Akaun & Token" icon={KeyIcon}>
                     <SubSection title="Cara Log Masuk">
                         <p>Platform ini menggunakan sistem log masuk yang mudah dan tanpa kata laluan. Hanya masukkan alamat e-mel yang anda gunakan untuk pendaftaran di laman web utama kami dan klik 'Log Masuk'. Sesi anda akan disimpan secara automatik.</p>
                     </SubSection>
-                    <SubSection title="Kunci API: Automatik Sepenuhnya!">
-                        <p className="font-semibold text-green-600 dark:text-green-400">Berita baik: Anda tidak perlu mendapatkan atau mengurus kunci API anda sendiri.</p>
-                        <p>Platform MONOklix menguruskan semuanya untuk anda. Apabila anda log masuk, sistem secara automatik memuatkan kunci API pusat yang dikongsi yang memberi anda akses kepada semua ciri AI. Anda boleh mengesahkan kunci itu aktif dengan mencari ikon <KeyIcon className="w-4 h-4 inline-block text-green-500" /> di penjuru kanan atas skrin.</p>
+                    <SubSection title="Token: Automatik Sepenuhnya!">
+                        <p className="font-semibold text-green-600 dark:text-green-400">Berita baik: Anda tidak perlu mendapatkan atau mengurus token anda sendiri.</p>
+                        <p>Platform MONOklix menguruskan semuanya untuk anda. Apabila anda log masuk, sistem secara automatik memuatkan token pusat yang dikongsi yang memberi anda akses kepada semua ciri AI. Anda boleh mengesahkan token itu aktif dengan mencari ikon <KeyIcon className="w-4 h-4 inline-block text-green-500" /> di penjuru kanan atas skrin.</p>
                         <p>Sistem ini memastikan anda mempunyai pengalaman yang lancar tanpa sebarang persediaan yang rumit.</p>
                     </SubSection>
                 </Section>
@@ -68,7 +68,7 @@ const GetStartedView: React.FC<GetStartedViewProps> = () => {
                     <p className="font-semibold">MONOklix.com beroperasi berdasarkan langganan, yang merangkumi akses anda ke platform dan kos penggunaan AI.</p>
                     <ul className="list-disc pl-5 space-y-2">
                         <li><strong>Tiada Pengebilan Setiap Penggunaan:</strong> Anda tidak dibilkan untuk setiap imej atau video yang anda jana. Status akaun anda (cth., Seumur Hidup, Langganan) menentukan akses anda kepada ciri-ciri AI.</li>
-                        <li><strong>Polisi Penggunaan Adil:</strong> Walaupun kami tidak mempunyai had yang ketat, perkhidmatan ini tertakluk kepada polisi penggunaan adil untuk memastikan prestasi yang stabil untuk semua pengguna. Kunci API yang dikongsi mempunyai kuota harian yang tinggi, yang lebih daripada mencukupi untuk kegunaan profesional.</li>
+                        <li><strong>Polisi Penggunaan Adil:</strong> Walaupun kami tidak mempunyai had yang ketat, perkhidmatan ini tertakluk kepada polisi penggunaan adil untuk memastikan prestasi yang stabil untuk semua pengguna. Token unik anda mempunyai kuota harian yang tinggi, yang lebih daripada mencukupi untuk kegunaan profesional.</li>
                         <li><strong>Anda Mengawal Sepenuhnya:</strong> Akses anda diuruskan sepenuhnya melalui status akaun anda di MONOklix.com. Anda tidak memerlukan akaun Google Cloud atau persediaan pengebilan yang berasingan.</li>
                     </ul>
                 </Section>
@@ -183,33 +183,16 @@ const GetStartedView: React.FC<GetStartedViewProps> = () => {
                         <p>Dalam perpustakaan, anda boleh melayari contoh-contoh. Apabila anda menjumpai yang anda suka, hanya klik butang 'Guna Prompt Ini'. Ini akan secara automatik menyalin prompt dan membawa anda ke alat Penjanaan Imej AI dengan prompt yang telah diisi, jadi anda boleh menjananya dengan segera atau menyesuaikannya lebih lanjut.</p>
                     </SubSection>
                 </Section>
-                
-                <Section title="Bab 8: Ciri-ciri Admin" icon={SettingsIcon}>
-                    <SubSection title="Siapakah Admin?">
-                        <p>Seorang admin mempunyai akses penuh ke semua ciri, termasuk yang tersembunyi dari pengguna biasa. Peranan ini dikhaskan untuk pengurus platform.</p>
-                        <p>Anda boleh mengenal pasti jika anda seorang admin dengan mencari bahagian 'Admin' di bar sisi dan halaman Tetapan.</p>
-                    </SubSection>
-                    <SubSection title="Apa yang Boleh Admin Lakukan?">
-                        <p>Admin mempunyai akses kepada alat khas untuk mengurus platform:</p>
-                        <ul className="list-disc pl-5 space-y-2 text-sm">
-                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Pangkalan Data Pengguna (Tetapan &gt; Pangkalan Data Pengguna)</code>: Lihat, cari, dan kemas kini status semua pengguna berdaftar. Anda juga boleh mengeksport keseluruhan pangkalan data pengguna sebagai sandaran JSON atau mengimport fail JSON untuk menggantikan data sedia ada (gunakan dengan berhati-hati!).</li>
-                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Admin Kandungan (Tetapan &gt; Admin Kandungan)</code>: Edit kandungan yang dipaparkan di halaman utama e-Tutorial, termasuk video utama, mesej status platform, dan pengumuman.</li>
-                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Pemprosesan Berkelompok (Video &amp; Suara AI &gt; Pemprosesan Berkelompok)</code>: Jana beberapa video serentak dengan memuat naik fail teks di mana setiap baris adalah satu prompt.</li>
-                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Penggabung Video (Video &amp; Suara AI &gt; Penggabung Video)</code>: Alat eksperimen untuk menggabungkan beberapa video pendek menjadi satu.</li>
-                        </ul>
-                        <p>Ciri-ciri ini direka untuk penyelenggaraan platform dan aliran kerja pemprosesan berkelompok yang canggih.</p>
-                    </SubSection>
-                </Section>
-                
-                <Section title="Bab 9: Galeri, Sejarah, dan Log" icon={GalleryIcon}>
+                        
+                <Section title="Bab 8: Galeri, Sejarah, dan Log" icon={GalleryIcon}>
                     <SubSection title="Galeri & Sejarah">
                         <p>Setiap kandungan yang anda jana—imej, video, audio, dan teks—disimpan secara automatik ke storan penyemak imbas peranti anda (IndexedDB). Anda boleh mengakses semuanya di bahagian 'Galeri & Sejarah'. Dari sini, anda boleh melihat, memuat turun, atau menggunakan semula aset anda. Contohnya, anda boleh mengambil imej dari galeri anda dan menghantarnya ke alat Penjanaan Video untuk mencipta animasi.</p>
                     </SubSection>
                     <SubSection title="Log API AI">
                         <ul className="list-disc pl-5 space-y-2 text-sm">
                             <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Apakah itu?</code> Log API ialah rekod teknikal terperinci bagi setiap permintaan yang dibuat oleh penyemak imbas anda kepada model AI. Ia menunjukkan model yang digunakan, prompt penuh yang dihantar, respons yang diterima, dan status (Berjaya/Ralat).</li>
-                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Di manakah ia?</code> Anda boleh menemuinya di dua tempat: sebagai tab dalam halaman `Galeri & Sejarah`, dan sebagai sebahagian daripada pop-up `Pemeriksaan Kesihatan API` di pengepala.</li>
-                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Mengapa ia berguna?</code> Ia adalah alat yang sangat baik untuk penyahpepijatan. Jika penjanaan gagal, log selalunya akan mengandungi mesej ralat khusus dari API yang boleh membantu anda memahami mengapa (cth., sekatan keselamatan, kunci API tidak sah).</li>
+                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Di manakah ia?</code> Anda boleh menemuinya di dua tempat: sebagai tab dalam halaman `Galeri & Sejarah`, dan sebagai sebahagian daripada pop-up `Pemeriksaan Kesihatan Token` di pengepala.</li>
+                            <li><code className="text-sm font-mono bg-neutral-200 dark:bg-neutral-700 p-1 rounded">Mengapa ia berguna?</code> Ia adalah alat yang sangat baik untuk penyahpepijatan. Jika penjanaan gagal, log selalunya akan mengandungi mesej ralat khusus dari API yang boleh membantu anda memahami mengapa (cth., sekatan keselamatan, Token tidak sah).</li>
                         </ul>
                     </SubSection>
                     <SubSection title="Storan">
@@ -217,7 +200,7 @@ const GetStartedView: React.FC<GetStartedViewProps> = () => {
                     </SubSection>
                 </Section>
 
-                <Section title="Bab 10: Penyelesaian Masalah Ralat Biasa" icon={AlertTriangleIcon}>
+                <Section title="Bab 9: Penyelesaian Masalah Ralat Biasa" icon={AlertTriangleIcon}>
                     <p>Jika anda menghadapi ralat, ia biasanya disebabkan oleh salah satu daripada beberapa isu biasa. Berikut ialah panduan ringkas tentang maksudnya dan cara menyelesaikannya.</p>
                     <div className="mt-6 overflow-x-auto">
                         <table className="w-full text-sm text-left border-collapse">
@@ -231,9 +214,9 @@ const GetStartedView: React.FC<GetStartedViewProps> = () => {
                             <tbody>
                                 <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">E-mel tidak berdaftar</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Pengguna memasukkan e-mel yang tidak wujud dalam pangkalan data.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "1. Semak semula ejaan e-mel.<br/>2. Pastikan pengguna telah mendaftar di laman web utama (monoklix.com).<br/>3. Jika masih gagal, hubungi admin untuk menyemak status akaun." }}></td></tr>
                                 <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">Akaun tidak aktif (inactive)</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Status pengguna telah ditukar kepada tidak aktif oleh admin.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Hubungi admin untuk pengaktifan semula akaun.</td></tr>
-                                <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">401 Unauthorized / 403 Permission Denied</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "Kunci API yang dikongsi oleh platform mungkin tidak sah, tamat tempoh, atau disekat oleh Google." }}></td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "Ini adalah isu di pihak platform. Sila laporkan kepada admin dengan segera melalui butang 'Lapor kepada Admin' pada tetingkap ralat atau melalui WhatsApp." }}></td></tr>
+                                <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">401 Unauthorized / 403 Permission Denied</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "Token mungkin tidak sah, tamat tempoh, atau disekat oleh Google." }}></td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "Ini adalah isu di pihak platform. Sila laporkan kepada admin dengan segera melalui butang 'Lapor kepada Admin' pada tetingkap ralat atau melalui WhatsApp." }}></td></tr>
                                 <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">429 Resource Exhausted</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Platform telah mencapai had penggunaan (rate limit) API yang dikongsi.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "Ini biasanya isu sementara. Sila tunggu beberapa minit dan cuba lagi. Admin akan dimaklumkan untuk meningkatkan had jika perlu." }}></td></tr>
-                                <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">500 Internal Server Error / 503 Service Unavailable</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Terdapat ralat dalaman atau penyelenggaraan pada pelayan Google. Ini adalah isu sementara dan bukan berpunca daripada akaun atau prompt anda.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "1. Ini biasanya isu sementara. Sila tunggu beberapa minit dan cuba semula permintaan anda.<br/>2. Jika masalah berterusan, semak status API Google atau hubungi admin." }}></td></tr>
+                                <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">500 Internal Server Error / 503 Service Unavailable</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Terdapat ralat dalaman atau penyelenggaraan pada pelayan Google. Ini adalah isu sementara dan bukan berpunca daripada akaun atau prompt anda.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "1. Ini biasanya isu sementara. Sila tunggu beberapa minit dan cuba semula permintaan anda.<br/>2. Jika masalah berterusan, semak status Token atau hubungi admin." }}></td></tr>
                                 <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">Ralat Rangkaian (Network Error)</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Sambungan internet anda terputus, atau terdapat sesuatu (seperti perisian firewall atau ad-blocker) yang menghalang aplikasi daripada menghubungi pelayan Google.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "1. Semak sambungan internet anda.<br/>2. Cuba muat semula (refresh) halaman.<br/>3. Lumpuhkan sementara sebarang perisian ad-blocker atau VPN dan cuba lagi." }}></td></tr>
                                 <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">Penjanaan Video (Veo) gagal tetapi servis lain berfungsi.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Model Veo memerlukan token pengesahan khas (__SESSION) yang berbeza daripada Kunci API Gemini biasa. Token ini mungkin telah tamat tempoh.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "Ini adalah isu platform. Sila laporkan kepada admin supaya token baharu boleh dikemas kini." }}></td></tr>
                                 <tr className="border-b dark:border-neutral-800"><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top font-semibold">400 Bad Request / Mesej ralat 'Safety Filter'</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top">Prompt (arahan teks) atau imej yang dimuat naik telah disekat oleh penapis keselamatan Google kerana kandungan yang mungkin sensitif.</td><td className="px-4 py-4 border border-neutral-300 dark:border-neutral-700 align-top" dangerouslySetInnerHTML={{ __html: "1. Permudahkan prompt anda. Elakkan perkataan yang terlalu deskriptif atau yang boleh disalah tafsir.<br/>2. Jika menggunakan imej, cuba gunakan imej yang berbeza dan lebih neutral.<br/>3. Rujuk Panduan Mula &gt; Bab 3 untuk memahami jenis kandungan yang disekat." }}></td></tr>
