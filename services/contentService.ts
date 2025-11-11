@@ -149,12 +149,20 @@ export const getProxyServers = async (): Promise<string[]> => {
         console.error("Error fetching proxy servers, falling back to default:", error.message);
         // Fallback to a default list to prevent total app failure.
         // The admin will see the error in the console.
-        return ['https://s1.monoklix.com', 'https://s2.monoklix.com']; 
+        return [
+            'https://s1.monoklix.com', 'https://s2.monoklix.com', 'https://s3.monoklix.com',
+            'https://s4.monoklix.com', 'https://s5.monoklix.com', 'https://s6.monoklix.com',
+            'https://s7.monoklix.com', 'https://s8.monoklix.com', 'https://s9.monoklix.com'
+        ]; 
     }
 
     if (!data || data.length === 0) {
         console.warn("No active proxy servers found in the database, falling back to default.");
-        return ['https://s1.monoklix.com', 'https://s2.monoklix.com'];
+        return [
+            'https://s1.monoklix.com', 'https://s2.monoklix.com', 'https://s3.monoklix.com',
+            'https://s4.monoklix.com', 'https://s5.monoklix.com', 'https://s6.monoklix.com',
+            'https://s7.monoklix.com', 'https://s8.monoklix.com', 'https://s9.monoklix.com'
+        ];
     }
 
     return data.map(server => server.url);

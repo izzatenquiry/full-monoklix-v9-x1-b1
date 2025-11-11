@@ -526,12 +526,21 @@ const App: React.FC = () => {
             setJustLoggedIn(true);
         }
     };
+
+    if (user.role === 'admin') {
+        console.log("[Admin User] Assigning to dedicated admin server s10.monoklix.com");
+        const adminServer = 'https://s10.monoklix.com';
+        sessionStorage.setItem('selectedProxyServer', adminServer);
+        updateUserProxyServer(user.id, adminServer); // Fire-and-forget
+        await postServerSelectionLogic();
+        return;
+    }
     
     if (window.location.hostname === 'localhost') {
         console.log("[Local Development] Skipping server selection.");
         await postServerSelectionLogic();
     } else {
-        console.log("[Production] Auto-selecting best server via load balancer...");
+        console.log("[Production] Auto-selecting best server via load balancer for user...");
         try {
             const SERVERS = await getProxyServers();
             if (SERVERS.length === 0) {

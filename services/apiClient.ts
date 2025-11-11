@@ -16,7 +16,7 @@ export const getVeoProxyUrl = (): string => {
       console.log('[API Client] Using user-selected VEO proxy:', userSelectedProxy);
       return userSelectedProxy;
   }
-  const fallbackUrl = process.env.NODE_ENV === 'production' ? 'https://veox.monoklix.com' : '';
+  const fallbackUrl = 'https://veox.monoklix.com';
   console.log('[API Client] No user-selected VEO proxy found, using fallback:', fallbackUrl);
   return fallbackUrl;
 };
@@ -31,7 +31,7 @@ export const getImagenProxyUrl = (): string => {
       console.log('[API Client] Using user-selected Imagen proxy:', userSelectedProxy);
       return userSelectedProxy;
   }
-  const fallbackUrl = process.env.NODE_ENV === 'production' ? 'https://gemx.monoklix.com' : '';
+  const fallbackUrl = 'https://gemx.monoklix.com';
   console.log('[API Client] No user-selected Imagen proxy found, using fallback:', fallbackUrl);
   return fallbackUrl;
 };
