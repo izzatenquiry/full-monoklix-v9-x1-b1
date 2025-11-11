@@ -35,13 +35,40 @@ interface SettingsViewProps {
   tempApiKey: string | null;
   onUserUpdate: (user: User) => void;
   language: Language;
+  setLanguage: (lang: Language) => void;
   veoTokenRefreshedAt: string | null;
   assignTokenProcess: () => Promise<{ success: boolean; error: string | null; }>;
 }
 
 // --- PANELS ---
 
-const ProfilePanel: React.FC<Pick<SettingsViewProps, 'currentUser' | 'onUserUpdate'>> = ({ currentUser, onUserUpdate }) => {
+const LanguageSwitcher: React.FC<{ language: Language; setLanguage: (lang: Language) => void }> = ({ language, setLanguage }) => (
+    <div className="flex items-center gap-1 p-1 rounded-full bg-neutral-100 dark:bg-neutral-800 w-min">
+        <button
+            onClick={() => setLanguage('en')}
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
+                language === 'en' ? 'bg-white dark:bg-neutral-900 text-primary-600 shadow' : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-white'
+            }`}
+        >
+            EN
+        </button>
+        <button
+            onClick={() => setLanguage('ms')}
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
+                language === 'ms' ? 'bg-white dark:bg-neutral-900 text-primary-600 shadow' : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-white'
+            }`}
+        >
+            MY
+        </button>
+    </div>
+);
+
+interface ProfilePanelProps extends Pick<SettingsViewProps, 'currentUser' | 'onUserUpdate'> {
+    language: Language;
+    setLanguage: (lang: Language) => void;
+}
+
+const ProfilePanel: React.FC<ProfilePanelProps> = ({ currentUser, onUserUpdate, language, setLanguage }) => {
     const [fullName, setFullName] = useState(currentUser.fullName || currentUser.username);
     const [email, setEmail] = useState(currentUser.email);
     const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error' | 'loading'; message: string }>({ type: 'idle', message: '' });
@@ -106,6 +133,10 @@ const ProfilePanel: React.FC<Pick<SettingsViewProps, 'currentUser' | 'onUserUpda
                 <div>
                     <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Alamat E-mel</label>
                     <input type="email" value={email} readOnly disabled className="w-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 cursor-not-allowed" />
+                </div>
+                 <div>
+                    <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">Bahasa</label>
+                    <LanguageSwitcher language={language} setLanguage={setLanguage} />
                 </div>
                 <div className="flex items-center gap-4">
                     <button onClick={handleSave} disabled={status.type === 'loading'} className="bg-primary-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-primary-700 transition-colors w-48 flex justify-center disabled:opacity-50">
@@ -706,14 +737,14 @@ const ApiIntegrationsPanel: React.FC<ApiIntegrationsPanelProps> = ({ currentUser
 
 const SettingsView: React.FC<SettingsViewProps> = (props) => {
     const [activeTab, setActiveTab] = useState<SettingsTabId>('profile');
-    const { currentUser, language } = props;
+    const { currentUser, language, setLanguage } = props;
 
     const renderActiveTabContent = () => {
         switch (activeTab) {
             case 'profile': 
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                        <ProfilePanel {...props} />
+                        <ProfilePanel currentUser={currentUser} onUserUpdate={props.onUserUpdate} language={language} setLanguage={setLanguage} />
                         <CacheManagerPanel />
                     </div>
                 );
@@ -728,7 +759,7 @@ const SettingsView: React.FC<SettingsViewProps> = (props) => {
             case 'content-admin': return <ETutorialAdminView />;
 // FIX: Pass the 'language' prop to AdminDashboardView to fix missing prop error.
             case 'user-db': return <AdminDashboardView language={language} />;
-            default: return <ProfilePanel {...props} />;
+            default: return <ProfilePanel currentUser={currentUser} onUserUpdate={props.onUserUpdate} language={language} setLanguage={setLanguage} />;
         }
     };
 

@@ -50,27 +50,6 @@ interface Message {
   text: string;
 }
 
-const LanguageSwitcher: React.FC<{ language: Language; setLanguage: (lang: Language) => void }> = ({ language, setLanguage }) => (
-    <div className="flex items-center gap-1 p-1 rounded-full bg-neutral-100 dark:bg-neutral-800">
-        <button
-            onClick={() => setLanguage('en')}
-            className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
-                language === 'en' ? 'bg-white dark:bg-neutral-900 text-primary-600 shadow' : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-white'
-            }`}
-        >
-            EN
-        </button>
-        <button
-            onClick={() => setLanguage('ms')}
-            className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
-                language === 'ms' ? 'bg-white dark:bg-neutral-900 text-primary-600 shadow' : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-white'
-            }`}
-        >
-            MY
-        </button>
-    </div>
-);
-
 const ThemeSwitcher: React.FC<{ theme: string; setTheme: (theme: string) => void, language: Language }> = ({ theme, setTheme, language }) => {
     // FIX: Correctly access translations via `common` key.
     const T = getTranslations(language).common;
@@ -649,6 +628,7 @@ const App: React.FC = () => {
                     tempApiKey={null}
                     onUserUpdate={handleUserUpdate} 
                     language={language}
+                    setLanguage={setLanguage}
                     veoTokenRefreshedAt={veoTokenRefreshedAt}
                     assignTokenProcess={assignTokenProcess}
                  />;
@@ -769,7 +749,6 @@ const App: React.FC = () => {
              <LogoIcon className="w-28 text-neutral-800 dark:text-neutral-200" />
           </div>
           <div className="flex items-center gap-2 pr-2">
-              <LanguageSwitcher language={language} setLanguage={setLanguage} />
               <ThemeSwitcher theme={theme} setTheme={setTheme} language={language} />
                <button
                   onClick={() => setIsLogSidebarOpen(true)}

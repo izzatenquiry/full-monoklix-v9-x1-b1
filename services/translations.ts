@@ -640,6 +640,12 @@ const translations = {
         aiPromptLibrarySuiteView: {
             // Only contains other views, no direct text
         },
+// FIX: Add missing translation key for AiSupportView
+        aiSupportView: {
+            title: 'AI Support Assistant',
+            subtitle: 'Get instant help and answers about using the platform.',
+            placeholder: 'Ask a question, e.g., "How do I create a video?"'
+        },
         libraryView: {
             title: 'Perpustakaan Prompt',
             subtitle: 'Koleksi prompt dan kes pilihan untuk memberi inspirasi kepada ciptaan anda.',
@@ -806,6 +812,47 @@ const translations = {
             import: 'Import',
             export: 'Eksport',
             // ... more translations ...
+        },
+// FIX: Add missing translation key for socialPostStudioView
+        socialPostStudioView: {
+            title: 'Social Post Studio',
+            subtitle: 'Schedule social media posts with AI-generated captions and media from your gallery.',
+            noWebhookTitle: 'Webhook Not Configured',
+            noWebhookBody: 'To use the Social Post Studio, you must first set up a personal webhook URL in your settings. This is typically a URL from a service like n8n or Zapier.',
+            textContentLabel: 'Text Content / Caption',
+            textContentPlaceholder: 'Write your caption here, or use the AI Writer to generate one...',
+            generateWithAi: 'Generate with AI',
+            hashtagsLabel: 'Hashtags',
+            mediaLabel: 'Media (up to 4 images OR 1 video)',
+            noMedia: 'No media selected.',
+            addMediaButton: 'Add from Gallery',
+            uploadFromDesktop: 'Upload from Desktop',
+            ctaLabel: 'Call to Action (CTA)',
+            ctaPlaceholder: 'e.g., Shop Now, Learn More',
+            linkLabel: 'Link (Optional)',
+            linkPlaceholder: 'https://example.com',
+            scheduleLabel: 'Schedule Post (Optional)',
+            sendButton: 'Send to Webhook',
+            sending: 'Sending...',
+            sendSuccess: 'Post successfully sent to your webhook!',
+            sendError: 'Failed to send post:',
+            aiWriterModalTitle: 'AI Social Post Writer',
+            selectAgent: 'Select AI Agent',
+            outputLanguage: 'Output Language',
+            agentDescription: 'Describe Your Post Topic',
+            agentInputPlaceholder: "e.g., 'A post about our new summer coffee blend, it's refreshing and has citrus notes.'",
+            generate: 'Generate',
+            generating: 'Generating...',
+            generatedCaption: 'Generated Caption',
+            generatedHashtags: 'Generated Hashtags',
+            generatedCta: 'Generated CTA',
+            close: 'Close',
+            useText: 'Use This Text',
+            agents: {
+                najwa: { name: 'Najwa' },
+                julia: { name: 'Julia' },
+                musa: { name: 'Musa' }
+            }
         },
         apiGeneratorView: {
             title: 'Penjana Kunci API (Admin)',
@@ -1289,6 +1336,12 @@ const translations = {
         aiPromptLibrarySuiteView: {
             // Only contains other views, no direct text
         },
+// FIX: Add missing translation key for AiSupportView
+        aiSupportView: {
+            title: 'Pembantu Sokongan AI',
+            subtitle: 'Dapatkan bantuan segera dan jawapan tentang penggunaan platform.',
+            placeholder: 'Tanya soalan, cth., "Bagaimana cara mencipta video?"'
+        },
         libraryView: {
             title: 'Perpustakaan Prompt',
             subtitle: 'Koleksi prompt dan kes pilihan untuk memberi inspirasi kepada ciptaan anda.',
@@ -1455,6 +1508,47 @@ const translations = {
             import: 'Import',
             export: 'Eksport',
             // ... more translations ...
+        },
+// FIX: Add missing translation key for socialPostStudioView
+        socialPostStudioView: {
+            title: 'Studio Pos Sosial',
+            subtitle: 'Jadualkan pos media sosial dengan kapsyen yang dijana AI dan media dari galeri anda.',
+            noWebhookTitle: 'Webhook Tidak Dikonfigurasi',
+            noWebhookBody: 'Untuk menggunakan Studio Pos Sosial, anda mesti menyediakan URL webhook peribadi dalam tetapan anda terlebih dahulu. Ini biasanya URL dari perkhidmatan seperti n8n atau Zapier.',
+            textContentLabel: 'Kandungan Teks / Kapsyen',
+            textContentPlaceholder: 'Tulis kapsyen anda di sini, atau gunakan Penulis AI untuk menjana satu...',
+            generateWithAi: 'Jana dengan AI',
+            hashtagsLabel: 'Hashtag',
+            mediaLabel: 'Media (sehingga 4 imej ATAU 1 video)',
+            noMedia: 'Tiada media dipilih.',
+            addMediaButton: 'Tambah dari Galeri',
+            uploadFromDesktop: 'Muat Naik dari Desktop',
+            ctaLabel: 'Panggilan untuk Bertindak (CTA)',
+            ctaPlaceholder: 'cth., Beli Sekarang, Ketahui Lebih Lanjut',
+            linkLabel: 'Pautan (Pilihan)',
+            linkPlaceholder: 'https://example.com',
+            scheduleLabel: 'Jadualkan Pos (Pilihan)',
+            sendButton: 'Hantar ke Webhook',
+            sending: 'Menghantar...',
+            sendSuccess: 'Pos berjaya dihantar ke webhook anda!',
+            sendError: 'Gagal menghantar pos:',
+            aiWriterModalTitle: 'Penulis Pos Sosial AI',
+            selectAgent: 'Pilih Ejen AI',
+            outputLanguage: 'Bahasa Output',
+            agentDescription: 'Terangkan Topik Pos Anda',
+            agentInputPlaceholder: "cth., 'Pos mengenai campuran kopi musim panas baharu kami, ia menyegarkan dan mempunyai nota sitrus.'",
+            generate: 'Jana',
+            generating: 'Menjana...',
+            generatedCaption: 'Kapsyen Dijana',
+            generatedHashtags: 'Hashtag Dijana',
+            generatedCta: 'CTA Dijana',
+            close: 'Tutup',
+            useText: 'Guna Teks Ini',
+            agents: {
+                najwa: { name: 'Najwa' },
+                julia: { name: 'Julia' },
+                musa: { name: 'Musa' }
+            }
         },
         apiGeneratorView: {
             title: 'Penjana Kunci API (Admin)',
