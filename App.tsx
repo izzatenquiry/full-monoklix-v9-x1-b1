@@ -159,6 +159,7 @@ const App: React.FC = () => {
   const [isLogSidebarOpen, setIsLogSidebarOpen] = useState(false);
   const [isShowingWelcome, setIsShowingWelcome] = useState(false);
   const [justLoggedIn, setJustLoggedIn] = useState(false);
+  const [needsTokenAssignment, setNeedsTokenAssignment] = useState(false);
   const [veoTokenRefreshedAt, setVeoTokenRefreshedAt] = useState<string | null>(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const isAssigningTokenRef = useRef(false);
@@ -290,62 +291,62 @@ const App: React.FC = () => {
     };
   }, [currentUser, handleUserUpdate, T.tokenRefreshed]);
 
-  // Effect to fetch session data (API keys, tokens) once a user is logged in.
-  useEffect(() => {
-    const initializeSessionData = async () => {
-      if (!currentUser?.id) {
-        // Clear all session-specific data on logout
+  const initializeSessionData = useCallback(async (userId: string) => {
+    if (!userId) return;
+    
+    setIsApiKeyLoading(true);
+    try {
+      // Fetch master key and VEO tokens in parallel for efficiency
+      const [masterKey, tokensData] = await Promise.all([
+        getSharedMasterApiKey(),
+        getVeoAuthTokens(),
+      ]);
+
+      // Handle Master API Key
+      if (masterKey) {
+        sessionStorage.setItem('monoklix_session_api_key', masterKey);
+        setActiveApiKey(masterKey);
+        console.log(`Shared master API key (...${masterKey.slice(-4)}) loaded and set in session storage.`);
+      } else {
+        console.error("CRITICAL: Could not fetch master API key from Supabase.");
         setActiveApiKey(null);
-        sessionStorage.removeItem('monoklix_session_api_key');
+      }
+
+      // Handle VEO Auth Tokens
+      if (tokensData && tokensData.length > 0) {
+        sessionStorage.setItem('veoAuthTokens', JSON.stringify(tokensData));
+        sessionStorage.setItem('veoAuthToken', tokensData[0].token);
+        sessionStorage.setItem('veoAuthTokenCreatedAt', tokensData[0].createdAt);
+        setVeoTokenRefreshedAt(new Date().toISOString());
+        console.log(`${tokensData.length} VEO Auth Tokens loaded from Supabase and set in session storage.`);
+      } else {
         sessionStorage.removeItem('veoAuthTokens');
         sessionStorage.removeItem('veoAuthToken');
         sessionStorage.removeItem('veoAuthTokenCreatedAt');
-        setIsApiKeyLoading(false);
-        return;
+        console.warn("Could not fetch any VEO Auth Tokens from Supabase.");
       }
+    } catch (error) {
+      console.error("Error initializing session data (API key & VEO tokens):", error);
+      setActiveApiKey(null); // Ensure we're in a clean error state
+    } finally {
+      setIsApiKeyLoading(false);
+    }
+  }, []);
 
-      setIsApiKeyLoading(true);
-      try {
-        // Fetch master key and VEO tokens in parallel for efficiency
-        const [masterKey, tokensData] = await Promise.all([
-          getSharedMasterApiKey(),
-          getVeoAuthTokens(),
-        ]);
-
-        // Handle Master API Key
-        if (masterKey) {
-          sessionStorage.setItem('monoklix_session_api_key', masterKey);
-          setActiveApiKey(masterKey);
-          console.log(`Shared master API key (...${masterKey.slice(-4)}) loaded and set in session storage.`);
-        } else {
-          console.error("CRITICAL: Could not fetch master API key from Supabase.");
-          setActiveApiKey(null);
-        }
-
-        // Handle VEO Auth Tokens
-        if (tokensData && tokensData.length > 0) {
-          sessionStorage.setItem('veoAuthTokens', JSON.stringify(tokensData));
-          sessionStorage.setItem('veoAuthToken', tokensData[0].token);
-          sessionStorage.setItem('veoAuthTokenCreatedAt', tokensData[0].createdAt);
-          setVeoTokenRefreshedAt(new Date().toISOString());
-          console.log(`${tokensData.length} VEO Auth Tokens loaded from Supabase and set in session storage.`);
-        } else {
-          sessionStorage.removeItem('veoAuthTokens');
-          sessionStorage.removeItem('veoAuthToken');
-          sessionStorage.removeItem('veoAuthTokenCreatedAt');
-          console.warn("Could not fetch any VEO Auth Tokens from Supabase.");
-        }
-
-      } catch (error) {
-        console.error("Error initializing session data (API key & VEO tokens):", error);
-        setActiveApiKey(null); // Ensure we're in a clean error state
-      } finally {
-        setIsApiKeyLoading(false);
-      }
-    };
-
-    initializeSessionData();
-  }, [currentUser?.id]);
+  // Effect to fetch session data (API keys, tokens) on app load/refresh if user exists.
+  useEffect(() => {
+    if (currentUser?.id) {
+      initializeSessionData(currentUser.id);
+    } else {
+      // Clear all session-specific data on logout or if no user
+      setActiveApiKey(null);
+      sessionStorage.removeItem('monoklix_session_api_key');
+      sessionStorage.removeItem('veoAuthTokens');
+      sessionStorage.removeItem('veoAuthToken');
+      sessionStorage.removeItem('veoAuthTokenCreatedAt');
+      setIsApiKeyLoading(false);
+    }
+  }, [currentUser?.id, initializeSessionData]);
 
 
   useEffect(() => {
@@ -502,43 +503,51 @@ const App: React.FC = () => {
         }
     }, [assignTokenProcess]);
 
+    // Effect to handle the post-login token assignment flow.
+    // This runs after the component has re-rendered with the new user state, avoiding stale closures.
+    useEffect(() => {
+        if (!needsTokenAssignment || !currentUser) return;
+
+        const runAssignment = async () => {
+            setShowAssignModal(true);
+            setAssigningStatus('scanning');
+            setAutoAssignError(null);
+            setScanProgress({ current: 0, total: 0 });
+
+            // This call is now safe; `assignTokenProcess` has the fresh `currentUser` from this render cycle.
+            const result = await assignTokenProcess();
+
+            if (result.success) {
+                setTimeout(() => {
+                    setShowAssignModal(false);
+                    setJustLoggedIn(true); // After success, trigger the welcome animation.
+                }, 1500);
+            } else {
+                setAutoAssignError(result.error);
+                setAssigningStatus('error');
+            }
+            setNeedsTokenAssignment(false); // Reset the trigger.
+        };
+
+        runAssignment();
+    }, [needsTokenAssignment, currentUser, assignTokenProcess]);
+
   const handleLoginSuccess = async (user: User) => {
     handleUserUpdate(user);
     logActivity('login');
     sessionStorage.setItem('session_started_at', new Date().toISOString());
     
-    const postServerSelectionLogic = async () => {
-        if (user && !user.personalAuthToken) {
-            setShowAssignModal(true);
-            setAssigningStatus('scanning');
-            setAutoAssignError(null);
-            setScanProgress({ current: 0, total: 0 });
-            const result = await assignTokenProcess();
-            if (result.success) {
-                setTimeout(() => {
-                  setShowAssignModal(false);
-                  setJustLoggedIn(true); 
-                }, 1500);
-            } else {
-                setAutoAssignError(result.error);
-            }
-        } else {
-            setJustLoggedIn(true);
-        }
-    };
-
+    // Load all necessary session data immediately after login.
+    await initializeSessionData(user.id);
+    
+    // Auto-select the best proxy server for the user.
     if (user.role === 'admin') {
         console.log("[Admin User] Assigning to dedicated admin server s10.monoklix.com");
         const adminServer = 'https://s10.monoklix.com';
         sessionStorage.setItem('selectedProxyServer', adminServer);
         updateUserProxyServer(user.id, adminServer); // Fire-and-forget
-        await postServerSelectionLogic();
-        return;
-    }
-    
-    if (window.location.hostname === 'localhost') {
+    } else if (window.location.hostname === 'localhost') {
         console.log("[Local Development] Skipping server selection.");
-        await postServerSelectionLogic();
     } else {
         console.log("[Production] Auto-selecting best server via load balancer for user...");
         try {
@@ -568,13 +577,18 @@ const App: React.FC = () => {
             
         } catch (error) {
             console.error('[Load Balancer] Error during server selection. Using a hardcoded fallback.', error);
-            // Hardcoded fallback if the DB call fails completely and throws an error.
             const fallbackServer = 'https://s1.monoklix.com';
             sessionStorage.setItem('selectedProxyServer', fallbackServer);
             updateUserProxyServer(user.id, fallbackServer);
         }
-        
-        await postServerSelectionLogic();
+    }
+    
+    // Instead of running the assignment logic here, set a state flag.
+    // A useEffect will pick up this flag after the re-render, ensuring all data is fresh.
+    if (user && !user.personalAuthToken) {
+        setNeedsTokenAssignment(true);
+    } else {
+        setJustLoggedIn(true);
     }
   };
 
