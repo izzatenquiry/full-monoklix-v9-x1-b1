@@ -1,0 +1,110 @@
+import React, { useState, useEffect } from 'react';
+import ImageEnhancerView from './ImageEnhancerView';
+import ImageGenerationView from './ImageGenerationView';
+import BackgroundRemoverView from './BackgroundRemoverView';
+import ProductPhotoView from './ProductPhotoView';
+import TiktokAffiliateView from './TiktokAffiliateView';
+import Tabs, { type Tab } from '../common/Tabs';
+// FIX: Import Language and User types.
+import { type Language, type User } from '../../types';
+
+type TabId = 'generation' | 'enhancer' | 'remover' | 'product' | 'model';
+
+interface VideoGenPreset {
+  prompt: string;
+  image: { base64: string; mimeType: string; };
+}
+
+interface ImageEditPreset {
+  base64: string;
+  mimeType: string;
+}
+
+interface AiImageSuiteViewProps {
+  onCreateVideo: (preset: VideoGenPreset) => void;
+  onReEdit: (preset: ImageEditPreset) => void;
+  imageToReEdit: ImageEditPreset | null;
+  clearReEdit: () => void;
+  presetPrompt: string | null;
+  clearPresetPrompt: () => void;
+  currentUser: User;
+  onUserUpdate: (user: User) => void;
+  language: Language;
+}
+
+const AiImageSuiteView: React.FC<AiImageSuiteViewProps> = ({ onCreateVideo, onReEdit, imageToReEdit, clearReEdit, presetPrompt, clearPresetPrompt, currentUser, onUserUpdate, language }) => {
+    const [activeTab, setActiveTab] = useState<TabId>('generation');
+
+    const tabs: Tab<TabId>[] = [
+        { id: 'generation', label: "Penjanaan Imej" },
+        { id: 'product', label: "Foto Produk" },
+        { id: 'model', label: "Foto Model" },
+        { id: 'enhancer', label: "Penambah Baik" },
+        { id: 'remover', label: "Pembuang Latar" },
+    ];
+
+    useEffect(() => {
+        if (imageToReEdit) {
+            setActiveTab('generation');
+        }
+    }, [imageToReEdit]);
+
+    useEffect(() => {
+        if (presetPrompt) {
+            setActiveTab('generation');
+        }
+    }, [presetPrompt]);
+
+    const renderActiveTabContent = () => {
+        const commonProps = { onReEdit, onCreateVideo, currentUser, onUserUpdate };
+        switch (activeTab) {
+            case 'generation':
+                // FIX: Pass 'language' prop to ImageGenerationView.
+                return <ImageGenerationView 
+                          {...commonProps} 
+                          imageToReEdit={imageToReEdit} 
+                          clearReEdit={clearReEdit}
+                          presetPrompt={presetPrompt}
+                          clearPresetPrompt={clearPresetPrompt} 
+                          language={language}
+                        />;
+            case 'enhancer':
+                // FIX: Pass 'language' prop to ImageEnhancerView.
+                return <ImageEnhancerView {...commonProps} language={language} />;
+            case 'remover':
+                // FIX: Pass 'language' prop to BackgroundRemoverView.
+                return <BackgroundRemoverView {...commonProps} language={language} />;
+            case 'product':
+                return <ProductPhotoView {...commonProps} language={language} />;
+            case 'model':
+                return <TiktokAffiliateView {...commonProps} language={language} />;
+            default:
+                // FIX: Pass 'language' prop to ImageGenerationView.
+                return <ImageGenerationView 
+                          {...commonProps} 
+                          imageToReEdit={imageToReEdit} 
+                          clearReEdit={clearReEdit}
+                          presetPrompt={presetPrompt}
+                          clearPresetPrompt={clearPresetPrompt} 
+                          language={language}
+                        />;
+        }
+    };
+
+    return (
+        <div className="h-full flex flex-col">
+            <div className="flex-shrink-0 mb-6 flex justify-center">
+                <Tabs 
+                    tabs={tabs}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
+            </div>
+            <div className="flex-1 overflow-y-auto">
+                {renderActiveTabContent()}
+            </div>
+        </div>
+    );
+};
+
+export default AiImageSuiteView;
