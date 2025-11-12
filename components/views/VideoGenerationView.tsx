@@ -33,28 +33,28 @@ interface VideoGenerationViewProps {
   language: Language;
 }
 
-const styleOptions = ["Rawak", "Realisme", "Fotorealistik", "Sinematik", "Anime", "Vintaj", "Animasi 3D", "Cat Air", "Claymation"];
-const lightingOptions = ["Rawak", "Lampu Studio", "Dramatik", "Cahaya Semula Jadi", "Neon", "Waktu Keemasan", "Cahaya Siang Lembut"];
-const cameraOptions = ["Rawak", "Perincian / Makro", "Rakaman Dekat", "Rakaman Sederhana Dekat", "Sederhana / Separuh Badan", "Tiga Suku", "Badan Penuh", "Flatlay", "Rakaman Lebar", "Rakaman Sederhana", "Rakaman Jauh", "Sudut Belanda", "Sudut Rendah", "Sudut Tinggi", "Rakaman Atas"];
-const compositionOptions = ["Rawak", "Peraturan Pertiga", "Garis Panduan", "Simetri", "Nisbah Keemasan", "Tengah", "Tidak Simetri"];
-const lensTypeOptions = ["Rawak", "Lensa Sudut Lebar", "Lensa Telefoto", "Lensa Mata Ikan", "Lensa Makro", "Lensa 50mm", "Lensa 85mm"];
-const filmSimOptions = ["Rawak", "Fujifilm Velvia", "Kodak Portra 400", "Kodachrome Sinematik", "Polaroid Vintaj", "Ilford HP5 (B&W)"];
-const effectOptions = ["Tiada", "Rawak", "Percikan Air", "Asap", "Api", "Terapung di Air", "Titisan Hujan", "Jejak Cahaya", "Konfeti", "Glitter", "Letupan Serbuk"];
+const styleOptions = ["Random", "Realism", "Photorealistic", "Cinematic", "Anime", "Vintage", "3D Animation", "Watercolor", "Claymation"];
+const lightingOptions = ["Random", "Studio Lighting", "Dramatic", "Natural Light", "Neon", "Golden Hour", "Soft Daylight"];
+const cameraOptions = ["Random", "Detail / Macro", "Close-up", "Medium Close-up", "Medium / Half Body", "Three-Quarter", "Full Body", "Flatlay", "Wide Shot", "Medium Shot", "Long Shot", "Dutch Angle", "Low Angle", "High Angle", "Overhead Shot"];
+const compositionOptions = ["Random", "Rule of Thirds", "Leading Lines", "Symmetry", "Golden Ratio", "Centered", "Asymmetrical"];
+const lensTypeOptions = ["Random", "Wide-Angle Lens", "Telephoto Lens", "Fisheye Lens", "Macro Lens", "50mm Lens", "85mm Lens"];
+const filmSimOptions = ["Random", "Fujifilm Velvia", "Kodak Portra 400", "Cinematic Kodachrome", "Vintage Polaroid", "Ilford HP5 (B&W)"];
+const effectOptions = ["None", "Random", "Water Splash", "Smoke", "Fire", "Floating in Water", "Raindrops", "Light Trails", "Confetti", "Glitter", "Powder Explosion"];
 const resolutions = ["720p", "1080p"];
 const moodOptions = [
     'Normal', 
-    'Ceria - Laju', 
-    'Semangat', 
-    'Jualan', 
-    'Sedih',
-    'Berbisik',
-    'Marah',
-    'Tenang',
-    'Rasmi',
-    'Teruja',
-    'Penceritaan',
-    'Berwibawa',
-    'Mesra'
+    'Cheerful - Fast', 
+    'Energetic', 
+    'Sales', 
+    'Sad',
+    'Whispering',
+    'Angry',
+    'Calm',
+    'Formal',
+    'Excited',
+    'Storytelling',
+    'Authoritative',
+    'Friendly'
 ];
 
 const SESSION_KEY = 'videoGenerationState';
@@ -66,13 +66,13 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
   const [dialogueAudio, setDialogueAudio] = useState('');
   
   // Creative Direction State
-  const [style, setStyle] = useState('Rawak');
-  const [lighting, setLighting] = useState('Rawak');
-  const [camera, setCamera] = useState('Rawak');
-  const [composition, setComposition] = useState('Rawak');
-  const [lensType, setLensType] = useState('Rawak');
-  const [filmSim, setFilmSim] = useState('Rawak');
-  const [effect, setEffect] = useState('Tiada');
+  const [style, setStyle] = useState('Random');
+  const [lighting, setLighting] = useState('Random');
+  const [camera, setCamera] = useState('Random');
+  const [composition, setComposition] = useState('Random');
+  const [lensType, setLensType] = useState('Random');
+  const [filmSim, setFilmSim] = useState('Random');
+  const [effect, setEffect] = useState('None');
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [videoFilename, setVideoFilename] = useState<string | null>(null);
@@ -89,7 +89,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
   const [imageUploadKey, setImageUploadKey] = useState(Date.now());
   const [voiceoverLanguage, setVoiceoverLanguage] = useState('English');
   const [voiceoverMood, setVoiceoverMood] = useState('Normal');
-  const languages = ["English", "Bahasa Malaysia", "Chinese"];
+  const languages = ["English", "Malay"];
 
   const model = MODELS.videoGenerationDefault;
   const isVeo3 = model.startsWith('veo-3');
@@ -140,15 +140,15 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
   ]);
 
   const loadingMessages = [
-    "Memanaskan pengarah AI...",
-    "Mencari lokasi digital...",
-    "Memilih pelakon maya...",
-    "Menyelaraskan kamera dan pencahayaan...",
-    "Aksi! Memaparkan babak...",
-    "Ini mungkin mengambil masa beberapa minit. Sila bersabar.",
-    "AI sedang berusaha keras untuk karya agung anda...",
-    "Menambah sentuhan sinematik terakhir...",
-    "Hampir sedia untuk tayangan perdana...",
+    "Warming up the AI director...",
+    "Scouting digital locations...",
+    "Casting virtual actors...",
+    "Adjusting cameras and lighting...",
+    "Action! Rendering the scene...",
+    "This may take a few minutes. Please be patient.",
+    "The AI is working hard on your masterpiece...",
+    "Adding the final cinematic touches...",
+    "Almost ready for the premiere...",
   ];
 
   useEffect(() => {
@@ -218,20 +218,20 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
 
   const handleGenerate = useCallback(async () => {
       if (!prompt.trim() && !referenceImage) {
-          setError("Sila berikan prompt atau imej rujukan.");
+          setError("Please provide a prompt or a reference image.");
           return;
       }
 
-      alert("Sila ambil perhatian: Bahasa suara latar mungkin tidak konsisten. Jika anda tidak berpuas hati, anda boleh menjana semula video dengan menekan butang 'Jana Video' sekali lagi.");
+      alert("Please note: Voiceover language may be inconsistent. If you are not satisfied, you can regenerate the video by pressing the 'Generate Video' button again.");
 
       setIsLoading(true);
       setError(null);
       setVideoUrl(null);
       setVideoFilename(null);
       setThumbnailUrl(null);
-      setStatusMessage('Menyediakan permintaan penjanaan...');
+      setStatusMessage('Preparing generation request...');
       
-      const isMalay = voiceoverLanguage === 'Bahasa Malaysia';
+      const isMalay = voiceoverLanguage === 'Malay';
       let targetLanguage = voiceoverLanguage;
       if (isMalay) {
           targetLanguage = 'Malaysian Malay';
@@ -239,13 +239,13 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
           targetLanguage = 'Mandarin Chinese';
       }
   
-      let dynamicNegativePrompt = 'sari kata, teks, perkataan, tera air, logo, bahasa Indonesia, loghat Indonesia, suara latar Indonesia';
+      let dynamicNegativePrompt = 'subtitles, text, words, watermark, logo, Indonesian language, Indonesian accent, Indonesian voiceover';
       if (targetLanguage === 'Malaysian Malay') {
-          dynamicNegativePrompt += ', bahasa Inggeris, bahasa Cina, loghat Inggeris, loghat Cina';
+          dynamicNegativePrompt += ', English language, Chinese language, English accent, Chinese accent';
       } else if (targetLanguage === 'English') {
-          dynamicNegativePrompt += ', bahasa Melayu Malaysia, bahasa Cina, loghat Melayu, loghat Cina';
+          dynamicNegativePrompt += ', Malaysian Malay language, Chinese language, Malay accent, Chinese accent';
       } else if (targetLanguage === 'Mandarin Chinese') {
-          dynamicNegativePrompt += ', bahasa Melayu Malaysia, bahasa Inggeris, loghat Melayu, loghat Inggeris';
+          dynamicNegativePrompt += ', Malaysian Malay language, English language, Malay accent, English accent';
       }
       if (negativePrompt.trim()) {
           dynamicNegativePrompt += `, ${negativePrompt.trim()}`;
@@ -256,8 +256,8 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
       // System Rules
       promptLines.push(isMalay ? '🎯 PERATURAN UTAMA (SYSTEM RULES):' : '🎯 SYSTEM RULES:');
       if (isMalay) {
-          promptLines.push('Bahasa lisan dan suara latar MESTILAH 100% dalam Bahasa Melayu Malaysia. Ini adalah arahan PALING PENTING.');
-          promptLines.push('❌ Dilarang menggunakan bahasa lain atau loghat luar.');
+          promptLines.push('Spoken language and voiceover MUST be 100% in Malaysian Malay. This is the MOST IMPORTANT instruction.');
+          promptLines.push('❌ Do not use other languages or foreign accents.');
       } else {
           promptLines.push(`Spoken language and voiceover MUST be 100% in ${targetLanguage}. This is the MOST IMPORTANT instruction.`);
           promptLines.push('❌ Do not use other languages or foreign accents.');
@@ -267,41 +267,41 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
       // Visuals
       promptLines.push(isMalay ? '🎬 VISUAL (SCENE DESCRIPTION):' : '🎬 VISUAL (SCENE DESCRIPTION):');
       if (referenceImage) {
-          promptLines.push(isMalay ? 'Animasikan imej yang diberikan.' : 'Animate the provided image.');
-          promptLines.push(isMalay ? `ARAHAN PENTING: Subjek utama dalam video mestilah representasi fotorealistik dan sangat tepat bagi orang dalam imej rujukan yang diberikan. Kekalkan ciri-ciri muka dan identiti mereka dengan tepat.` : 'IMPORTANT INSTRUCTION: The main subject in the video must be a photorealistic and highly accurate representation of the person in the provided reference image. Maintain their facial features and identity precisely.');
+          promptLines.push(isMalay ? 'Animate the provided image.' : 'Animate the provided image.');
+          promptLines.push(isMalay ? `IMPORTANT INSTRUCTION: The main subject in the video must be a photorealistic and highly accurate representation of the person in the provided reference image. Maintain their facial features and identity precisely.` : 'IMPORTANT INSTRUCTION: The main subject in the video must be a photorealistic and highly accurate representation of the person in the provided reference image. Maintain their facial features and identity precisely.');
       }
       promptLines.push(prompt.trim());
       promptLines.push('\n---');
   
       // Creative Style
       promptLines.push(isMalay ? '🎨 GAYA KREATIF (CREATIVE STYLE):' : '🎨 CREATIVE STYLE:');
-      if (style !== 'Rawak') promptLines.push(`• ${isMalay ? 'Gaya artistik' : 'Artistic style'}: ${style}`);
-      if (lighting !== 'Rawak') promptLines.push(`• ${isMalay ? 'Pencahayaan' : 'Lighting'}: ${lighting}`);
-      if (camera !== 'Rawak') promptLines.push(`• ${isMalay ? 'Kamera' : 'Camera'}: ${camera}`);
-      if (composition !== 'Rawak') promptLines.push(`• ${isMalay ? 'Komposisi' : 'Composition'}: ${composition}`);
-      if (lensType !== 'Rawak') promptLines.push(`• ${isMalay ? 'Jenis Lensa' : 'Lens Type'}: ${lensType}`);
-      if (filmSim !== 'Rawak') promptLines.push(`• ${isMalay ? 'Simulasi Filem' : 'Film Simulation'}: ${filmSim}`);
-      if (effect !== 'Tiada' && effect !== 'Rawak') promptLines.push(`• ${isMalay ? 'Efek tambahan' : 'Additional Effect'}: ${effect}`);
+      if (style !== 'Random') promptLines.push(`• ${isMalay ? 'Artistic style' : 'Artistic style'}: ${style}`);
+      if (lighting !== 'Random') promptLines.push(`• ${isMalay ? 'Lighting' : 'Lighting'}: ${lighting}`);
+      if (camera !== 'Random') promptLines.push(`• ${isMalay ? 'Camera' : 'Camera'}: ${camera}`);
+      if (composition !== 'Random') promptLines.push(`• ${isMalay ? 'Composition' : 'Composition'}: ${composition}`);
+      if (lensType !== 'Random') promptLines.push(`• ${isMalay ? 'Lens Type' : 'Lens Type'}: ${lensType}`);
+      if (filmSim !== 'Random') promptLines.push(`• ${isMalay ? 'Film Simulation' : 'Film Simulation'}: ${filmSim}`);
+      if (effect !== 'None' && effect !== 'Random') promptLines.push(`• ${isMalay ? 'Additional Effect' : 'Additional Effect'}: ${effect}`);
       promptLines.push('\n---');
   
       // Audio
       if (dialogueAudio.trim() && isVeo3) {
           promptLines.push(isMalay ? '🔊 AUDIO (DIALOGUE):' : '🔊 AUDIO (DIALOGUE):');
-          promptLines.push(isMalay ? `Gunakan hanya dialog berikut dalam Bahasa Melayu Malaysia:` : `Use only the following dialogue in ${targetLanguage}:`);
+          promptLines.push(isMalay ? `Use only the following dialogue in Malaysian Malay:` : `Use only the following dialogue in ${targetLanguage}:`);
           promptLines.push(`"${dialogueAudio.trim()}"`);
-          promptLines.push(isMalay ? 'ARAHAN PENTING: Sebutkan skrip ini dengan lengkap, perkataan demi perkataan. Jangan ubah atau ringkaskan ayat.' : 'CRITICAL INSTRUCTION: Speak this script completely, word for word. Do not change or shorten the sentences.');
-          promptLines.push(isMalay ? `Nada suara: ${voiceoverMood}.` : `Voice tone: ${voiceoverMood}.`);
+          promptLines.push(isMalay ? 'CRITICAL INSTRUCTION: Speak this script completely, word for word. Do not change or shorten the sentences.' : 'CRITICAL INSTRUCTION: Speak this script completely, word for word. Do not change or shorten the sentences.');
+          promptLines.push(isMalay ? `Voice tone: ${voiceoverMood}.` : `Voice tone: ${voiceoverMood}.`);
           promptLines.push('\n---');
       }
   
       // Additional Reminders
-      promptLines.push(isMalay ? '🚫 PERINGATAN TAMBAHAN:' : '🚫 ADDITIONAL REMINDERS:');
+      promptLines.push(isMalay ? '🚫 ADDITIONAL REMINDERS:' : '🚫 ADDITIONAL REMINDERS:');
       if (dialogue.trim()) {
-          promptLines.push(isMalay ? `• Paparkan teks pada skrin ini sahaja: "${dialogue.trim()}".` : `• Display this exact on-screen text: "${dialogue.trim()}".`);
+          promptLines.push(isMalay ? `• Display this exact on-screen text: "${dialogue.trim()}".` : `• Display this exact on-screen text: "${dialogue.trim()}".`);
       } else {
-          promptLines.push(isMalay ? '• Jangan sertakan teks, kapsyen, atau sari kata pada skrin.' : '• Do not include any on-screen text, captions, or subtitles.');
+          promptLines.push(isMalay ? '• Do not include any on-screen text, captions, or subtitles.' : '• Do not include any on-screen text, captions, or subtitles.');
       }
-      promptLines.push(isMalay ? '• Jangan ubah bahasa.' : '• Do not change the language.');
+      promptLines.push(isMalay ? '• Do not change the language.' : '• Do not change the language.');
       
       const fullPrompt = promptLines.join('\n');
 
@@ -312,7 +312,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
 
           if (videoFile) {
               const objectUrl = URL.createObjectURL(videoFile);
-              console.log('✅ Fail video diterima dan URL objek dicipta:', objectUrl);
+              console.log('✅ Video file received and object URL created:', objectUrl);
               setVideoUrl(objectUrl);
               setVideoFilename(videoFile.name);
               setThumbnailUrl(newThumbnailUrl);
@@ -320,7 +320,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
               // Save to history in the background
               addHistoryItem({
                   type: 'Video',
-                  prompt: `Penjanaan Video: ${prompt.trim().substring(0, 100)}...`,
+                  prompt: `Video Generation: ${prompt.trim().substring(0, 100)}...`,
                   result: videoFile,
               }).then(async () => {
                   const updateResult = await incrementVideoUsage(currentUser);
@@ -328,8 +328,8 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
                       onUserUpdate(updateResult.user);
                   }
               }).catch(err => {
-                  console.error("Gagal menyimpan video ke sejarah:", err);
-                  setError("Video dijana tetapi gagal disimpan ke galeri. Sila muat turun sekarang.");
+                  console.error("Failed to save video to history:", err);
+                  setError("Video generated but failed to save to gallery. Please download it now.");
               });
           }
       } catch (e) {
@@ -352,8 +352,8 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
         link.click();
         document.body.removeChild(link);
     } catch (error) {
-        console.error("Ralat muat turun:", error);
-        setError(error instanceof Error ? error.message : "Gagal memuat turun video.");
+        console.error("Download error:", error);
+        setError(error instanceof Error ? error.message : "Failed to download video.");
     } finally {
         setIsDownloading(false);
     }
@@ -371,13 +371,13 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
     setDialogue('');
     setDialogueAudio('');
     
-    setStyle('Rawak');
-    setLighting('Rawak');
-    setCamera('Rawak');
-    setComposition('Rawak');
-    setLensType('Rawak');
-    setFilmSim('Rawak');
-    setEffect('Tiada');
+    setStyle('Random');
+    setLighting('Random');
+    setCamera('Random');
+    setComposition('Random');
+    setLensType('Random');
+    setFilmSim('Random');
+    setEffect('None');
     
     setVideoUrl(null);
     setVideoFilename(null);
@@ -397,21 +397,21 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
   const leftPanel = (
     <>
         <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">Penjana Video AI</h1>
-            <p className="text-neutral-500 dark:text-neutral-400 mt-1">Cipta video berkualiti tinggi dari teks atau imej.</p>
+            <h1 className="text-2xl font-bold sm:text-3xl">AI Video Generator</h1>
+            <p className="text-neutral-500 dark:text-neutral-400 mt-1">Create high-quality videos from text or images.</p>
         </div>
         
         <div>
             <h2 className="text-lg font-semibold mb-2">Model & Format</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                     <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Nisbah Aspek</label>
+                     <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Aspect Ratio</label>
                      <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition">
                         {["9:16", "16:9", "1:1", "4:3", "3:4"].map(ar => <option key={ar} value={ar}>{ar}</option>)}
                     </select>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Resolusi</label>
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Resolution</label>
                     <select value={resolution} onChange={(e) => setResolution(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition">
                         {resolutions.map(res => <option key={res} value={res}>{res}</option>)}
                     </select>
@@ -420,58 +420,58 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
         </div>
 
         <div>
-            <h2 className="text-lg font-semibold mb-2">Imej Rujukan (Pilihan)</h2>
+            <h2 className="text-lg font-semibold mb-2">Reference Image (Optional)</h2>
             {previewUrl ? (
                  <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-                    <img src={previewUrl} alt="Pratonton Rujukan" className="w-full h-full object-contain bg-neutral-100 dark:bg-neutral-800" />
+                    <img src={previewUrl} alt="Reference Preview" className="w-full h-full object-contain bg-neutral-100 dark:bg-neutral-800" />
                     <button onClick={removeReferenceImage} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
                         <TrashIcon className="w-4 h-4" />
                     </button>
                 </div>
             ) : (
                 // FIX: Add missing 'language' prop to ImageUpload component.
-                <ImageUpload id="video-ref-upload" key={imageUploadKey} onImageUpload={handleImageUpload} title="Muat Naik Imej Permulaan" language={language}/>
+                <ImageUpload id="video-ref-upload" key={imageUploadKey} onImageUpload={handleImageUpload} title="Upload Starting Image" language={language}/>
             )}
             <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2 p-2 bg-neutral-100 dark:bg-neutral-800/50 rounded-md">
-                AI akan menggunakan imej ini sebagai titik permulaan untuk video.
+                The AI will use this image as the starting point for the video.
             </p>
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-2">Prompt Utama</h2>
-          <textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="cth., Sebuah bandar futuristik dengan kereta terbang pada waktu senja..." rows={5} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
+          <h2 className="text-lg font-semibold mb-2">Main Prompt</h2>
+          <textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="e.g., A futuristic city with flying cars at dusk..." rows={5} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
         </div>
         
         <div>
-            <h2 className="text-lg font-semibold mb-2">Arahan Kreatif</h2>
+            <h2 className="text-lg font-semibold mb-2">Creative Direction</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label className="block text-sm font-medium mb-1">Gaya Artistik</label><select value={style} onChange={e => setStyle(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{styleOptions.map(s => <option key={s} value={s}>{s}</option>)}</select></div>
-                <div><label className="block text-sm font-medium mb-1">Pencahayaan</label><select value={lighting} onChange={e => setLighting(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{lightingOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                <div><label className="block text-sm font-medium mb-1">Shot Kamera</label><select value={camera} onChange={e => setCamera(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{cameraOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                <div><label className="block text-sm font-medium mb-1">Komposisi</label><select value={composition} onChange={e => setComposition(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{compositionOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                <div><label className="block text-sm font-medium mb-1">Jenis Lensa</label><select value={lensType} onChange={e => setLensType(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{lensTypeOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                <div><label className="block text-sm font-medium mb-1">Simulasi Filem</label><select value={filmSim} onChange={e => setFilmSim(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{filmSimOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Kesan Visual</label><select value={effect} onChange={e => setEffect(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{effectOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Prompt Negatif (Apa yang perlu dielakkan)</label><textarea value={negativePrompt} onChange={e => setNegativePrompt(e.target.value)} placeholder="cth., kabur, bergegar, tera air" rows={1} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none" /></div>
+                <div><label className="block text-sm font-medium mb-1">Artistic Style</label><select value={style} onChange={e => setStyle(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{styleOptions.map(s => <option key={s} value={s}>{s}</option>)}</select></div>
+                <div><label className="block text-sm font-medium mb-1">Lighting</label><select value={lighting} onChange={e => setLighting(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{lightingOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                <div><label className="block text-sm font-medium mb-1">Camera Shot</label><select value={camera} onChange={e => setCamera(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{cameraOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                <div><label className="block text-sm font-medium mb-1">Composition</label><select value={composition} onChange={e => setComposition(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{compositionOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                <div><label className="block text-sm font-medium mb-1">Lens Type</label><select value={lensType} onChange={e => setLensType(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{lensTypeOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                <div><label className="block text-sm font-medium mb-1">Film Simulation</label><select value={filmSim} onChange={e => setFilmSim(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{filmSimOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Visual Effect</label><select value={effect} onChange={e => setEffect(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{effectOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Negative Prompt (What to avoid)</label><textarea value={negativePrompt} onChange={e => setNegativePrompt(e.target.value)} placeholder="e.g., blurry, shaky, watermark" rows={1} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none" /></div>
             </div>
         </div>
 
         <div>
-            <h2 className="text-lg font-semibold mb-2">Dialog & Teks</h2>
+            <h2 className="text-lg font-semibold mb-2">Dialogue & Text</h2>
             <div className="space-y-4">
                 <div>
-                    <label htmlFor="on-screen-text" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Teks Pada Skrin (Kapsyen)</label>
-                    <textarea id="on-screen-text" value={dialogue} onChange={e => setDialogue(e.target.value)} placeholder="Masukkan sebarang teks yang anda mahu muncul pada video." rows={2} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
+                    <label htmlFor="on-screen-text" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">On-Screen Text (Captions)</label>
+                    <textarea id="on-screen-text" value={dialogue} onChange={e => setDialogue(e.target.value)} placeholder="Enter any text you want to appear on the video." rows={2} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="sm:col-span-2">
-                        <label htmlFor="spoken-dialogue" className={`block text-sm font-medium mb-1 ${!isVeo3 ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>Dialog Lisan (Suara Latar)</label>
+                        <label htmlFor="spoken-dialogue" className={`block text-sm font-medium mb-1 ${!isVeo3 ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>Spoken Dialogue (Voiceover)</label>
                         <div className={`relative ${!isVeo3 ? 'opacity-50' : ''}`}>
                             <textarea
                                 id="spoken-dialogue"
                                 value={dialogueAudio}
                                 onChange={e => setDialogueAudio(e.target.value)}
-                                placeholder="Masukkan dialog tepat untuk dituturkan oleh AI."
+                                placeholder="Enter the exact dialogue for the AI to speak."
                                 rows={2}
                                 className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition disabled:cursor-not-allowed"
                                 disabled={!isVeo3}
@@ -479,7 +479,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="voiceover-language" className={`block text-sm font-medium mb-1 ${!isVeo3 ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>Bahasa Suara Latar</label>
+                        <label htmlFor="voiceover-language" className={`block text-sm font-medium mb-1 ${!isVeo3 ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>Voiceover Language</label>
                         <select
                             id="voiceover-language"
                             value={voiceoverLanguage}
@@ -491,7 +491,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="voiceover-mood" className={`block text-sm font-medium mb-1 ${!isVeo3 ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>Mood Suara Latar</label>
+                        <label htmlFor="voiceover-mood" className={`block text-sm font-medium mb-1 ${!isVeo3 ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>Voiceover Mood</label>
                         <select
                             id="voiceover-mood"
                             value={voiceoverMood}
@@ -503,21 +503,21 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
                         </select>
                     </div>
                 </div>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2 p-2 bg-neutral-100 dark:bg-neutral-800/50 rounded-md" dangerouslySetInnerHTML={{ __html: 'Suara latar hanya disokong oleh <strong>model Veo 3</strong> dan berfungsi terbaik dengan Bahasa Inggeris.' }}/>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2 p-2 bg-neutral-100 dark:bg-neutral-800/50 rounded-md" dangerouslySetInnerHTML={{ __html: 'Voiceover is only supported by the <strong>Veo 3 model</strong> and works best with English.' }}/>
             </div>
         </div>
         
         <div className="pt-4 mt-auto">
             <div className="flex gap-4">
                 <button onClick={handleGenerate} disabled={isLoading} className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isLoading ? <Spinner /> : 'Jana Video'}
+                    {isLoading ? <Spinner /> : 'Generate Video'}
                 </button>
                 <button
                     onClick={handleReset}
                     disabled={isLoading}
                     className="flex-shrink-0 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-3 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50"
                 >
-                    Set Semula
+                    Reset
                 </button>
             </div>
              {error && <p className="text-red-500 dark:text-red-400 mt-2 text-center">{error}</p>}
@@ -530,20 +530,20 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
           {isLoading ? (
               <div className="flex flex-col items-center justify-center h-full gap-2">
                   <Spinner />
-                  <p className="mt-4 text-neutral-500 dark:text-neutral-400">{statusMessage || 'Menjana...'}</p>
+                  <p className="mt-4 text-neutral-500 dark:text-neutral-400">{statusMessage || 'Generating...'}</p>
                   <p className="mt-2 text-xs text-neutral-400 dark:text-neutral-500">{loadingMessages[loadingMessageIndex]}</p>
               </div>
           ) : error && !videoUrl ? ( // Only show error if there's no video to display
                <div className="text-center text-red-500 dark:text-red-400 p-4">
                    <AlertTriangleIcon className="w-12 h-12 mx-auto mb-4" />
-                   <p className="font-semibold">Penjanaan Gagal</p>
+                   <p className="font-semibold">Generation Failed</p>
                    <p className="text-sm mt-2 max-w-md mx-auto">{error}</p>
                    <button
                        onClick={handleGenerate}
                        className="mt-6 flex items-center justify-center gap-2 bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700 mx-auto"
                    >
                        <RefreshCwIcon className="w-4 h-4" />
-                       Cuba Lagi
+                       Try Again
                    </button>
               </div>
           ) : videoUrl ? (
@@ -558,7 +558,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
                       muted
                       className="max-h-full max-w-full rounded-md"
                   >
-                      Penyemak imbas anda tidak menyokong tag video.
+                      Your browser does not support the video tag.
                   </video>
                   
                   {error && <p className="text-red-500 dark:text-red-400 text-center text-sm">{error}</p>}
@@ -569,13 +569,13 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
                     className="flex items-center justify-center gap-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-2 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50"
                   >
                     {isDownloading ? <Spinner /> : <DownloadIcon className="w-4 h-4" />}
-                    {isDownloading ? 'Memuat turun...' : 'Muat Turun Video'}
+                    {isDownloading ? 'Downloading...' : 'Download Video'}
                   </button>
               </div>
           ) : (
               <div className="text-center text-neutral-500 dark:text-neutral-600">
                   <StarIcon className="w-16 h-16 mx-auto" />
-                  <p>Video yang anda jana akan muncul di sini.</p>
+                  <p>Your generated video will appear here.</p>
               </div>
           )}
       </>

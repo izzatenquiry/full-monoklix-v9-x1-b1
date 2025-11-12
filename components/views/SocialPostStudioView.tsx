@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { type Language, type User, type HistoryItem } from '../../types';
-import { getTranslations } from '../../services/translations';
 import { sendSocialPostToWebhook } from '../../services/webhookService';
 import { generateText } from '../../services/geminiService';
 import { getSocialPostStudioCaptionPrompt } from '../../services/promptManager';
@@ -16,30 +15,30 @@ interface SocialPostStudioViewProps {
 // --- AI Writer Modal ---
 interface AiAgent {
   id: string;
+  name: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 const aiAgents: AiAgent[] = [
-    { id: 'najwa', icon: UserIcon },
-    { id: 'julia', icon: MegaphoneIcon },
-    { id: 'musa', icon: UsersIcon },
+    { id: 'najwa', name: 'Najwa', icon: UserIcon },
+    { id: 'julia', name: 'Julia', icon: MegaphoneIcon },
+    { id: 'musa', name: 'Musa', icon: UsersIcon },
 ];
-const outputLanguages = ["English", "Bahasa Malaysia", "Chinese"];
+const outputLanguages = ["English", "Malay"];
 
 interface AiWriterModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (result: { caption: string; cta: string; hashtags: string }) => void;
   language: Language;
-  translations: any;
 }
 
-const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfirm, language, translations }) => {
+const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfirm, language }) => {
     const [selectedAgentId, setSelectedAgentId] = useState('najwa');
     const [input, setInput] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState('');
     const [parsedResult, setParsedResult] = useState<{ caption: string, cta: string, hashtags: string } | null>(null);
-    const [outputLanguage, setOutputLanguage] = useState(language === 'ms' ? 'Bahasa Malaysia' : 'English');
+    const [outputLanguage, setOutputLanguage] = useState(language === 'ms' ? 'Malay' : 'English');
 
     useEffect(() => {
         if (!isOpen) {
@@ -80,7 +79,6 @@ const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfir
             const prompt = getSocialPostStudioCaptionPrompt({
                 agentId: selectedAgentId,
                 userInput: input,
-                language: outputLanguage
             });
             const result = await generateText(prompt);
             setGeneratedText(result);
@@ -103,19 +101,17 @@ const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfir
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 animate-zoomIn p-4" onClick={onClose} role="dialog" aria-modal="true">
             <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-2xl w-full max-w-2xl flex flex-col p-6" onClick={e => e.stopPropagation()}>
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">{translations.aiWriterModalTitle}</h2>
+                    <h2 className="text-xl font-bold">AI Social Post Writer</h2>
                     <button onClick={onClose} className="p-1 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700"><XIcon className="w-6 h-6"/></button>
                 </div>
 
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{translations.selectAgent}</label>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Select AI Agent</label>
                             <div className="grid grid-cols-3 gap-3">
                                 {aiAgents.map(agent => {
-                                    const agentInfo = translations.agents[agent.id];
                                     const isSelected = agent.id === selectedAgentId;
-                                    // FIX: Added 'return' statement to fix 'void[] is not assignable to ReactNode' error.
                                     return (
                                         <button
                                             key={agent.id}
@@ -125,8 +121,7 @@ const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfir
                                             <div className="flex items-center gap-3">
                                                 <agent.icon className={`w-5 h-5 flex-shrink-0 ${isSelected ? 'text-primary-600 dark:text-primary-400' : 'text-neutral-500'}`} />
                                                 <div className="flex-1">
-                                                    <p className="font-bold text-sm">{agentInfo.name}</p>
-                                                    {/* FIX: Removed this line which caused a 'Cannot find name selectedAgent' error. The description is not available in the translations object anyway. */}
+                                                    <p className="font-bold text-sm">{agent.name}</p>
                                                 </div>
                                             </div>
                                         </button>
@@ -135,39 +130,39 @@ const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfir
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{translations.outputLanguage}</label>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Output Language</label>
                             <select value={outputLanguage} onChange={e => setOutputLanguage(e.target.value)} className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3">
                                 {outputLanguages.map(lang => <option key={lang}>{lang}</option>)}
                             </select>
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{translations.agentDescription}</label>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Describe Your Post Topic</label>
                         <textarea
                             value={input}
                             onChange={e => setInput(e.target.value)}
-                            placeholder={translations.agentInputPlaceholder}
+                            placeholder="e.g., 'A post about our new summer coffee blend, it's refreshing and has citrus notes.'"
                             rows={4}
                             className="w-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3"
                         />
                     </div>
                     <button onClick={handleGenerate} disabled={isGenerating || !input.trim()} className="w-full bg-primary-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
                         {isGenerating ? <Spinner/> : <SparklesIcon className="w-5 h-5"/>}
-                        {isGenerating ? translations.generating : translations.generate}
+                        {isGenerating ? "Generating..." : "Generate"}
                     </button>
                     {parsedResult && (
                         <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-700 animate-zoomIn">
                             <div>
-                                <h4 className="font-semibold text-sm mb-1">{translations.generatedCaption}</h4>
+                                <h4 className="font-semibold text-sm mb-1">Generated Caption</h4>
                                 <p className="text-sm p-3 bg-neutral-100 dark:bg-neutral-800/50 rounded-md">{parsedResult.caption}</p>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <h4 className="font-semibold text-sm mb-1">{translations.generatedHashtags}</h4>
+                                    <h4 className="font-semibold text-sm mb-1">Generated Hashtags</h4>
                                     <p className="text-sm p-3 bg-neutral-100 dark:bg-neutral-800/50 rounded-md">{parsedResult.hashtags}</p>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-sm mb-1">{translations.generatedCta}</h4>
+                                    <h4 className="font-semibold text-sm mb-1">Generated CTA</h4>
                                     <p className="text-sm p-3 bg-neutral-100 dark:bg-neutral-800/50 rounded-md">{parsedResult.cta}</p>
                                 </div>
                             </div>
@@ -176,8 +171,8 @@ const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfir
                 </div>
 
                 <div className="mt-6 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-6 py-2 bg-neutral-200 dark:bg-neutral-700 font-semibold rounded-lg">{translations.close}</button>
-                    <button onClick={handleConfirm} disabled={!parsedResult} className="px-6 py-2 bg-primary-600 text-white font-semibold rounded-lg disabled:opacity-50">{translations.useText}</button>
+                    <button onClick={onClose} className="px-6 py-2 bg-neutral-200 dark:bg-neutral-700 font-semibold rounded-lg">Close</button>
+                    <button onClick={handleConfirm} disabled={!parsedResult} className="px-6 py-2 bg-primary-600 text-white font-semibold rounded-lg disabled:opacity-50">Use This Text</button>
                 </div>
             </div>
         </div>
@@ -197,8 +192,6 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
     const [sendStatus, setSendStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' });
     const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
     const [isAiWriterOpen, setIsAiWriterOpen] = useState(false);
-    const T = getTranslations(language).socialPostStudioView;
-    const commonT = getTranslations(language).common;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -210,7 +203,7 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
         const result = await sendSocialPostToWebhook(caption, hashtags, cta, link, scheduleDate, mediaItems);
         
         if (result.success) {
-            setSendStatus({ type: 'success', message: T.sendSuccess });
+            setSendStatus({ type: 'success', message: 'Post successfully sent to your webhook!' });
             // Clear fields on success
             setCaption('');
             setHashtags('');
@@ -218,7 +211,7 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
             setLink('');
             setMediaItems([]);
         } else {
-            setSendStatus({ type: 'error', message: `${T.sendError} ${result.message}` });
+            setSendStatus({ type: 'error', message: `Failed to send post: ${result.message}` });
         }
         setIsSending(false);
 
@@ -244,14 +237,14 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
         <div className="max-w-4xl mx-auto">
             <h1 className="text-2xl font-bold sm:text-3xl flex items-center gap-3">
                 <MegaphoneIcon className="w-8 h-8 text-primary-500" />
-                {T.title}
+                Social Post Studio
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 mt-1">{T.subtitle}</p>
+            <p className="text-neutral-500 dark:text-neutral-400 mt-1">Schedule social media posts with AI-generated captions and media from your gallery.</p>
 
             {!currentUser.webhookUrl && (
                 <div className="mt-6 bg-yellow-100 dark:bg-yellow-900/50 border-l-4 border-yellow-500 text-yellow-800 dark:text-yellow-200 p-4 rounded-r-lg">
-                    <p className="font-bold">{T.noWebhookTitle}</p>
-                    <p className="text-sm">{T.noWebhookBody}</p>
+                    <p className="font-bold">Webhook Not Configured</p>
+                    <p className="text-sm">To use the Social Post Studio, you must first set up a personal webhook URL in your settings. This is typically a URL from a service like n8n or Zapier.</p>
                 </div>
             )}
             
@@ -259,23 +252,23 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
                 {/* Left Column */}
                 <div className="space-y-6">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{T.textContentLabel}</label>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Text Content / Caption</label>
                         <div className="relative">
                             <textarea
                                 value={caption}
                                 onChange={e => setCaption(e.target.value)}
-                                placeholder={T.textContentPlaceholder}
+                                placeholder="Write your caption here, or use the AI Writer to generate one..."
                                 rows={10}
                                 className="w-full p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 focus:ring-2 focus:ring-primary-500"
                             />
                             <button type="button" onClick={() => setIsAiWriterOpen(true)} className="absolute bottom-3 right-3 flex items-center gap-2 bg-primary-600 text-white font-semibold py-2 px-3 rounded-lg text-sm hover:bg-primary-700">
                                 <SparklesIcon className="w-4 h-4" />
-                                {T.generateWithAi}
+                                Generate with AI
                             </button>
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{T.hashtagsLabel}</label>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hashtags</label>
                         <input
                             type="text"
                             value={hashtags}
@@ -289,10 +282,10 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
                 {/* Right Column */}
                 <div className="space-y-6">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{T.mediaLabel}</label>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Media (up to 4 images OR 1 video)</label>
                         <div className="p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 min-h-[150px]">
                             {mediaItems.length === 0 ? (
-                                <p className="text-sm text-neutral-500">{T.noMedia}</p>
+                                <p className="text-sm text-neutral-500">No media selected.</p>
                             ) : (
                                 <div className="grid grid-cols-2 gap-2">
                                     {mediaItems.map(item => (
@@ -315,21 +308,19 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
                             )}
                         </div>
                         <div className="flex gap-2 mt-2">
-                            <button type="button" onClick={() => setIsMediaModalOpen(true)} className="text-sm font-semibold text-primary-600 hover:underline">{T.addMediaButton}</button>
-                            {/* <span className="text-sm text-neutral-400">or</span>
-                            <button type="button" className="text-sm font-semibold text-primary-600 hover:underline">{T.uploadFromDesktop}</button> */}
+                            <button type="button" onClick={() => setIsMediaModalOpen(true)} className="text-sm font-semibold text-primary-600 hover:underline">Add from Gallery</button>
                         </div>
                     </div>
                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{T.ctaLabel}</label>
-                        <input type="text" value={cta} onChange={e => setCta(e.target.value)} placeholder={T.ctaPlaceholder} className="w-full p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800"/>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Call-to-Action (CTA)</label>
+                        <input type="text" value={cta} onChange={e => setCta(e.target.value)} placeholder="e.g., Shop Now, Learn More" className="w-full p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800"/>
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{T.linkLabel}</label>
-                        <input type="url" value={link} onChange={e => setLink(e.target.value)} placeholder={T.linkPlaceholder} className="w-full p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800"/>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Link (Optional)</label>
+                        <input type="url" value={link} onChange={e => setLink(e.target.value)} placeholder="https://example.com" className="w-full p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800"/>
                     </div>
                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{T.scheduleLabel}</label>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Schedule Post (Optional)</label>
                         <input type="datetime-local" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)} className="w-full p-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800"/>
                     </div>
                 </div>
@@ -338,7 +329,7 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
                 <div className="md:col-span-2">
                     <button type="submit" disabled={!currentUser.webhookUrl || isSending} className="w-full bg-primary-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
                         {isSending ? <Spinner/> : null}
-                        {isSending ? T.sending : T.sendButton}
+                        {isSending ? 'Sending...' : 'Send to Webhook'}
                     </button>
                     {sendStatus.type !== 'idle' && (
                         <p className={`text-sm text-center mt-2 ${sendStatus.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
@@ -352,15 +343,14 @@ const SocialPostStudioView: React.FC<SocialPostStudioViewProps> = ({ language, c
                 isOpen={isMediaModalOpen}
                 onClose={() => setIsMediaModalOpen(false)}
                 onConfirm={handleConfirmMedia}
-                language={language}
             />
             
+            {/* FIX: Remove `translations` prop as it is not defined on AiWriterModalProps. */}
             <AiWriterModal
                 isOpen={isAiWriterOpen}
                 onClose={() => setIsAiWriterOpen(false)}
                 onConfirm={handleConfirmAiWriter}
                 language={language}
-                translations={T}
             />
 
         </div>

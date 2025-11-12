@@ -7,6 +7,7 @@ import Tabs, { type Tab } from '../common/Tabs';
 import PreviewModal from '../common/PreviewModal'; // Import the new component
 import { getLogs, clearLogs } from '../../services/aiLogService';
 import Spinner from '../common/Spinner';
+import { getTranslations } from '../../services/translations';
 
 interface VideoGenPreset {
   prompt: string;
@@ -32,6 +33,8 @@ const AiLogPanel: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [blobUrls, setBlobUrls] = useState<Map<string, string>>(new Map());
     const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+    const T = getTranslations().galleryView;
+    const commonT = getTranslations().common;
 
     const refreshLogs = useCallback(async () => {
         setIsLoading(true);
@@ -56,7 +59,7 @@ const AiLogPanel: React.FC = () => {
     }, [logs]);
 
     const handleClearLogs = async () => {
-        if (window.confirm("Adakah anda pasti?")) {
+        if (window.confirm(T.log.confirmClear || "Are you sure you want to clear all logs? This action cannot be undone.")) {
             await clearLogs();
             await refreshLogs();
         }
@@ -69,7 +72,7 @@ const AiLogPanel: React.FC = () => {
     const renderPreview = (log: AiLogItem) => {
         const baseClasses = "w-10 h-10 object-cover rounded bg-neutral-200 dark:bg-neutral-800 flex-shrink-0";
         if (!log.mediaOutput) return <div className={`${baseClasses} flex items-center justify-center`}><ClipboardListIcon className="w-5 h-5 text-neutral-500"/></div>;
-        if (typeof log.mediaOutput === 'string') return <img src={`data:image/png;base64,${log.mediaOutput}`} alt="Pratonton" className={baseClasses} />;
+        if (typeof log.mediaOutput === 'string') return <img src={`data:image/png;base64,${log.mediaOutput}`} alt={T.log.preview || "Preview"} className={baseClasses} />;
         if (log.mediaOutput instanceof Blob) {
             const url = blobUrls.get(log.id);
             if (!url) return <div className={`${baseClasses} flex items-center justify-center`}><Spinner /></div>;
@@ -91,9 +94,9 @@ const AiLogPanel: React.FC = () => {
         };
 
         const tabs = [
-            { id: 'prompt', label: 'Prompt' },
-            { id: 'output', label: 'Output' },
-            { id: 'details', label: 'Butiran' }
+            { id: 'prompt', label: T.log.prompt || 'Prompt' },
+            { id: 'output', label: T.log.output || 'Output' },
+            { id: 'details', label: T.log.details || 'Details' }
         ];
 
         const renderContent = () => {
@@ -104,24 +107,24 @@ const AiLogPanel: React.FC = () => {
                     return (
                         <div className="relative">
                             <pre className="text-sm whitespace-pre-wrap font-sans bg-neutral-100 dark:bg-neutral-900/80 p-3 rounded-md max-h-60 overflow-y-auto custom-scrollbar">
-                                {textToCopy || 'Tiada kandungan.'}
+                                {textToCopy || T.log.noContent || 'No content.'}
                             </pre>
                             <button
                                 onClick={() => handleCopy(textToCopy)}
                                 className="absolute top-2 right-2 flex items-center gap-1 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-1 px-2 rounded-md hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-xs"
                             >
                                 {copied ? <CheckCircleIcon className="w-3 h-3 text-green-500" /> : <ClipboardIcon className="w-3 h-3" />}
-                                {copied ? 'Disalin!' : 'Salin'}
+                                {copied ? commonT.copied : commonT.copy}
                             </button>
                         </div>
                     );
                 case 'details':
                     return (
                         <ul className="text-sm space-y-2 text-neutral-700 dark:text-neutral-300">
-                            <li className="flex justify-between items-center"><strong>Model:</strong> <span className="font-mono text-xs bg-neutral-200 dark:bg-neutral-700 px-2 py-1 rounded">{log.model}</span></li>
-                            <li className="flex justify-between items-center"><strong>Status:</strong> <span className={`font-semibold ${log.status === 'Error' ? 'text-red-500' : 'text-green-500'}`}>{log.status}</span></li>
-                            <li className="flex justify-between items-center"><strong>Ang. Kos / Token:</strong> {log.cost ? `$${log.cost.toFixed(4)}` : (log.tokenCount > 0 ? log.tokenCount.toLocaleString() : 'T/B')}</li>
-                            {log.error && <li className="pt-2 mt-2 border-t border-neutral-200 dark:border-neutral-700"><strong>Ralat:</strong> <span className="text-red-500">{log.error}</span></li>}
+                            <li className="flex justify-between items-center"><strong>{T.log.model || 'Model:'}</strong> <span className="font-mono text-xs bg-neutral-200 dark:bg-neutral-700 px-2 py-1 rounded">{log.model}</span></li>
+                            <li className="flex justify-between items-center"><strong>{T.log.status || 'Status:'}</strong> <span className={`font-semibold ${log.status === 'Error' ? 'text-red-500' : 'text-green-500'}`}>{log.status}</span></li>
+                            <li className="flex justify-between items-center"><strong>{T.log.cost || 'Est. Cost / Tokens:'}</strong> {log.cost ? `$${log.cost.toFixed(4)}` : (log.tokenCount > 0 ? log.tokenCount.toLocaleString() : T.log.na || 'N/A')}</li>
+                            {log.error && <li className="pt-2 mt-2 border-t border-neutral-200 dark:border-neutral-700"><strong>{T.log.error || 'Error:'}</strong> <span className="text-red-500">{log.error}</span></li>}
                         </ul>
                     );
                 default: return null;
@@ -153,14 +156,14 @@ const AiLogPanel: React.FC = () => {
     return (
         <div className="h-full flex flex-col">
             <div className="flex justify-between items-center mb-4 flex-shrink-0">
-                <h2 className="text-xl font-bold">Log API AI</h2>
-                {logs.length > 0 && <button onClick={handleClearLogs} className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 font-semibold"><TrashIcon className="w-4 h-4" /> Padam Log</button>}
+                <h2 className="text-xl font-bold">{T.log.title || 'AI API Log'}</h2>
+                {logs.length > 0 && <button onClick={handleClearLogs} className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 font-semibold"><TrashIcon className="w-4 h-4" /> {T.log.clear || 'Clear Logs'}</button>}
             </div>
             {isLoading ? <div className="flex-1 flex justify-center items-center py-20"><Spinner /></div> : logs.length === 0 ? (
                 <div className="flex-1 flex items-center justify-center text-center py-20 text-neutral-500">
                     <div>
                         <ClipboardListIcon className="w-16 h-16 mx-auto mb-4" />
-                        <p className="font-semibold">Tiada Entri Log Ditemui</p>
+                        <p className="font-semibold">{T.log.empty || 'No Log Entries Found'}</p>
                     </div>
                 </div>
             ) : (
@@ -202,6 +205,7 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
     const [blobUrls, setBlobUrls] = useState(new Map<string, string>());
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const blobUrlsRef = useRef(new Map<string, string>());
+    const T = getTranslations().galleryView;
 
     const refreshHistory = useCallback(async () => {
         const history = await getHistory();
@@ -303,7 +307,7 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Adakah anda pasti mahu memadam item ini dari sejarah anda?")) {
+        if (window.confirm(T.confirmDelete || "Are you sure you want to delete this item from your history?")) {
             await deleteHistoryItem(id);
             await refreshHistory();
         }
@@ -314,9 +318,9 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
     const itemsToDisplay = activeTab === 'images' ? imageItems : videoItems;
 
     const tabs: Tab<GalleryTabId>[] = [
-        { id: 'images', label: 'Imej', count: imageItems.length },
-        { id: 'videos', label: 'Video', count: videoItems.length },
-        { id: 'log', label: 'Log API' },
+        { id: 'images', label: T.tabs.images, count: imageItems.length },
+        { id: 'videos', label: T.tabs.videos, count: videoItems.length },
+        { id: 'log', label: T.tabs.log },
     ];
 
 
@@ -333,12 +337,12 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
                     className="group relative aspect-square bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden shadow-md flex flex-col items-center justify-center text-center p-3"
                 >
                     <AlertTriangleIcon className="w-8 h-8 text-yellow-500 mb-2"/>
-                    <p className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">Data Video Telah Luput</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Video ini telah dialih keluar dari cache untuk menjimatkan ruang.</p>
+                    <p className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">{T.unavailable}</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{T.unavailableHelp}</p>
                      <button
                         onClick={(e) => handleActionClick(e, () => handleDelete(item.id))}
                         className="absolute top-2 right-2 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                        title="Padam Entri Sejarah"
+                        title={T.deleteEntry}
                     >
                         <TrashIcon className="w-4 h-4" />
                     </button>
@@ -370,14 +374,14 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
                             <button
                                 onClick={(e) => handleActionClick(e, () => onReEdit({ base64: item.result as string, mimeType: 'image/png' }))}
                                 className="p-2 bg-purple-600/80 text-white rounded-full hover:bg-purple-600 transition-colors transform hover:scale-110"
-                                title="Sunting Semula Imej"
+                                title={T.reEdit}
                             >
                                 <WandIcon className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={(e) => handleActionClick(e, () => onCreateVideo({ prompt: item.prompt, image: { base64: item.result as string, mimeType: 'image/png' } }))}
                                 className="p-2 bg-primary-600/80 text-white rounded-full hover:bg-primary-600 transition-colors transform hover:scale-110"
-                                title="Cipta Video"
+                                title={T.createVideo}
                             >
                                 <VideoIcon className="w-4 h-4" />
                             </button>
@@ -386,14 +390,14 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
                         <button
                             onClick={(e) => handleActionClick(e, () => downloadAsset(item))}
                             className="p-2 bg-white/80 text-black rounded-full hover:bg-white transition-colors transform hover:scale-110"
-                            title="Muat Turun"
+                            title={T.download}
                         >
                             <DownloadIcon className="w-4 h-4" />
                         </button>
                          <button
                             onClick={(e) => handleActionClick(e, () => handleDelete(item.id))}
                             className="p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-colors transform hover:scale-110"
-                            title="Padam"
+                            title={T.delete}
                         >
                             <TrashIcon className="w-4 h-4" />
                         </button>
@@ -422,8 +426,8 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
                             <div className="inline-block p-4 bg-neutral-100 dark:bg-neutral-800/50 rounded-full mb-4">
                                 {activeTab === 'images' ? <ImageIcon className="w-10 h-10" /> : <VideoIcon className="w-10 h-10" />}
                             </div>
-                            <p className="font-semibold">Galeri {activeTab === 'images' ? 'Imej' : 'Video'} Anda Kosong</p>
-                            <p className="text-sm">Mula menjana kandungan dan ia akan muncul di sini.</p>
+                            <p className="font-semibold">{T.emptyTitle.replace('{tab}', activeTab === 'images' ? T.tabs.images : T.tabs.videos)}</p>
+                            <p className="text-sm">{T.emptySubtitle}</p>
                         </div>
                     </div>
                 );
@@ -439,8 +443,8 @@ const GalleryView: React.FC<GalleryViewProps> = ({ onCreateVideo, onReEdit, lang
     return (
         <div className="h-full flex flex-col">
             <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold sm:text-3xl">Galeri & Sejarah</h1>
-                <p className="text-neutral-500 dark:text-neutral-400 mt-1">Layari, muat turun, atau guna semula semua kandungan yang telah anda jana.</p>
+                <h1 className="text-2xl font-bold sm:text-3xl">{T.title}</h1>
+                <p className="text-neutral-500 dark:text-neutral-400 mt-1">{T.subtitle}</p>
             </div>
             
             <div className="flex-shrink-0 my-6 flex justify-center">

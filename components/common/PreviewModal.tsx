@@ -15,7 +15,8 @@ interface PreviewModalProps {
 }
 
 const PreviewModal: React.FC<PreviewModalProps> = ({ item, onClose, getDisplayUrl, onNext, onPrevious, hasNext, hasPrevious, language }) => {
-  const T = getTranslations(language).common;
+  // FIX: Remove `language` argument from `getTranslations` call.
+  const T = getTranslations().common;
   
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -3,7 +3,6 @@ import {
     RobotIcon, CheckCircleIcon, XIcon, AlertTriangleIcon
 } from '../Icons';
 import { type Language, type User } from '../../types';
-import { getTranslations } from '../../services/translations';
 import Spinner from '../common/Spinner';
 import { getAvailableApiKeys, claimApiKey, saveUserApiKey, type AvailableApiKey } from '../../services/userService';
 import { runApiHealthCheck, type HealthCheckResult } from '../../services/geminiService';
@@ -23,9 +22,6 @@ const servicesToCheck = [
 ];
 
 const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUser, onUserUpdate }) => {
-    // FIX: Access the correct 'apiGeneratorView' translation key.
-    const T = getTranslations(language).apiGeneratorView;
-    
     const [isLoading, setIsLoading] = useState(false);
     const [availableKeys, setAvailableKeys] = useState<AvailableApiKey[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -44,11 +40,11 @@ const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUs
             const keys = await getAvailableApiKeys();
             setAvailableKeys(keys);
             if (keys.length === 0) {
-                setStatusMessage(T.noKeys);
+                setStatusMessage('There are no unclaimed API keys available at this time.');
             }
         } catch (err) {
             const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-            setError(T.fetchError.replace('{error}', message));
+            setError(`Failed to fetch API key: ${message}`);
         } finally {
             setIsLoading(false);
         }
@@ -61,14 +57,14 @@ const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUs
 
         const saveResult = await saveUserApiKey(currentUser.id, key.apiKey);
         if (saveResult.success === false) {
-            setError(T.applyError.replace('{error}', saveResult.message));
+            setError(`Failed to apply API key to your profile: ${saveResult.message}`);
             setIsLoading(false);
             return;
         }
 
         const claimResult = await claimApiKey(key.id, currentUser.id, currentUser.username);
         if (!claimResult.success) {
-            setError(T.claimError.replace('{error}', claimResult.message || 'Unknown error'));
+            setError(`Failed to claim API key in the database: ${claimResult.message || 'Unknown error'}`);
             setIsLoading(false);
             return;
         }
@@ -77,7 +73,7 @@ const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUs
         
         setCopiedKeyId(key.id);
         navigator.clipboard.writeText(key.apiKey);
-        setStatusMessage(T.successMessage);
+        setStatusMessage('Key successfully applied to your account and copied to clipboard!');
         
         setAvailableKeys([]);
         setIsLoading(false);
@@ -88,7 +84,6 @@ const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUs
         setCheckingKeyId(key.id);
         setHealthCheckResults(prev => new Map(prev).set(key.id, null));
         try {
-            // FIX: The `runApiHealthCheck` function expects an object with a `textKey` property, not a plain string.
             const results = await runApiHealthCheck({ textKey: key.apiKey });
             setHealthCheckResults(prev => new Map(prev).set(key.id, results));
         } catch (error: any) {
@@ -111,23 +106,23 @@ const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUs
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">{T.title}</h1>
-          <p className="text-neutral-500 dark:text-neutral-400 mt-1">{T.subtitle}</p>
+          <h1 className="text-2xl font-bold sm:text-3xl">API Key Generator (Admin)</h1>
+          <p className="text-neutral-500 dark:text-neutral-400 mt-1">For admin use only. Generate and manage temporary API keys.</p>
         </div>
         
         <div className="bg-white dark:bg-neutral-900 p-6 rounded-lg shadow-sm">
             <div className="flex flex-col items-center text-center">
                 <RobotIcon className="w-16 h-16 text-primary-500 mb-4"/>
-                <h2 className="text-xl font-bold">{T.requestNewKey}</h2>
+                <h2 className="text-xl font-bold">Request a Temporary API Key</h2>
                 <p className="text-neutral-500 dark:text-neutral-400 mt-2 max-w-md">
-                    {T.description}
+                    Click the button below to fetch an unclaimed API key from the database. This key can be used to grant temporary access to a user.
                 </p>
                 <button 
                     onClick={handleFetchKeys} 
                     disabled={isLoading}
                     className="mt-6 bg-primary-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
-                    {isLoading ? <Spinner/> : T.requestButton}
+                    {isLoading ? <Spinner/> : 'Request Key'}
                 </button>
 
                 {error && <p className="mt-4 text-red-500">{error}</p>}
@@ -136,7 +131,7 @@ const ApiGeneratorView: React.FC<ApiGeneratorViewProps> = ({ language, currentUs
 
             {availableKeys.length > 0 && !isLoading && (
                 <div className="mt-8 border-t border-neutral-200 dark:border-neutral-700 pt-6">
-                    <h3 className="font-semibold text-center mb-4">{T.availableKeysTitle}</h3>
+                    <h3 className="font-semibold text-center mb-4">Available API Keys</h3>
                     <div className="space-y-3 max-w-2xl mx-auto">
                         {availableKeys.map(key => {
                             const results = healthCheckResults.get(key.id);

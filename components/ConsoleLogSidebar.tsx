@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import eventBus from '../services/eventBus';
 import { XIcon, TrashIcon, TerminalIcon } from './Icons';
-import { type Language } from '../types';
 import { getTranslations } from '../services/translations';
 
 interface LogEntry {
@@ -13,13 +12,12 @@ interface LogEntry {
 interface ConsoleLogSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  language: Language;
 }
 
-const ConsoleLogSidebar: React.FC<ConsoleLogSidebarProps> = ({ isOpen, onClose, language }) => {
+const ConsoleLogSidebar: React.FC<ConsoleLogSidebarProps> = ({ isOpen, onClose }) => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const logContainerRef = useRef<HTMLDivElement>(null);
-  const T = getTranslations(language).consoleLogSidebar;
+  const T = getTranslations().consoleLogSidebar;
 
   useEffect(() => {
     const handleLog = (data: LogEntry) => {
@@ -66,41 +64,48 @@ const ConsoleLogSidebar: React.FC<ConsoleLogSidebarProps> = ({ isOpen, onClose, 
         aria-hidden="true"
       ></div>
       <aside
-        className={`w-80 bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 p-4 flex flex-col transition-transform duration-300 ease-custom-ease z-40
-                   lg:relative lg:translate-x-0
-                   fixed inset-y-0 right-0 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 flex flex-col 
+                   transition-all duration-300 ease-custom-ease overflow-hidden
+                   
+                   fixed inset-y-0 right-0 z-40 w-80 
+                   ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+                   
+                   lg:relative lg:inset-auto lg:right-auto lg:z-auto lg:translate-x-0 lg:flex-shrink-0
+                   ${isOpen ? 'lg:w-96' : 'lg:w-0'}`}
       >
-        <div className="flex items-center justify-between mb-4 flex-shrink-0">
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <TerminalIcon className="w-5 h-5" />
-            {T.title}
-          </h2>
-          <div className="flex items-center gap-2">
-            <button onClick={clearLogs} className="p-2 text-neutral-500 hover:text-neutral-800 dark:hover:text-white" aria-label={T.clearLogs} title={T.clearLogs}>
-              <TrashIcon className="w-5 h-5" />
-            </button>
-            <button onClick={onClose} className="p-2 lg:hidden" aria-label={T.closeConsole}>
-              <XIcon className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        
-        <div ref={logContainerRef} className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2 space-y-2">
-            {logs.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-sm text-neutral-400">
-                    <p>{T.placeholder}</p>
-                </div>
-            ) : (
-                logs.map((log, index) => (
-                    <div key={index} className={`p-2 rounded-md border-l-4 text-xs font-mono break-words ${getLevelClasses(log.level)}`}>
-                        <div className="flex justify-between items-center text-neutral-400 dark:text-neutral-500 mb-1">
-                            <span className="font-semibold uppercase">{log.level}</span>
-                            <span>{log.timestamp.toLocaleTimeString()}</span>
-                        </div>
-                        <pre className="whitespace-pre-wrap">{log.message}</pre>
+        <div className="w-full lg:w-96 h-full flex flex-col p-4">
+            <div className="flex items-center justify-between mb-4 flex-shrink-0">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+                <TerminalIcon className="w-5 h-5" />
+                {T.title}
+            </h2>
+            <div className="flex items-center gap-2">
+                <button onClick={clearLogs} className="p-2 text-neutral-500 hover:text-neutral-800 dark:hover:text-white" aria-label={T.clearLogs} title={T.clearLogs}>
+                <TrashIcon className="w-5 h-5" />
+                </button>
+                <button onClick={onClose} className="p-2" aria-label={T.closeConsole}>
+                <XIcon className="w-6 h-6" />
+                </button>
+            </div>
+            </div>
+            
+            <div ref={logContainerRef} className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2 space-y-2">
+                {logs.length === 0 ? (
+                    <div className="flex items-center justify-center h-full text-sm text-neutral-400">
+                        <p>{T.placeholder}</p>
                     </div>
-                ))
-            )}
+                ) : (
+                    logs.map((log, index) => (
+                        <div key={index} className={`p-2 rounded-md border-l-4 text-xs font-mono break-words ${getLevelClasses(log.level)}`}>
+                            <div className="flex justify-between items-center text-neutral-400 dark:text-neutral-500 mb-1">
+                                <span className="font-semibold uppercase">{log.level}</span>
+                                <span>{log.timestamp.toLocaleTimeString()}</span>
+                            </div>
+                            <pre className="whitespace-pre-wrap">{log.message}</pre>
+                        </div>
+                    ))
+                )}
+            </div>
         </div>
       </aside>
     </>

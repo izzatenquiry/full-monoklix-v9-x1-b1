@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getContent, getPlatformStatus, getAnnouncements } from '../../services/contentService';
-// FIX: Add missing Language type to component props to resolve type errors.
 import { type TutorialContent, type PlatformStatus, type Announcement, type PlatformSystemStatus, type User, type Language } from '../../types';
 import { ChevronDownIcon, CheckCircleIcon, XIcon, AlertTriangleIcon, MegaphoneIcon, ImageIcon, VideoIcon } from '../Icons';
 
@@ -35,8 +34,12 @@ const PlatformUpdatesView: React.FC<PlatformUpdatesViewProps> = () => {
     };
 
     const getCategoryBadgeStyle = (category: Announcement['category']) => {
-        // FIX: Replaced English category names with Malay equivalents to match the `Announcement` type definition.
         switch (category) {
+            case 'New Feature': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300';
+            case 'Improvement': return 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+            case 'Maintenance': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+            case 'General': return 'bg-neutral-100 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300';
+            // Fallbacks for Malay values if they still exist in data
             case 'Ciri Baru': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300';
             case 'Penambahbaikan': return 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
             case 'Penyelenggaraan': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
@@ -95,7 +98,6 @@ const PlatformUpdatesView: React.FC<PlatformUpdatesViewProps> = () => {
 
 interface ECourseViewProps {
     currentUser: User;
-    // FIX: Add missing 'language' prop to satisfy the component's signature in App.tsx.
     language: Language;
 }
 

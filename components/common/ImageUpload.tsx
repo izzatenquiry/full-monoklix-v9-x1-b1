@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { UploadIcon, TrashIcon } from '../Icons';
-import { type Language } from '../../types';
 import { getTranslations } from '../../services/translations';
+import { type Language } from '../../types';
 
 interface ImageUploadProps {
   id: string;
@@ -17,14 +17,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onImageUpload, 
   onRemove,
   title,
-  description,
-  language
+  description
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const T = getTranslations(language).imageUpload;
+  const T = getTranslations().imageUpload;
 
   const handleFileChange = useCallback((file: File | null) => {
     if (file) {
@@ -96,7 +95,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           disabled={!!preview}
         />
         {preview ? (
-          <img src={preview} alt="Pratonton" className="mx-auto max-h-full rounded-md object-contain" />
+          <img src={preview} alt="Preview" className="mx-auto max-h-full rounded-md object-contain" />
         ) : (
           <div className="flex flex-col items-center text-neutral-500 dark:text-neutral-400">
             <UploadIcon className="w-6 h-6 mb-2" />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ClipboardIcon, CheckCircleIcon } from '../Icons';
 import { getTranslations } from '../../services/translations';
+// FIX: Add missing Language type for component props
 import { type Language } from '../../types';
 
 interface MarkdownRendererProps {
@@ -8,9 +9,9 @@ interface MarkdownRendererProps {
   language: Language;
 }
 
-const CodeBlock: React.FC<{ language: string, codeContent: string, currentLanguage: Language }> = ({ language, codeContent, currentLanguage }) => {
+const CodeBlock: React.FC<{ language: string, codeContent: string }> = ({ language, codeContent }) => {
     const [copied, setCopied] = useState(false);
-    const T = getTranslations(currentLanguage).common;
+    const T = getTranslations().common;
     const handleCopy = () => {
         if (!codeContent) return;
         navigator.clipboard.writeText(codeContent);
@@ -37,7 +38,7 @@ const CodeBlock: React.FC<{ language: string, codeContent: string, currentLangua
     );
 };
 
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, language }) => {
+const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   const renderLine = (line: string) => {
     // Bold
     line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -56,8 +57,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, language }
           const codeLang = lines[0].trim();
           const codeContent = lines.slice(1).join('\n');
           
-          // FIX: Pass the app's `language` prop to `currentLanguage` for translations.
-          return <CodeBlock key={index} language={codeLang} codeContent={codeContent} currentLanguage={language} />;
+          return <CodeBlock key={index} language={codeLang} codeContent={codeContent} />;
         }
         
         // Handle other markdown for non-code parts

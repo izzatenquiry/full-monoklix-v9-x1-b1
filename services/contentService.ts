@@ -9,8 +9,8 @@ const ANNOUNCEMENTS_KEY = 'monoklix-ai-announcements';
 
 const defaultTutorialContent: TutorialContent = {
   mainVideoUrl: 'https://www.youtube.com/embed/G6G8JJrV9VM',
-  mainTitle: 'Selamat Datang ke MONOKlix.com',
-  mainDescription: 'Selamat datang! Video ini adalah pengenalan anda kepada platform MONOKlix.com. Fahami gambaran keseluruhan, ciri-ciri hebat, dan cara untuk memulakan projek kreatif anda dengan bantuan AI.',
+  mainTitle: 'Welcome to MONOKlix.com',
+  mainDescription: 'Welcome! This video is your introduction to the MONOKlix.com platform. Understand the big picture, the powerful features, and how to get started on your creative projects with the help of AI.',
   tutorials: [
     // Temporarily disabled as per user request.
   ]
@@ -18,16 +18,16 @@ const defaultTutorialContent: TutorialContent = {
 
 const defaultPlatformStatus: PlatformStatus = {
     status: 'operational',
-    message: 'Semua perkhidmatan berjalan lancar.',
+    message: 'All services are running smoothly.',
     lastUpdated: new Date().toISOString(),
 };
 
 const defaultAnnouncements: Announcement[] = [
     {
         id: 'anno-1',
-        title: 'Selamat Datang ke Platform Baharu!',
-        content: 'Kami teruja untuk melancarkan platform AI MONOKlix.com yang serba baharu. Terokai ciri-ciri yang ada dan mula mencipta hari ini.',
-        category: 'Umum',
+        title: 'Welcome to the New Platform!',
+        content: 'We are excited to launch the brand new MONOKlix.com AI platform. Explore the available features and start creating today.',
+        category: 'General',
         createdAt: new Date().toISOString(),
     },
 ];

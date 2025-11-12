@@ -3,9 +3,7 @@ import ChatInterface from '../common/ChatInterface';
 import { ChatIcon } from '../Icons';
 import { getSupportPrompt } from '../../services/promptManager';
 import { type Language } from '../../types';
-import { getTranslations } from '../../services/translations';
 
-// FIX: Added dummy state to satisfy ChatInterface requirements as this component is not wired to the main app state.
 interface Message {
     role: 'user' | 'model';
     text: string;
@@ -16,8 +14,6 @@ interface AiSupportViewProps {
 }
 
 const AiSupportView: React.FC<AiSupportViewProps> = ({ language }) => {
-  // FIX: Access the correct 'aiSupportView' translation key.
-  const T = getTranslations(language).aiSupportView;
   const systemInstruction = getSupportPrompt();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,15 +27,15 @@ const AiSupportView: React.FC<AiSupportViewProps> = ({ language }) => {
       <div className="mb-6 flex-shrink-0">
         <h1 className="text-2xl font-bold sm:text-3xl flex items-center gap-3">
           <ChatIcon className="w-8 h-8 text-primary-500"/>
-          {T.title}
+          AI Support Assistant
         </h1>
-        <p className="text-neutral-500 dark:text-neutral-400 mt-1">{T.subtitle}</p>
+        <p className="text-neutral-500 dark:text-neutral-400 mt-1">Get instant help and answers about using the platform.</p>
       </div>
        {/* This wrapper ensures the ChatInterface correctly fills the remaining vertical space */}
       <div className="flex-1 flex flex-col min-h-0">
         <ChatInterface
           systemInstruction={systemInstruction}
-          placeholder={T.placeholder}
+          placeholder='Ask a question, e.g., "How do I create a video?"'
           messages={messages}
           isLoading={isLoading}
           onSendMessage={onSendMessage}

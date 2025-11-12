@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import { LogoIcon } from './Icons';
-import { type Language } from '../types';
 import { getTranslations } from '../services/translations';
 
 interface WelcomeAnimationProps {
   onAnimationEnd: () => void;
-  language: Language;
 }
 
-const WelcomeAnimation: React.FC<WelcomeAnimationProps> = ({ onAnimationEnd, language }) => {
-  const T = getTranslations(language).welcomeAnimation;
+const WelcomeAnimation: React.FC<WelcomeAnimationProps> = ({ onAnimationEnd }) => {
+  const T = getTranslations().welcomeAnimation;
   useEffect(() => {
     const timer = setTimeout(() => {
       onAnimationEnd();

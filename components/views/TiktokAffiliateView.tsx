@@ -7,20 +7,17 @@ import Spinner from '../common/Spinner';
 // FIX: Added missing UserIcon and TikTokIcon to fix 'Cannot find name' errors.
 import { StarIcon, DownloadIcon, ImageIcon, VideoIcon, WandIcon, AlertTriangleIcon, RefreshCwIcon, XIcon, UserIcon, TikTokIcon } from '../Icons';
 import { getTiktokAffiliatePrompt } from '../../services/promptManager';
-import { type User } from '../../types';
+import { type User, type Language } from '../../types';
 import { MODELS } from '../../services/aiConfig';
-import { incrementVideoUsage } from '../../services/userService';
+import { incrementImageUsage } from '../../services/userService';
 import { addLogEntry } from '../../services/aiLogService';
 import { triggerUserWebhook } from '../../services/webhookService';
 import PreviewModal from '../common/PreviewModal';
 import { handleApiError } from '../../services/errorHandler';
 import { editOrComposeWithImagen } from '../../services/imagenV3Service';
-// FIX: Add missing Language import.
-import { type Language } from '../../types';
 import { getTranslations } from '../../services/translations';
 // FIX: Added missing TwoColumnLayout import to fix 'Cannot find name' error.
 import TwoColumnLayout from '../common/TwoColumnLayout';
-import { incrementImageUsage } from '../../services/userService';
 
 
 const CreativeButton: React.FC<{
@@ -62,15 +59,15 @@ interface TiktokAffiliateViewProps {
   onUserUpdate: (user: User) => void;
 }
 
-const modelFaceOptions = ["Rawak", "Malaysia", "Vietnam", "England", "AS", "Arab", "Rusia", "Jepun", "Korea", "Thailand"];
-const lightingOptions = ["Rawak", "Siang Lembut", "Waktu Keemasan", "Cahaya Keras", "Lampu Belakang Tingkap", "Cahaya Lampu Suam", "Cahaya Campuran", "Lampu Studio", "Dramatik", "Cahaya Semula Jadi", "Neon", "Lampu Belakang", "Pencahayaan Sisi"];
-const cameraOptions = ["Rawak", "Perincian / Makro", "Rakaman Dekat", "Rakaman Sederhana Dekat", "Sederhana / Separuh Badan", "Tiga Suku", "Badan Penuh", "Flatlay", "Rakaman Lebar", "Rakaman Sederhana", "Rakaman Jauh", "Sudut Belanda", "Sudut Rendah", "Sudut Tinggi", "Rakaman Atas"];
-const poseOptions = ["Rawak", "Pose Model Profesional", "Berdiri Santai", "Duduk di Tepi Kerusi", "Berjalan Perlahan", "Bersandar di Dinding", "Pusingan Separuh Badan"];
-const vibeOptions = [ "Rawak", "Studio", "Bilik Tidur", "Bilik Mandi / Meja Solek", "Ruang Tamu", "Dapur / Ruang Makan", "Ruang Kerja / Belajar", "Ruang Masuk / Dobi", "Bandar Bersih", "Estetika Kedai Kopi", "Malam Bandar", "Pantai Tropika", "Apartmen Mewah", "Taman Bunga", "Bangunan Lama", "Perpustakaan Klasik", "Studio Minimalis", "Bar Atas Bumbung", "Taman Musim Luruh", "Jalan Tokyo", "Dalaman Scandinavia", "Hutan Ajaib", "Bandar Cyberpunk", "Gurun Bohemian", "Galeri Seni Moden", "Atas Bumbung Senja", "Kabin Gunung Bersalji", "Loteng Industri", "Makmal Futuristik", "Langit Impian Pastel", "Dalaman Istana", "Dapur Desa", "Terumbu Karang", "Jalan Paris", "Pasar Malam Asia", "Dek Kapal Pesiar", "Stesen Kereta Api Vintaj", "Gelanggang Bola Keranjang Luar", "Dapur Profesional", "Lobi Hotel Mewah", "Pentas Konsert Rock", "Taman Zen", "Teres Vila Mediterranean", "Latar Angkasa / Sci-Fi", "Ruang Kerja Moden", "Kolam Air Panas", "Bilik Takhta Fantasi", "Puncak Pencakar Langit", "Garaj Kereta Sukan", "Rumah Hijau Botani", "Gelanggang Ais", "Studio Tarian Klasik", "Pesta Pantai Malam", "Perpustakaan Kuno", "Dek Pemerhatian Gunung", "Studio Tarian Moden", "Bar Speakeasy", "Denai Hutan Hujan", "Sawah Padi Teres" ];
-const styleOptions = ["Rawak", "Realisme", "Fotorealistik", "Sinematik", "Anime", "Vintaj", "Animasi 3D", "Cat Air", "Claymation"];
-const compositionOptions = ["Rawak", "Peraturan Pertiga", "Garis Panduan", "Simetri", "Nisbah Keemasan", "Tengah", "Tidak Simetri"];
-const lensTypeOptions = ["Rawak", "Lensa Sudut Lebar", "Lensa Telefoto", "Lensa Mata Ikan", "Lensa Makro", "Lensa 50mm", "Lensa 85mm"];
-const filmSimOptions = ["Rawak", "Fujifilm Velvia", "Kodak Portra 400", "Kodachrome Sinematik", "Polaroid Vintaj", "Ilford HP5 (B&W)"];
+const modelFaceOptions = ["Random", "Malaysian", "Vietnamese", "English", "American", "Arabic", "Russian", "Japanese", "Korean", "Thai"];
+const lightingOptions = ["Random", "Soft Daylight", "Golden Hour", "Hard Light", "Window Backlight", "Warm Lamp Light", "Mixed Light", "Studio Light", "Dramatic", "Natural Light", "Neon", "Backlight", "Side Lighting"];
+const cameraOptions = ["Random", "Detail / Macro", "Close-up", "Medium Close-up", "Medium / Half Body", "Three-Quarter", "Full Body", "Flatlay", "Wide Shot", "Medium Shot", "Long Shot", "Dutch Angle", "Low Angle", "High Angle", "Overhead Shot"];
+const poseOptions = ["Random", "Professional Model Pose", "Casual Standing", "Sitting on Edge of Chair", "Slow Walking", "Leaning on Wall", "Half-Body Turn"];
+const vibeOptions = [ "Random", "Studio", "Bedroom", "Bathroom / Vanity", "Living Room", "Kitchen / Dining", "Workspace / Study", "Entryway / Laundry", "Clean Urban", "Aesthetic Coffee Shop", "City Night", "Tropical Beach", "Luxury Apartment", "Flower Garden", "Old Building", "Classic Library", "Minimalist Studio", "Rooftop Bar", "Autumn Park", "Tokyo Street", "Scandinavian Interior", "Enchanted Forest", "Cyberpunk City", "Bohemian Desert", "Modern Art Gallery", "Sunset Rooftop", "Snowy Mountain Cabin", "Industrial Loft", "Futuristic Lab", "Pastel Dreamscape", "Palace Interior", "Cottagecore Kitchen", "Coral Reef", "Parisian Street", "Asian Night Market", "Yacht Deck", "Vintage Train Station", "Outdoor Basketball Court", "Professional Kitchen", "Luxury Hotel Lobby", "Rock Concert Stage", "Zen Garden", "Mediterranean Villa Terrace", "Outer Space / Sci-Fi", "Modern Workspace", "Hot Spring", "Fantasy Throne Room", "Skyscraper Summit", "Sports Car Garage", "Botanical Greenhouse", "Ice Rink", "Classical Dance Studio", "Night Beach Party", "Ancient Library", "Mountain View Deck", "Modern Dance Studio", "Speakeasy Bar", "Rainforest Trail", "Terraced Rice Paddy" ];
+const styleOptions = ["Random", "Realism", "Photorealistic", "Cinematic", "Anime", "Vintage", "3D Animation", "Watercolor", "Claymation"];
+const compositionOptions = ["Random", "Rule of Thirds", "Leading Lines", "Symmetry", "Golden Ratio", "Centered", "Asymmetrical"];
+const lensTypeOptions = ["Random", "Wide-Angle Lens", "Telephoto Lens", "Fisheye Lens", "Macro Lens", "50mm Lens", "85mm Lens"];
+const filmSimOptions = ["Random", "Fujifilm Velvia", "Kodak Portra 400", "Cinematic Kodachrome", "Vintage Polaroid", "Ilford HP5 (B&W)"];
 
 const SESSION_KEY = 'tiktokAffiliateState';
 
@@ -129,9 +126,10 @@ const TiktokAffiliateView: React.FC<TiktokAffiliateViewProps> = ({ onReEdit, onC
     const [faceImageUploadKey, setFaceImageUploadKey] = useState(Date.now() + 1);
     const [progress, setProgress] = useState(0);
     
-    // FIX: Access the correct translation key for this view.
-    const T = getTranslations(language).tiktokAffiliateView;
-    const commonT = getTranslations(language).common;
+    // FIX: Remove `language` argument from `getTranslations` call to match the function signature.
+    const T = getTranslations().tiktokAffiliateView;
+    // FIX: Remove `language` argument from `getTranslations` call to match the function signature.
+    const commonT = getTranslations().common;
 
     useEffect(() => {
         try {
@@ -257,15 +255,15 @@ const TiktokAffiliateView: React.FC<TiktokAffiliateViewProps> = ({ onReEdit, onC
         setImages([]);
         setError(null);
         setGender('Female');
-        setModelFace('Rawak');
-        setLighting('Rawak');
-        setCamera('Rawak');
-        setPose('Rawak');
-        setVibe('Rawak');
-        setStyle('Rawak');
-        setComposition('Rawak');
-        setLensType('Rawak');
-        setFilmSim('Rawak');
+        setModelFace('Random');
+        setLighting('Random');
+        setCamera('Random');
+        setPose('Random');
+        setVibe('Random');
+        setStyle('Random');
+        setComposition('Random');
+        setLensType('Random');
+        setFilmSim('Random');
         setCreativityLevel(5);
         setCustomPrompt('');
         setNumberOfImages(1);

@@ -12,15 +12,15 @@ const formatStatus = (user: User): { text: string; color: 'green' | 'yellow' | '
         case 'admin':
             return { text: 'Admin', color: 'blue' };
         case 'lifetime':
-            return { text: 'Seumur Hidup', color: 'green' };
+            return { text: 'Lifetime', color: 'green' };
         case 'subscription':
-            return { text: 'Langganan', color: 'green' };
+            return { text: 'Subscription', color: 'green' };
         case 'trial':
-            return { text: 'Percubaan', color: 'yellow' };
+            return { text: 'Trial', color: 'yellow' };
         case 'inactive':
-            return { text: 'Tidak Aktif', color: 'red' };
+            return { text: 'Inactive', color: 'red' };
         default:
-            return { text: 'Tidak Diketahui', color: 'red' };
+            return { text: 'Unknown', color: 'red' };
     }
 };
 
@@ -37,13 +37,13 @@ const TrialCountdown: React.FC<{ expiry: number }> = ({ expiry }) => {
         const timeLeft = expiry - now;
 
         if (timeLeft <= 0) {
-            return { text: 'Tamat Tempoh', color: 'red' as const };
+            return { text: 'Expired', color: 'red' as const };
         }
 
         const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
         const seconds = Math.floor((timeLeft / 1000) % 60);
 
-        return { text: `Tamat dalam ${minutes}m ${seconds}s`, color: 'yellow' as const };
+        return { text: `Expires in ${minutes}m ${seconds}s`, color: 'yellow' as const };
     }, [expiry]);
     
     const [timeInfo, setTimeInfo] = useState(calculateRemainingTime());
@@ -67,13 +67,13 @@ const getTimeAgo = (date: Date): string => {
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (seconds < 60) return `${seconds}s lalu`;
+    if (seconds < 60) return `${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m lalu`;
+    if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}j lalu`;
+    if (hours < 24) return `${hours}h ago`;
     const days = Math.floor(hours / 24);
-    return `${days}h lalu`;
+    return `${days}d ago`;
 };
 
 interface AdminDashboardViewProps {
@@ -119,13 +119,12 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
 
     const veoAuthorizedUsersCount = useMemo(() => {
         if (!users) return 0;
-        // FIX: Correctly count users with an assigned token, which is the true measure of a "Veo 3.0 User".
         return users.filter(u => u.personalAuthToken).length;
     }, [users]);
 
     const handleSaveChanges = async () => {
         if (!selectedUser) return;
-        setStatusMessage({ type: 'loading', message: 'Menyimpan perubahan...' });
+        setStatusMessage({ type: 'loading', message: 'Saving changes...' });
 
         // Status update logic with VEO check
         const statusPromise = new Promise<{ success: boolean, message?: string }>(async (resolve) => {
@@ -133,7 +132,7 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                     (selectedUser.status !== 'lifetime' && selectedUser.status !== 'subscription');
 
             if (isUpgradingToVeo && veoAuthorizedUsersCount >= 4) {
-                return resolve({ success: false, message: 'Tidak dapat menambah pengguna. Pengesahan Veo 3.0 terhad kepada kurang daripada 5 pengguna.' });
+                return resolve({ success: false, message: 'Cannot add user. Veo 3.0 authorization is limited to fewer than 5 users.' });
             }
             if (newStatus === selectedUser.status) return resolve({ success: true });
             
@@ -153,8 +152,6 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
             if (newToken === currentToken) return resolve({ success: true });
 
             const result = await saveUserPersonalAuthToken(selectedUser.id, newToken || null);
-            // FIX: Explicitly check for `result.success === false` to help TypeScript correctly
-            // narrow the discriminated union type, allowing access to `result.message` in the error case.
             if (result.success === false) {
                 resolve({ success: false, message: result.message });
             } else {
@@ -166,18 +163,16 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
 
         const errorMessages = [];
         if (!statusResult.success) {
-            errorMessages.push(statusResult.message || 'Gagal mengemas kini status.');
+            errorMessages.push(statusResult.message || 'Failed to update status.');
         }
-        // FIX: Explicitly check for `tokenResult.success === false` to help TypeScript correctly
-        // narrow the type and allow safe access to the `message` property.
         if (tokenResult.success === false) {
-            errorMessages.push(tokenResult.message || 'Gagal mengemas kini token.');
+            errorMessages.push(tokenResult.message || 'Failed to update token.');
         }
 
         if (errorMessages.length > 0) {
             setStatusMessage({ type: 'error', message: errorMessages.join(' ') });
         } else {
-            setStatusMessage({ type: 'success', message: `Pengguna ${selectedUser.username} berjaya dikemas kini.` });
+            setStatusMessage({ type: 'success', message: `User ${selectedUser.username} updated successfully.` });
             fetchUsers();
         }
 
@@ -196,9 +191,9 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
         
         if (await forceUserLogout(selectedUser.id)) {
             await fetchUsers();
-            setStatusMessage({ type: 'success', message: `Sesi ${selectedUser.username} telah ditamatkan.` });
+            setStatusMessage({ type: 'success', message: `Session for ${selectedUser.username} has been terminated.` });
         } else {
-             setStatusMessage({ type: 'error', message: 'Gagal menamatkan sesi.' });
+             setStatusMessage({ type: 'error', message: 'Failed to terminate session.' });
         }
         setIsModalOpen(false);
         setIsConfirmLogoutOpen(false);
@@ -211,7 +206,7 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
         setStatusMessage(null);
         const usersToExport = await exportAllUserData();
         if (!usersToExport) {
-            setStatusMessage({ type: 'error', message: 'Eksport gagal: Pangkalan data pengguna rosak.' });
+            setStatusMessage({ type: 'error', message: 'Export failed: User database is corrupt.' });
             setTimeout(() => setStatusMessage(null), 4000);
             return;
         }
@@ -228,9 +223,9 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            setStatusMessage({ type: 'success', message: 'Data pengguna berjaya dieksport.' });
+            setStatusMessage({ type: 'success', message: 'User data exported successfully.' });
         } catch (error) {
-             setStatusMessage({ type: 'error', message: 'Gagal mencipta fail eksport.' });
+             setStatusMessage({ type: 'error', message: 'Failed to create export file.' });
         }
         setTimeout(() => setStatusMessage(null), 4000);
     };
@@ -244,12 +239,12 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
         const file = event.target.files?.[0];
         if (!file) return;
 
-        if (window.confirm("Adakah anda pasti mahu menggantikan semua data pengguna sedia ada dengan kandungan fail ini? Tindakan ini tidak boleh dibatalkan.")) {
+        if (window.confirm("Are you sure you want to replace all existing user data with this file's content? This cannot be undone.")) {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
                     const text = e.target?.result;
-                    if (typeof text !== 'string') throw new Error("Gagal membaca fail.");
+                    if (typeof text !== 'string') throw new Error("Failed to read file.");
                     
                     const importedUsers = JSON.parse(text);
                     const result = await replaceUsers(importedUsers);
@@ -261,7 +256,7 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                         setStatusMessage({ type: 'error', message: result.message });
                     }
                 } catch (error) {
-                    setStatusMessage({ type: 'error', message: `Ralat mengimport fail: ${error instanceof Error ? error.message : 'Format fail tidak sah.'}` });
+                    setStatusMessage({ type: 'error', message: `Error importing file: ${error instanceof Error ? error.message : 'Invalid file format.'}` });
                 } finally {
                      if(event.target) event.target.value = '';
                      setTimeout(() => setStatusMessage(null), 5000);
@@ -307,14 +302,14 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
     }, [users]);
 
     if (loading) {
-        return <div>Memuatkan pengguna...</div>;
+        return <div>Loading users...</div>;
     }
 
     if (users === null) {
         return (
             <div className="bg-red-100 dark:bg-red-900/50 border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg" role="alert">
-                <strong className="font-bold">Ralat Kritikal:</strong>
-                <span className="block sm:inline"> Pangkalan data pengguna rosak dan tidak dapat dibaca. Sila hubungi sokongan.</span>
+                <strong className="font-bold">Critical Error:</strong>
+                <span className="block sm:inline"> The user database is corrupt and could not be read. Please contact support.</span>
             </div>
         );
     }
@@ -322,13 +317,13 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
     return (
         <>
             <div className="bg-white dark:bg-neutral-900 p-6 rounded-lg shadow-sm">
-                <h2 className="text-xl font-semibold mb-2">Pangkalan Data Pengguna</h2>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Urus pengguna, langganan, dan sandaran pangkalan data.</p>
+                <h2 className="text-xl font-semibold mb-2">User Database</h2>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Manage users, subscriptions, and database backups.</p>
                 
                 <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
                     <input
                         type="text"
-                        placeholder="Cari mengikut nama pengguna atau e-mel..."
+                        placeholder="Search by username or email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full max-w-sm bg-white dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
@@ -339,15 +334,15 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                             </span>
-                            <span>{activeUsersCount} Pengguna Aktif</span>
+                            <span>{activeUsersCount} Active Users</span>
                         </div>
                         <div className={`flex items-center gap-2 text-sm font-semibold py-2 px-3 rounded-lg ${veoAuthorizedUsersCount >= 4 ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300'}`}>
                             {veoAuthorizedUsersCount >= 4 ? <AlertTriangleIcon className="w-4 h-4" /> : <VideoIcon className="w-4 h-4" />}
-                            <span>Pengguna Veo 3.0: {veoAuthorizedUsersCount} / 4</span>
+                            <span>Veo 3.0 Users: {veoAuthorizedUsersCount} / 4</span>
                         </div>
                          <button onClick={() => { setUserForHealthCheck(null); setIsHealthModalOpen(true); }} className="flex items-center gap-2 text-sm bg-blue-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors">
                             <CheckCircleIcon className="w-4 h-4" />
-                            Ringkasan Kesihatan API
+                            API Health Summary
                         </button>
                         <input type="file" ref={fileInputRef} onChange={handleFileImport} accept=".json" className="hidden" />
                         <button onClick={handleImportClick} className="flex items-center gap-2 text-sm bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-2 px-3 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors">
@@ -356,7 +351,7 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                         </button>
                         <button onClick={handleExport} className="flex items-center gap-2 text-sm bg-primary-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-primary-700 transition-colors">
                             <DownloadIcon className="w-4 h-4" />
-                            Eksport
+                            Export
                         </button>
                     </div>
                 </div>
@@ -374,31 +369,31 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                 <tr>
                                     <th scope="col" className="px-4 py-3">#</th>
                                     <th scope="col" className="px-6 py-3">
-                                        E-mel
+                                        Email
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Nombor Telefon
+                                        Phone Number
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Log Masuk Terakhir
+                                        Last Login
                                     </th>
                                      <th scope="col" className="px-6 py-3">
-                                        Versi Aplikasi
+                                        App Version
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Pelayan Proksi
+                                        Proxy Server
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Token Pengesahan Peribadi
+                                        Personal Auth Token
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Status Akaun
+                                        Account Status
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Tindakan
+                                        Actions
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Semak API
+                                        Check API
                                     </th>
                                 </tr>
                             </thead>
@@ -407,13 +402,12 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                     filteredUsers.map((user, index) => {
                                         const { text, color } = formatStatus(user);
                                         
-                                        // FIX: Explicitly type activeInfo to allow color to be 'green', 'gray', or 'red'.
-                                        let activeInfo: { text: string; color: 'green' | 'gray' | 'red'; fullDate: string; } = { text: 'Tidak Pernah', color: 'red', fullDate: 'N/A' };
+                                        let activeInfo: { text: string; color: 'green' | 'gray' | 'red'; fullDate: string; } = { text: 'Never', color: 'red', fullDate: 'N/A' };
                                         if (user.lastSeenAt) {
                                             const lastSeenDate = new Date(user.lastSeenAt);
                                             const diffMinutes = (new Date().getTime() - lastSeenDate.getTime()) / (1000 * 60);
                                             if (diffMinutes < 60) {
-                                                activeInfo = { text: 'Aktif sekarang', color: 'green', fullDate: lastSeenDate.toLocaleString() };
+                                                activeInfo = { text: 'Active now', color: 'green', fullDate: lastSeenDate.toLocaleString() };
                                             } else {
                                                 activeInfo = { text: getTimeAgo(lastSeenDate), color: 'gray', fullDate: lastSeenDate.toLocaleString() };
                                             }
@@ -435,7 +429,7 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                                     {user.phone || '-'}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-2" title={`Terakhir dilihat: ${activeInfo.fullDate}`}>
+                                                    <div className="flex items-center gap-2" title={`Last seen: ${activeInfo.fullDate}`}>
                                                         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${activeStatusColors[activeInfo.color]}`}></span>
                                                         <span>{activeInfo.text}</span>
                                                     </div>
@@ -456,8 +450,8 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                                         </span>
                                                         {user.status === 'subscription' && user.subscriptionExpiry && (
                                                             <div className="text-xs text-neutral-500 mt-1">
-                                                                Tamat pada: {new Date(user.subscriptionExpiry).toLocaleDateString()}
-                                                                {Date.now() > user.subscriptionExpiry && <span className="text-red-500 font-bold"> (Tamat Tempoh)</span>}
+                                                                Expires: {new Date(user.subscriptionExpiry).toLocaleDateString()}
+                                                                {Date.now() > user.subscriptionExpiry && <span className="text-red-500 font-bold"> (Expired)</span>}
                                                             </div>
                                                         )}
                                                     </div>
@@ -467,16 +461,16 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                                         onClick={() => openEditModal(user)}
                                                         className="font-medium text-primary-600 dark:text-primary-500 hover:underline"
                                                     >
-                                                        Kemas kini
+                                                        Update
                                                     </button>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                      <button
                                                         onClick={() => { setUserForHealthCheck(user); setIsHealthModalOpen(true); }}
                                                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                                                        title={'Periksa kesihatan API'}
+                                                        title={'Check API health'}
                                                     >
-                                                        Periksa
+                                                        Check
                                                     </button>
                                                 </td>
                                             </tr>
@@ -487,14 +481,14 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                         <td colSpan={10} className="text-center py-10">
                                             {users.length > 0 ? (
                                                 <div>
-                                                    <p className="mt-2 font-semibold">Tiada pengguna ditemui.</p>
-                                                    <p className="text-xs">Tiada pengguna sepadan dengan "{searchTerm}".</p>
+                                                    <p className="mt-2 font-semibold">No users found.</p>
+                                                    <p className="text-xs">No users match your search for "{searchTerm}".</p>
                                                 </div>
                                             ) : (
                                                 <div>
                                                     <UsersIcon className="w-12 h-12 mx-auto text-neutral-400" />
-                                                    <p className="mt-2 font-semibold">Belum ada pengguna berdaftar.</p>
-                                                    <p className="text-xs">Apabila pengguna baru mendaftar, mereka akan muncul di sini.</p>
+                                                    <p className="mt-2 font-semibold">No registered users yet.</p>
+                                                    <p className="text-xs">When new users register, they will appear here.</p>
                                                 </div>
                                             )}
                                         </td>
@@ -510,16 +504,16 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" aria-modal="true" role="dialog">
                     <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-6 w-full max-w-md m-4">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">Edit Pengguna</h3>
+                            <h3 className="text-lg font-bold">Edit User</h3>
                             <button onClick={() => setIsModalOpen(false)} className="p-1 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700">
                                 <XIcon className="w-5 h-5" />
                             </button>
                         </div>
-                        <p className="mb-4 text-sm">Mengemas kini profil untuk <span className="font-semibold">{selectedUser.username}</span>.</p>
+                        <p className="mb-4 text-sm">Updating profile for <span className="font-semibold">{selectedUser.username}</span>.</p>
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="status-select" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                                    Status Akaun
+                                    Account Status
                                 </label>
                                 <select
                                     id="status-select"
@@ -527,38 +521,38 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                     onChange={(e) => setNewStatus(e.target.value as UserStatus)}
                                     className="w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg p-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                                 >
-                                    <option value="trial">Percubaan</option>
-                                    <option value="subscription">Langganan</option>
-                                    <option value="lifetime">Seumur Hidup</option>
-                                    <option value="inactive">Tidak Aktif</option>
+                                    <option value="trial">Trial</option>
+                                    <option value="subscription">Subscription</option>
+                                    <option value="lifetime">Lifetime</option>
+                                    <option value="inactive">Inactive</option>
                                 </select>
                             </div>
                              <div>
                                 <label htmlFor="token-input" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                                    Token Pengesahan Peribadi
+                                    Personal Auth Token
                                 </label>
                                 <input
                                     id="token-input"
                                     type="text"
                                     value={personalToken}
                                     onChange={(e) => setPersonalToken(e.target.value)}
-                                    placeholder="Token __SESSION pengguna"
+                                    placeholder="User's personal __SESSION token"
                                     className="w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg p-2 focus:ring-2 focus:ring-primary-500 focus:outline-none font-mono text-xs"
                                 />
                             </div>
                             {newStatus === 'subscription' && (
                                 <div className="mt-4 p-3 bg-neutral-100 dark:bg-neutral-700/50 rounded-md">
                                     <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                        Tempoh Langganan
+                                        Subscription Duration
                                     </label>
                                     <div className="flex gap-4">
                                         <label className="flex items-center">
                                             <input type="radio" name="duration" value={6} checked={subscriptionDuration === 6} onChange={() => setSubscriptionDuration(6)} className="form-radio" />
-                                            <span className="ml-2">6 Bulan</span>
+                                            <span className="ml-2">6 Months</span>
                                         </label>
                                         <label className="flex items-center">
                                             <input type="radio" name="duration" value={12} checked={subscriptionDuration === 12} onChange={() => setSubscriptionDuration(12)} className="form-radio" />
-                                            <span className="ml-2">12 Bulan</span>
+                                            <span className="ml-2">12 Months</span>
                                         </label>
                                     </div>
                                 </div>
@@ -570,20 +564,20 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
                                 className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
                             >
                                 <XIcon className="w-4 h-4" />
-                                Paksa Log Keluar
+                                Force Logout
                             </button>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setIsModalOpen(false)}
                                     className="px-4 py-2 text-sm font-semibold bg-neutral-200 dark:bg-neutral-600 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors"
                                 >
-                                    Batal
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={handleSaveChanges}
                                     className="px-4 py-2 text-sm font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
                                 >
-                                    Simpan Perubahan
+                                    Save Changes
                                 </button>
                             </div>
                         </div>
@@ -592,21 +586,19 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ language }) => 
             )}
             
             {isConfirmLogoutOpen && selectedUser && (
-                // FIX: Add missing 'language' prop to ConfirmationModal component.
                 <ConfirmationModal
                     isOpen={isConfirmLogoutOpen}
-                    title="Sahkan Log Keluar Paksa"
-                    message={`Adakah anda pasti mahu menamatkan sesi semasa ${selectedUser.username}? Mereka akan dilog keluar serta-merta, tetapi akaun mereka akan kekal aktif.`}
+                    title="Confirm Force Logout"
+                    message={`Are you sure you want to terminate ${selectedUser.username}'s current session? They will be logged out immediately, but their account will remain active.`}
                     onConfirm={executeForceLogout}
                     onCancel={() => setIsConfirmLogoutOpen(false)}
-                    confirmText="Log Keluar Paksa"
+                    confirmText="Force Logout"
                     confirmButtonClass="bg-red-600 hover:bg-red-700"
                     language={language}
                 />
             )}
 
             {isHealthModalOpen && (
-                // FIX: Add missing 'language' prop to ApiHealthCheckModal component.
                 <ApiHealthCheckModal
                     isOpen={isHealthModalOpen}
                     onClose={() => {

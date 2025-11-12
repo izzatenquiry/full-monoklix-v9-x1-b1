@@ -15,7 +15,7 @@ import { type Language } from '../../types';
 const vibeOptions = ["Rawak", "Bertenaga & Seronok", "Sinematik & Epik", "Moden & Bersih", "Semula Jadi & Organik", "Teknologi & Futuristik"];
 const lightingOptions = ["Rawak","Lampu Studio", "Dramatik", "Cahaya Semula Jadi", "Neon", "Waktu Keemasan", "Cahaya Siang Lembut"];
 const contentTypeOptions = ["Rawak", "Jualan Keras", "Jualan Lembut", "Bercerita", "Masalah/Penyelesaian", "ASMR / Sensori", "Buka Kotak", "Pendidikan", "Testimoni"];
-const languages = ["English", "Bahasa Malaysia"];
+const languages = ["English", "Malay"];
 
 const downloadText = (text: string, fileName: string) => {
     const blob = new Blob([text], { type: 'text/plain' });
@@ -61,7 +61,7 @@ const ProductAdView: React.FC<ProductAdViewProps> = ({ language }) => {
     vibe: vibeOptions[0],
     lighting: lightingOptions[0],
     contentType: contentTypeOptions[0],
-    language: "Bahasa Malaysia",
+    language: "Malay",
   });
   const [storyboard, setStoryboard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,9 +112,9 @@ const ProductAdView: React.FC<ProductAdViewProps> = ({ language }) => {
     setStoryboard(null);
     setCopied(false);
 
+    // FIX: Removed `language` property as it's not part of the function's expected parameter type.
     const prompt = getProductAdPrompt({
         productDesc,
-        language: selections.language,
         vibe: selections.vibe,
         lighting: selections.lighting,
         contentType: selections.contentType,
@@ -150,7 +150,7 @@ const ProductAdView: React.FC<ProductAdViewProps> = ({ language }) => {
         vibe: vibeOptions[0],
         lighting: lightingOptions[0],
         contentType: contentTypeOptions[0],
-        language: "Bahasa Malaysia",
+        language: "Malay",
     });
     setStoryboard(null);
     setError(null);

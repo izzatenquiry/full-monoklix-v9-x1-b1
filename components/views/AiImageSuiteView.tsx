@@ -5,7 +5,6 @@ import BackgroundRemoverView from './BackgroundRemoverView';
 import ProductPhotoView from './ProductPhotoView';
 import TiktokAffiliateView from './TiktokAffiliateView';
 import Tabs, { type Tab } from '../common/Tabs';
-// FIX: Import Language and User types.
 import { type Language, type User } from '../../types';
 
 type TabId = 'generation' | 'enhancer' | 'remover' | 'product' | 'model';
@@ -36,11 +35,11 @@ const AiImageSuiteView: React.FC<AiImageSuiteViewProps> = ({ onCreateVideo, onRe
     const [activeTab, setActiveTab] = useState<TabId>('generation');
 
     const tabs: Tab<TabId>[] = [
-        { id: 'generation', label: "Penjanaan Imej" },
-        { id: 'product', label: "Foto Produk" },
-        { id: 'model', label: "Foto Model" },
-        { id: 'enhancer', label: "Penambah Baik" },
-        { id: 'remover', label: "Pembuang Latar" },
+        { id: 'generation', label: "Image Generation" },
+        { id: 'product', label: "Product Photos" },
+        { id: 'model', label: "Model Photos" },
+        { id: 'enhancer', label: "Enhancer" },
+        { id: 'remover', label: "Background Remover" },
     ];
 
     useEffect(() => {
@@ -56,37 +55,31 @@ const AiImageSuiteView: React.FC<AiImageSuiteViewProps> = ({ onCreateVideo, onRe
     }, [presetPrompt]);
 
     const renderActiveTabContent = () => {
-        const commonProps = { onReEdit, onCreateVideo, currentUser, onUserUpdate };
+        const commonProps = { onReEdit, onCreateVideo, currentUser, onUserUpdate, language };
         switch (activeTab) {
             case 'generation':
-                // FIX: Pass 'language' prop to ImageGenerationView.
                 return <ImageGenerationView 
                           {...commonProps} 
                           imageToReEdit={imageToReEdit} 
                           clearReEdit={clearReEdit}
                           presetPrompt={presetPrompt}
                           clearPresetPrompt={clearPresetPrompt} 
-                          language={language}
                         />;
             case 'enhancer':
-                // FIX: Pass 'language' prop to ImageEnhancerView.
-                return <ImageEnhancerView {...commonProps} language={language} />;
+                return <ImageEnhancerView {...commonProps} />;
             case 'remover':
-                // FIX: Pass 'language' prop to BackgroundRemoverView.
-                return <BackgroundRemoverView {...commonProps} language={language} />;
+                return <BackgroundRemoverView {...commonProps} />;
             case 'product':
-                return <ProductPhotoView {...commonProps} language={language} />;
+                return <ProductPhotoView {...commonProps} />;
             case 'model':
-                return <TiktokAffiliateView {...commonProps} language={language} />;
+                return <TiktokAffiliateView {...commonProps} />;
             default:
-                // FIX: Pass 'language' prop to ImageGenerationView.
                 return <ImageGenerationView 
                           {...commonProps} 
                           imageToReEdit={imageToReEdit} 
                           clearReEdit={clearReEdit}
                           presetPrompt={presetPrompt}
                           clearPresetPrompt={clearPresetPrompt} 
-                          language={language}
                         />;
         }
     };

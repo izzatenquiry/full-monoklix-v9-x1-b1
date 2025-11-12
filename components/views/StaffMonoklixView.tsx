@@ -21,21 +21,21 @@ interface AiAgent {
 }
 
 const aiAgents: AiAgent[] = [
-    { id: 'wan', name: 'Wan', description: 'Ideal Customer Persona', icon: UserIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'tina', name: 'Tina', description: 'Fear & Desire', icon: SmileyIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'jamil', name: 'Jamil', description: 'Marketing Angle', icon: LightbulbIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'najwa', name: 'Najwa', description: 'Copywriter', icon: FileTextIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'saifuz', name: 'Saifuz', description: 'Variasi Copywriting', icon: ClipboardListIcon, placeholder: 'Masukkan teks jualan asal anda...' },
-    { id: 'mieya', name: 'Mieya', description: 'Formula Copywriting (AIDA)', icon: TrendingUpIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'afiq', name: 'Afiq', description: 'Sales Page Creator', icon: StoreIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'julia', name: 'Julia', description: 'Headline Brainstormer', icon: MegaphoneIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'mazrul', name: 'Mazrul', description: 'Script Writer', icon: FilmIcon, placeholder: 'Nyatakan produk/servis anda...' },
-    { id: 'musa', name: 'Musa', description: 'LinkedIn Personal Branding', icon: UsersIcon, placeholder: 'Nyatakan platform dan topik. Cth: LinkedIn, Topik: Pentingnya personal branding' },
-    { id: 'joe_davinci', name: 'Joe', description: 'Image Prompter', icon: ImageIcon, placeholder: 'Cth: Tema: Kucing comel, Gaya: Realistik, Elemen: Kucing sedang tidur atas sofa.' },
-    { id: 'zaki', name: 'Zaki', description: 'Poster Prompter', icon: GalleryIcon, placeholder: 'Cth: Tujuan: Iklan event, Gaya: Moden, Teks: Jualan Hebat, Warna: Merah.' }
+    { id: 'wan', name: 'Wan', description: 'Ideal Customer Persona', icon: UserIcon, placeholder: 'State your product/service...' },
+    { id: 'tina', name: 'Tina', description: 'Fear & Desire', icon: SmileyIcon, placeholder: 'State your product/service...' },
+    { id: 'jamil', name: 'Jamil', description: 'Marketing Angle', icon: LightbulbIcon, placeholder: 'State your product/service...' },
+    { id: 'najwa', name: 'Najwa', description: 'Copywriter', icon: FileTextIcon, placeholder: 'State your product/service...' },
+    { id: 'saifuz', name: 'Saifuz', description: 'Copywriting Variations', icon: ClipboardListIcon, placeholder: 'Enter your original sales copy...' },
+    { id: 'mieya', name: 'Mieya', description: 'Copywriting Formula (AIDA)', icon: TrendingUpIcon, placeholder: 'State your product/service...' },
+    { id: 'afiq', name: 'Afiq', description: 'Sales Page Creator', icon: StoreIcon, placeholder: 'State your product/service...' },
+    { id: 'julia', name: 'Julia', description: 'Headline Brainstormer', icon: MegaphoneIcon, placeholder: 'State your product/service...' },
+    { id: 'mazrul', name: 'Mazrul', description: 'Script Writer', icon: FilmIcon, placeholder: 'State your product/service...' },
+    { id: 'musa', name: 'Musa', description: 'LinkedIn Personal Branding', icon: UsersIcon, placeholder: 'State platform and topic. E.g., LinkedIn, Topic: The importance of personal branding' },
+    { id: 'joe_davinci', name: 'Joe', description: 'Image Prompter', icon: ImageIcon, placeholder: 'E.g., Theme: Cute cat, Style: Realistic, Element: Cat sleeping on a sofa.' },
+    { id: 'zaki', name: 'Zaki', description: 'Poster Prompter', icon: GalleryIcon, placeholder: 'E.g., Purpose: Event ad, Style: Modern, Text: Big Sale, Color: Red.' }
 ];
 
-const languages = ["English", "Bahasa Malaysia", "Chinese"];
+const languages = ["English", "Malay"];
 const SESSION_KEY = 'staffMonoklixState';
 
 const downloadText = (text: string, fileName: string) => {
@@ -61,12 +61,12 @@ const StaffMonoklixView: React.FC<StaffMonoklixViewProps> = ({ language }) => {
     const [error, setError] = useState<string | null>(null);
     const [generatedCopy, setGeneratedCopy] = useState<string>('');
     const [copied, setCopied] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState(language === 'ms' ? "Bahasa Malaysia" : "English");
+    const [selectedLanguage, setSelectedLanguage] = useState(language === 'ms' ? "Malay" : "English");
 
-    // FIX: Access the correct 'staffMonoklixView' translation key.
-    const T = getTranslations(language).staffMonoklixView;
-    // FIX: Correctly access the 'common' object for shared translations.
-    const commonT = getTranslations(language).common;
+    // FIX: Remove `language` argument from `getTranslations` call.
+    const T = getTranslations().staffMonoklixView;
+    // FIX: Remove `language` argument from `getTranslations` call.
+    const commonT = getTranslations().common;
 
     const selectedAgent = useMemo(() => aiAgents.find(agent => agent.id === selectedAgentId)!, [selectedAgentId]);
 
@@ -100,10 +100,10 @@ const StaffMonoklixView: React.FC<StaffMonoklixViewProps> = ({ language }) => {
         setGeneratedCopy('');
         setCopied(false);
 
+        // FIX: Removed `language` property as it's not an expected parameter for this function.
         const finalPrompt = getStaffMonoklixPrompt({
             agentId: selectedAgent.id,
             userInput: userInput,
-            language: selectedLanguage,
         });
 
         try {
@@ -134,7 +134,7 @@ const StaffMonoklixView: React.FC<StaffMonoklixViewProps> = ({ language }) => {
         setUserInput('');
         setGeneratedCopy('');
         setError(null);
-        setSelectedLanguage(language === 'ms' ? "Bahasa Malaysia" : "English");
+        setSelectedLanguage(language === 'ms' ? "Malay" : "English");
         sessionStorage.removeItem(SESSION_KEY);
     }, [language]);
 

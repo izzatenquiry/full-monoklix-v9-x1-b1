@@ -67,15 +67,15 @@ const TutorialManagementPanel: React.FC = () => {
   };
   
   if (!content) {
-    return <div>Memuatkan editor kandungan...</div>;
+    return <div>Loading content editor...</div>;
   }
 
   return (
     <div className="space-y-8">
       <div className="space-y-4 p-4 border border-neutral-200 dark:border-neutral-700 rounded-md">
-        <h3 className="font-semibold text-lg">Bahagian Utama</h3>
+        <h3 className="font-semibold text-lg">Main Section</h3>
         <div>
-          <label htmlFor="mainVideoUrl" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">URL Video YouTube Utama</label>
+          <label htmlFor="mainVideoUrl" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Main YouTube Video URL</label>
           <input
             id="mainVideoUrl"
             name="mainVideoUrl"
@@ -86,7 +86,7 @@ const TutorialManagementPanel: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="mainTitle" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Tajuk Utama</label>
+          <label htmlFor="mainTitle" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Main Title</label>
           <input
             id="mainTitle"
             name="mainTitle"
@@ -97,7 +97,7 @@ const TutorialManagementPanel: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="mainDescription" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Penerangan Utama</label>
+          <label htmlFor="mainDescription" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Main Description</label>
           <textarea
             id="mainDescription"
             name="mainDescription"
@@ -110,12 +110,12 @@ const TutorialManagementPanel: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        <h3 className="font-semibold text-lg">Tutorial 1-6</h3>
+        <h3 className="font-semibold text-lg">Tutorials 1-6</h3>
         {content.tutorials.map((tutorial, index) => (
           <div key={index} className="p-4 border border-neutral-200 dark:border-neutral-700 rounded-md space-y-4">
             <h4 className="font-semibold">Tutorial {index + 1}</h4>
             <div>
-              <label htmlFor={`title-${index}`} className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1">Tajuk</label>
+              <label htmlFor={`title-${index}`} className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1">Title</label>
               <input
                 id={`title-${index}`}
                 name="title"
@@ -126,7 +126,7 @@ const TutorialManagementPanel: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor={`description-${index}`} className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1">Penerangan</label>
+              <label htmlFor={`description-${index}`} className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1">Description</label>
               <textarea
                 id={`description-${index}`}
                 name="description"
@@ -137,18 +137,18 @@ const TutorialManagementPanel: React.FC = () => {
               />
             </div>
              <div>
-                <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1">Imej Kenit</label>
+                <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1">Thumbnail</label>
                 <div className="flex items-center gap-4">
                     <div className="w-32 h-20 bg-neutral-200 dark:bg-neutral-700 rounded flex items-center justify-center overflow-hidden">
                         {tutorial.thumbnailUrl ? (
-                            <img src={tutorial.thumbnailUrl} alt={`Imej Kenit untuk ${tutorial.title}`} className="w-full h-full object-cover" />
+                            <img src={tutorial.thumbnailUrl} alt={`Thumbnail for ${tutorial.title}`} className="w-full h-full object-cover" />
                         ) : (
                             <ImageIcon className="w-8 h-8 text-neutral-500" />
                         )}
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className="cursor-pointer bg-white dark:bg-neutral-600 text-neutral-700 dark:text-neutral-200 px-3 py-1.5 rounded-md text-xs font-semibold border border-neutral-300 dark:border-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-500 transition-colors">
-                            Tukar Imej
+                            Change Image
                             <input type="file" accept="image/*" className="hidden" onChange={(e) => handleThumbnailUpload(index, e)}/>
                         </label>
                         {tutorial.thumbnailUrl && (
@@ -156,7 +156,7 @@ const TutorialManagementPanel: React.FC = () => {
                               onClick={() => handleRemoveThumbnail(index)} 
                               className="text-red-500 hover:text-red-700 dark:hover:text-red-400 text-xs font-semibold text-left p-0 bg-transparent border-none"
                             >
-                                Padam
+                                Delete
                             </button>
                         )}
                     </div>
@@ -172,9 +172,9 @@ const TutorialManagementPanel: React.FC = () => {
           disabled={saveStatus === 'saving'}
           className="bg-primary-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
         >
-          {saveStatus === 'saving' ? 'Menyimpan...' : 'Simpan Kandungan Tutorial'}
+          {saveStatus === 'saving' ? 'Saving...' : 'Save Tutorial Content'}
         </button>
-        {saveStatus === 'saved' && <p className="text-sm text-green-600">Perubahan telah disimpan!</p>}
+        {saveStatus === 'saved' && <p className="text-sm text-green-600">Changes have been saved!</p>}
       </div>
     </div>
   );
@@ -183,8 +183,7 @@ const TutorialManagementPanel: React.FC = () => {
 const PlatformUpdatesPanel: React.FC = () => {
     const [status, setStatus] = useState<PlatformStatus | null>(null);
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-    // FIX: Changed default category to 'Umum' to match the Announcement type.
-    const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '', category: 'Umum' as Announcement['category'] });
+    const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '', category: 'General' as Announcement['category'] });
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
     useEffect(() => {
@@ -222,63 +221,61 @@ const PlatformUpdatesPanel: React.FC = () => {
 
         const updatedAnnouncements = [announcementToAdd, ...announcements];
         setAnnouncements(updatedAnnouncements);
-        // FIX: The error was here. Changed 'General' to 'Umum' to match the allowed types for category.
-        setNewAnnouncement({ title: '', content: '', category: 'Umum' });
+        setNewAnnouncement({ title: '', content: '', category: 'General' });
 
         await saveAnnouncements(updatedAnnouncements);
     };
     
     const handleDeleteAnnouncement = async (id: string) => {
-        if (window.confirm("Adakah anda pasti mahu memadam pengumuman ini?")) {
+        if (window.confirm("Are you sure you want to delete this announcement?")) {
             const updatedAnnouncements = announcements.filter(a => a.id !== id);
             setAnnouncements(updatedAnnouncements);
             await saveAnnouncements(updatedAnnouncements);
         }
     };
     
-    if (!status) return <div>Memuatkan...</div>;
+    if (!status) return <div>Loading...</div>;
 
     return (
         <div className="space-y-8">
-            <h2 className="text-xl font-semibold">Pengurusan Kemas Kini & Status Platform</h2>
+            <h2 className="text-xl font-semibold">Platform Status & Updates Management</h2>
             
             {/* Status Management */}
             <div className="p-4 border border-neutral-200 dark:border-neutral-700 rounded-md space-y-4">
-                <h3 className="font-semibold text-lg">Status Platform</h3>
+                <h3 className="font-semibold text-lg">Platform Status</h3>
                 <div>
-                    <label htmlFor="platform-status" className="block text-sm font-medium mb-1">Status Semasa</label>
+                    <label htmlFor="platform-status" className="block text-sm font-medium mb-1">Current Status</label>
                     <select id="platform-status" value={status.status} onChange={(e) => handleStatusChange('status', e.target.value)} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600">
-                        <option value="operational">Beroperasi</option>
-                        <option value="degraded">Prestasi Terjejas</option>
-                        <option value="outage">Gangguan Besar</option>
+                        <option value="operational">Operational</option>
+                        <option value="degraded">Degraded Performance</option>
+                        <option value="outage">Major Outage</option>
                     </select>
                 </div>
                 <div>
-                    <label htmlFor="status-message" className="block text-sm font-medium mb-1">Mesej Status</label>
+                    <label htmlFor="status-message" className="block text-sm font-medium mb-1">Status Message</label>
                     <input id="status-message" type="text" value={status.message} onChange={(e) => handleStatusChange('message', e.target.value)} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600" />
                 </div>
                 <div className="flex items-center gap-4">
-                    <button onClick={handleSaveStatus} className="bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700">Kemas kini Status</button>
-                    {saveStatus === 'saved' && <p className="text-sm text-green-600">Status dikemas kini!</p>}
+                    <button onClick={handleSaveStatus} className="bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700">Update Status</button>
+                    {saveStatus === 'saved' && <p className="text-sm text-green-600">Status updated!</p>}
                 </div>
             </div>
 
             {/* Announcement Management */}
             <div className="p-4 border border-neutral-200 dark:border-neutral-700 rounded-md space-y-4">
-                <h3 className="font-semibold text-lg">Pengumuman</h3>
+                <h3 className="font-semibold text-lg">Announcements</h3>
                 {/* New Announcement Form */}
                 <div className="space-y-3 p-3 bg-neutral-50 dark:bg-neutral-800/50 rounded-md">
-                    <h4 className="font-medium">Siarkan Pengumuman Baharu</h4>
-                    <input type="text" placeholder="Tajuk" value={newAnnouncement.title} onChange={(e) => setNewAnnouncement(p => ({...p, title: e.target.value}))} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600"/>
-                    <textarea placeholder="Kandungan..." value={newAnnouncement.content} onChange={(e) => setNewAnnouncement(p => ({...p, content: e.target.value}))} rows={3} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600"></textarea>
-                    {/* FIX: Updated select options to use Malay values to match the 'Announcement' type. */}
+                    <h4 className="font-medium">Post New Announcement</h4>
+                    <input type="text" placeholder="Title" value={newAnnouncement.title} onChange={(e) => setNewAnnouncement(p => ({...p, title: e.target.value}))} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600"/>
+                    <textarea placeholder="Content..." value={newAnnouncement.content} onChange={(e) => setNewAnnouncement(p => ({...p, content: e.target.value}))} rows={3} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600"></textarea>
                     <select value={newAnnouncement.category} onChange={(e) => setNewAnnouncement(p => ({...p, category: e.target.value as Announcement['category']}))} className="w-full p-2 border rounded-md bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600">
-                        <option value="Ciri Baru">Ciri Baru</option>
-                        <option value="Penambahbaikan">Penambahbaikan</option>
-                        <option value="Penyelenggaraan">Penyelenggaraan</option>
-                        <option value="Umum">Umum</option>
+                        <option value="New Feature">New Feature</option>
+                        <option value="Improvement">Improvement</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="General">General</option>
                     </select>
-                    <button onClick={handleAddAnnouncement} className="bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700">Siarkan</button>
+                    <button onClick={handleAddAnnouncement} className="bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700">Post</button>
                 </div>
 
                 {/* Existing Announcements List */}
@@ -317,7 +314,7 @@ const ETutorialAdminView: React.FC = () => {
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsTutorialsVisible(!isTutorialsVisible) }}
               >
-                  <h2 className="text-xl font-semibold group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Pengurusan Kandungan e-Tutorial</h2>
+                  <h2 className="text-xl font-semibold group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">e-Tutorial Content Management</h2>
                   <ChevronDownIcon className={`w-6 h-6 text-neutral-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-transform duration-300 ${isTutorialsVisible ? 'rotate-180' : ''}`} />
               </div>
 
@@ -325,7 +322,7 @@ const ETutorialAdminView: React.FC = () => {
                   <div className="overflow-hidden">
                       <div className="pt-2">
                           <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-4">
-                              Kemas kini kandungan yang dipaparkan di halaman e-Tutorial.
+                              Update the content displayed on the e-Tutorial page.
                           </p>
                           <TutorialManagementPanel />
                       </div>

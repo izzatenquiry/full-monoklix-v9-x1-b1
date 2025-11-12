@@ -108,7 +108,8 @@ export interface Announcement {
   id: string;
   title: string;
   content: string;
-  category: 'Ciri Baru' | 'Penambahbaikan' | 'Penyelenggaraan' | 'Umum';
+  // FIX: Added Malay category names to match their usage in the components.
+  category: 'New Feature' | 'Improvement' | 'Maintenance' | 'General' | 'Ciri Baru' | 'Penambahbaikan' | 'Penyelenggaraan' | 'Umum';
   createdAt: string; // ISO string date
 }
 

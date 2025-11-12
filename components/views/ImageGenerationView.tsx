@@ -18,12 +18,12 @@ interface ImageData extends MultimodalContent {
 
 type ImageSlot = string | { error: string } | null;
 
-const styleOptions = ["Pilih Gaya...", "Realisme", "Fotorealistik", "Sinematik", "Anime", "Vintaj", "Animasi 3D", "Cat Air", "Claymation"];
-const lightingOptions = ["Pilih Pencahayaan...", "Waktu Keemasan", "Pencahayaan Studio", "Cahaya Semula Jadi", "Pencahayaan Dramatik", "Lampu Belakang", "Pencahayaan Sisi", "Cahaya Neon"];
-const cameraAngleOptions = ["Pilih Sudut...", "Rakaman Lebar", "Rakaman Dekat", "Rakaman Sederhana", "Rakaman Jauh", "Sudut Belanda", "Sudut Rendah", "Sudut Tinggi", "Rakaman Atas"];
-const compositionOptions = ["Pilih Komposisi...", "Peraturan Pertiga", "Garis Panduan", "Simetri", "Nisbah Keemasan", "Tengah", "Tidak Simetri"];
-const lensTypeOptions = ["Pilih Lensa...", "Lensa Sudut Lebar", "Lensa Telefoto", "Lensa Mata Ikan", "Lensa Makro", "Lensa 50mm", "Lensa 85mm"];
-const filmSimOptions = ["Pilih Filem...", "Fujifilm Velvia", "Kodak Portra 400", "Kodachrome Sinematik", "Polaroid Vintaj", "Ilford HP5 (B&W)"];
+const styleOptions = ["Select Style...", "Realism", "Photorealistic", "Cinematic", "Anime", "Vintage", "3D Animation", "Watercolor", "Claymation"];
+const lightingOptions = ["Select Lighting...", "Golden Hour", "Studio Lighting", "Natural Light", "Dramatic Lighting", "Backlight", "Side Light", "Neon Light"];
+const cameraAngleOptions = ["Select Angle...", "Wide Shot", "Close-up Shot", "Medium Shot", "Long Shot", "Dutch Angle", "Low Angle", "High Angle", "Overhead Shot"];
+const compositionOptions = ["Select Composition...", "Rule of Thirds", "Leading Lines", "Symmetry", "Golden Ratio", "Centered", "Asymmetrical"];
+const lensTypeOptions = ["Select Lens...", "Wide-Angle Lens", "Telephoto Lens", "Fisheye Lens", "Macro Lens", "50mm Lens", "85mm Lens"];
+const filmSimOptions = ["Select Film...", "Fujifilm Velvia", "Kodak Portra 400", "Cinematic Kodachrome", "Vintage Polaroid", "Ilford HP5 (B&W)"];
 
 
 const downloadImage = (base64Image: string, fileName: string) => {
@@ -131,7 +131,7 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
     // FIX: Explicitly type `file` as `File` to resolve TS error where it was inferred as `unknown`.
     const validFiles = filesToProcess.filter((file: File) => {
       if (!acceptedTypes.includes(file.type)) {
-        alert(`Jenis fail tidak disokong: ${file.name}. Sila muat naik fail PNG atau JPG.`);
+        alert(`Unsupported file type: ${file.name}. Please upload a PNG or JPG file.`);
         return false;
       }
       return true;
@@ -174,11 +174,11 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
       try {
           let resultImage: string | undefined;
           if (isEditing) {
-              const fullPrompt = negativePrompt ? `${prompt}, prompt negatif: ${negativePrompt}` : prompt;
+              const fullPrompt = negativePrompt ? `${prompt}, negative prompt: ${negativePrompt}` : prompt;
               const editingPrompt = getImageEditingPrompt(fullPrompt);
               const result = await editOrComposeWithImagen({
                   prompt: editingPrompt,
-                  images: referenceImages.map(img => ({ ...img, category: 'MEDIA_CATEGORY_SUBJECT', caption: 'imej untuk disunting' })),
+                  images: referenceImages.map(img => ({ ...img, category: 'MEDIA_CATEGORY_SUBJECT', caption: 'image to edit' })),
                   config: { aspectRatio }
               }, onStatusUpdate);
               resultImage = result.imagePanels[0]?.generatedImages[0]?.encodedImage;
@@ -195,12 +195,12 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
           }
 
           if (!resultImage) {
-              throw new Error("AI tidak mengembalikan imej. Sila cuba prompt atau imej rujukan yang berbeza.");
+              throw new Error("The AI did not return an image. Please try a different prompt or reference image.");
           }
           
           await addHistoryItem({
               type: 'Image',
-              prompt: isEditing ? `Suntingan Imej: ${prompt}` : `Jana Imej: ${prompt}`,
+              prompt: isEditing ? `Image Edit: ${prompt}` : `Image Generation: ${prompt}`,
               result: resultImage
           });
 
@@ -228,12 +228,12 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
 
   const handleGenerate = useCallback(async () => {
     if (!prompt.trim() && !isEditing) {
-      setError("Sila masukkan prompt untuk menerangkan imej yang anda ingin cipta.");
+      setError("Please enter a prompt to describe the image you want to create.");
       return;
     }
     setIsLoading(true);
     setError(null);
-    setStatusMessage('Menyediakan permintaan...');
+    setStatusMessage('Preparing request...');
     setImages(Array(numberOfImages).fill(null));
     setSelectedImageIndex(0);
 
@@ -288,17 +288,17 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
   const leftPanel = (
     <>
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">{isEditing ? 'Penyunting Imej AI' : 'Penjanaan Imej AI'}</h1>
-        <p className="text-neutral-500 dark:text-neutral-400 mt-1">{isEditing ? 'Sunting imej anda dengan arahan teks yang mudah.' : 'Cipta imej yang menakjubkan dari deskripsi teks.'}</p>
+        <h1 className="text-2xl font-bold sm:text-3xl">{isEditing ? 'AI Image Editor' : 'AI Image Generation'}</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 mt-1">{isEditing ? 'Edit your images with simple text commands.' : 'Create stunning images from text descriptions.'}</p>
       </div>
       
       <div>
-        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Imej Rujukan / Sumber (sehingga 5)</label>
+        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Reference / Source Images (up to 5)</label>
           <div className="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 min-h-[116px]">
               <div className="flex items-center gap-3 flex-wrap">
                   {referenceImages.map(img => (
                       <div key={img.id} className="relative w-20 h-20">
-                          <img src={img.previewUrl} alt="pratonton muat naik" className="w-full h-full object-cover rounded-md"/>
+                          <img src={img.previewUrl} alt="upload preview" className="w-full h-full object-cover rounded-md"/>
                           <button onClick={() => removeImage(img.id)} className="absolute -top-1 -right-1 bg-red-500 rounded-full p-0.5 text-white hover:bg-red-600 transition-colors">
                               <TrashIcon className="w-3 h-3"/>
                           </button>
@@ -307,72 +307,72 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
                   {referenceImages.length < 5 && (
                       <button onClick={() => fileInputRef.current?.click()} className="w-20 h-20 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md flex flex-col items-center justify-center text-gray-500 hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                           <UploadIcon className="w-6 h-6"/>
-                          <span className="text-xs mt-1">Muat Naik</span>
+                          <span className="text-xs mt-1">Upload</span>
                       </button>
                   )}
                   <input type="file" accept="image/png, image/jpeg, image/jpg" multiple ref={fileInputRef} onChange={handleFileChange} className="hidden" />
               </div>
                {isEditing ? (
-                  <p className="text-xs text-primary-600 dark:text-primary-400 mt-2 p-2 bg-primary-500/10 rounded-md" dangerouslySetInnerHTML={{ __html: 'Anda dalam <strong>Mod Penyuntingan Imej</strong>. Prompt akan digunakan sebagai arahan untuk menyunting imej sumber.' }}/>
+                  <p className="text-xs text-primary-600 dark:text-primary-400 mt-2 p-2 bg-primary-500/10 rounded-md" dangerouslySetInnerHTML={{ __html: 'You are in <strong>Image Editing Mode</strong>. The prompt will be used as instructions to edit the source image.' }}/>
               ) : (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Muat naik imej untuk disunting atau digabungkan dengan prompt anda.</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Upload an image to edit it or combine it with your prompt.</p>
               )}
           </div>
       </div>
 
       <div>
         <label htmlFor="prompt" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Prompt</label>
-        <textarea id="prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder={isEditing ? 'cth., Tukar latar belakang ke pantai...' : 'cth., Seekor kucing comel memakai cermin mata hitam, gaya sinematik...'} rows={4} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
+        <textarea id="prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder={isEditing ? 'e.g., Change the background to a beach...' : 'e.g., A cute cat wearing sunglasses, cinematic style...'} rows={4} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
       </div>
 
       <details className={`pt-4 border-t border-gray-200 dark:border-gray-700`}>
-          <summary className={`font-semibold cursor-pointer`}>Pembina Prompt Terperinci</summary>
+          <summary className={`font-semibold cursor-pointer`}>Detailed Prompt Builder</summary>
           <fieldset className="mt-4 space-y-4">
-              <p className="text-xs text-gray-500 dark:text-gray-400">Pilih opsyen untuk menambahkannya ke prompt anda.</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Select options to add them to your prompt.</p>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div><label htmlFor="builder-style" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Gaya</label><select id="builder-style" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{styleOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                  <div><label htmlFor="builder-lighting" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Pencahayaan</label><select id="builder-lighting" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{lightingOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                  <div><label htmlFor="builder-cameraAngle" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Sudut Kamera</label><select id="builder-cameraAngle" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{cameraAngleOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                  <div><label htmlFor="builder-composition" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Komposisi</label><select id="builder-composition" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{compositionOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                  <div><label htmlFor="builder-lensType" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Jenis Lensa</label><select id="builder-lensType" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{lensTypeOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                  <div><label htmlFor="builder-filmSim" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Simulasi Filem</label><select id="builder-filmSim" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{filmSimOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                  <div><label htmlFor="builder-style" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Style</label><select id="builder-style" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{styleOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                  <div><label htmlFor="builder-lighting" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Lighting</label><select id="builder-lighting" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{lightingOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                  <div><label htmlFor="builder-cameraAngle" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Camera Angle</label><select id="builder-cameraAngle" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{cameraAngleOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                  <div><label htmlFor="builder-composition" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Composition</label><select id="builder-composition" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{compositionOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                  <div><label htmlFor="builder-lensType" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Lens Type</label><select id="builder-lensType" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{lensTypeOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
+                  <div><label htmlFor="builder-filmSim" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Film Simulation</label><select id="builder-filmSim" onChange={handleAppendToPrompt} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none">{filmSimOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
               </div>
           </fieldset>
       </details>
       
       <div>
-        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Tetapan Penjanaan</label>
+        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Generation Settings</label>
         <div className="grid grid-cols-2 gap-4">
-            <select value={numberOfImages} onChange={(e) => setNumberOfImages(parseInt(e.target.value, 10))} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{[1, 2, 3, 4].map(n => <option key={n} value={n}>{n} Imej</option>)}</select>
+            <select value={numberOfImages} onChange={(e) => setNumberOfImages(parseInt(e.target.value, 10))} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none">{[1, 2, 3, 4].map(n => <option key={n} value={n}>{n} Image{n > 1 ? 's' : ''}</option>)}</select>
             <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value as any)} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition">
-                <option value="1:1">Segi Empat (1:1)</option>
-                <option value="9:16">Potret (9:16)</option>
-                <option value="16:9">Lanskap (16:9)</option>
-                <option value="3:4">Potret (3:4)</option>
-                <option value="4:3">Lanskap (4:3)</option>
+                <option value="1:1">Square (1:1)</option>
+                <option value="9:16">Portrait (9:16)</option>
+                <option value="16:9">Landscape (16:9)</option>
+                <option value="3:4">Portrait (3:4)</option>
+                <option value="4:3">Landscape (4:3)</option>
             </select>
         </div>
       </div>
       
       <div className="space-y-4 pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold mb-2">Tetapan Lanjutan</h2>
+          <h2 className="text-lg font-semibold mb-2">Advanced Settings</h2>
           <div>
-            <label htmlFor="negative-prompt" className={`block text-sm font-medium mb-2 transition-colors text-gray-600 dark:text-gray-400`}>Prompt Negatif (Apa yang perlu dielakkan)</label>
-            <textarea id="negative-prompt" value={negativePrompt} onChange={(e) => setNegativePrompt(e.target.value)} placeholder="cth., teks, tera air, kabur, hodoh" rows={2} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
+            <label htmlFor="negative-prompt" className={`block text-sm font-medium mb-2 transition-colors text-gray-600 dark:text-gray-400`}>Negative Prompt (What to avoid)</label>
+            <textarea id="negative-prompt" value={negativePrompt} onChange={(e) => setNegativePrompt(e.target.value)} placeholder="e.g., text, watermarks, blurry, ugly" rows={2} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
           </div>
       </div>
 
       <div className="pt-4 mt-auto">
         <div className="flex gap-4">
           <button onClick={handleGenerate} disabled={isLoading} className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-            {isLoading ? <Spinner /> : isEditing ? 'Guna Suntingan' : 'Jana Imej'}
+            {isLoading ? <Spinner /> : isEditing ? 'Apply Edit' : 'Generate Image'}
           </button>
           <button
             onClick={handleReset}
             disabled={isLoading}
             className="flex-shrink-0 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-3 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50"
           >
-            Set Semula
+            Reset
           </button>
         </div>
         {error && !isLoading && <p className="text-red-500 dark:text-red-400 mt-2 text-center">{error}</p>}
@@ -382,9 +382,9 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
 
   const ActionButtons: React.FC<{ imageBase64: string; mimeType: string }> = ({ imageBase64, mimeType }) => (
     <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <button onClick={() => handleLocalReEdit(imageBase64, mimeType)} title="Sunting Semula" className="flex items-center justify-center w-8 h-8 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"><WandIcon className="w-4 h-4" /></button>
-      <button onClick={() => onCreateVideo({ prompt, image: { base64: imageBase64, mimeType } })} title="Cipta Video" className="flex items-center justify-center w-8 h-8 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"><VideoIcon className="w-4 h-4" /></button>
-      <button onClick={() => downloadImage(imageBase64, `monoklix-image-${Date.now()}.png`)} title="Muat Turun" className="flex items-center justify-center w-8 h-8 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"><DownloadIcon className="w-4 h-4" /></button>
+      <button onClick={() => handleLocalReEdit(imageBase64, mimeType)} title="Re-edit" className="flex items-center justify-center w-8 h-8 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"><WandIcon className="w-4 h-4" /></button>
+      <button onClick={() => onCreateVideo({ prompt, image: { base64: imageBase64, mimeType } })} title="Create Video" className="flex items-center justify-center w-8 h-8 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"><VideoIcon className="w-4 h-4" /></button>
+      <button onClick={() => downloadImage(imageBase64, `monoklix-image-${Date.now()}.png`)} title="Download" className="flex items-center justify-center w-8 h-8 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"><DownloadIcon className="w-4 h-4" /></button>
     </div>
   );
 
@@ -398,7 +398,7 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
                     if (typeof selectedImage === 'string') {
                         return (
                             <>
-                                <img src={`data:image/png;base64,${selectedImage}`} alt={`Imej dijana ${selectedImageIndex + 1}`} className="rounded-md max-h-full max-w-full object-contain" />
+                                <img src={`data:image/png;base64,${selectedImage}`} alt={`Generated image ${selectedImageIndex + 1}`} className="rounded-md max-h-full max-w-full object-contain" />
                                 <ActionButtons imageBase64={selectedImage} mimeType="image/png" />
                             </>
                         );
@@ -406,14 +406,14 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
                         return (
                             <div className="text-center text-red-500 dark:text-red-400 p-4">
                                 <AlertTriangleIcon className="w-12 h-12 mx-auto mb-4" />
-                                <p className="font-semibold">Penjanaan Gagal</p>
+                                <p className="font-semibold">Generation Failed</p>
                                 <p className="text-sm mt-2 max-w-md mx-auto">{selectedImage.error}</p>
                                 <button
                                     onClick={() => handleRetry(selectedImageIndex)}
                                     className="mt-6 flex items-center justify-center gap-2 bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors"
                                 >
                                     <RefreshCwIcon className="w-4 h-4" />
-                                    Cuba Lagi
+                                    Try Again
                                 </button>
                             </div>
                         );
@@ -424,7 +424,7 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
                             <p className="text-sm text-neutral-500">{statusMessage}</p>
                             {isLoading && numberOfImages > 1 && (
                                 <p className="text-sm text-neutral-500">
-                                    {`Menjana... (${progress}/${numberOfImages})`}
+                                    {`Generating... (${progress}/${numberOfImages})`}
                                 </p>
                             )}
                         </div>
@@ -454,12 +454,12 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({ onCreateVideo
             <Spinner />
             <p className="text-sm text-neutral-500">{statusMessage}</p>
             <p className="text-sm text-neutral-500">
-                {`Menjana...${numberOfImages > 1 ? ` (1/${numberOfImages})` : ''}`}
+                {`Generating...${numberOfImages > 1 ? ` (1/${numberOfImages})` : ''}`}
             </p>
         </div>
       ) : (
         <div className="flex items-center justify-center h-full text-center text-neutral-500 dark:text-neutral-600">
-            <div><StarIcon className="w-16 h-16 mx-auto" /><p>Imej yang anda jana akan muncul di sini.</p></div>
+            <div><StarIcon className="w-16 h-16 mx-auto" /><p>Your generated images will appear here.</p></div>
         </div>
       )}
     </>

@@ -16,7 +16,8 @@ const ApiHealthCheckModal: React.FC<ApiHealthCheckModalProps> = ({ isOpen, onClo
     const [isChecking, setIsChecking] = useState(true);
     const [results, setResults] = useState<HealthCheckResult[] | null>(null);
     const [activeApiKey, setActiveApiKey] = useState<string | null | undefined>(null);
-    const T = getTranslations(language).apiHealthCheckModal;
+    // FIX: Remove `language` argument from `getTranslations` call.
+    const T = getTranslations().apiHealthCheckModal;
 
     const handleHealthCheck = async () => {
         setIsChecking(true);

@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { SendIcon } from '../Icons';
 import Spinner from './Spinner';
-import { type Language } from '../../types';
 import { getTranslations } from '../../services/translations';
+import { type Language } from '../../types';
 
 interface Message {
   role: 'user' | 'model';
@@ -22,7 +22,7 @@ interface ChatInterfaceProps {
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ systemInstruction, placeholder, messages, isLoading, onSendMessage, language }) => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const T = getTranslations(language).common;
+  const T = getTranslations().common;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -57,6 +57,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ systemInstruction, placeh
                 ? 'bg-primary-600 text-white rounded-br-none'
                 : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-bl-none'
             }`}>
+              {/* FIX: Pass language prop */}
               <MarkdownRenderer content={msg.text} language={language} />
             </div>
              {msg.role === 'user' && (

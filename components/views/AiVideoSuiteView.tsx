@@ -4,7 +4,6 @@ import { VideoCombinerView } from './VideoCombinerView';
 import VoiceStudioView from './VoiceStudioView';
 import { ProductReviewView } from './ProductReviewView';
 import Tabs, { type Tab } from '../common/Tabs';
-// FIX: Import Language type.
 import { type BatchProcessorPreset, type User, type Language } from '../../types';
 import BatchProcessorView from './BatchProcessorView';
 
@@ -28,7 +27,6 @@ interface AiVideoSuiteViewProps {
   onCreateVideo: (preset: VideoGenPreset) => void;
   currentUser: User;
   onUserUpdate: (user: User) => void;
-  // FIX: Add language to props interface.
   language: Language;
 }
 
@@ -36,11 +34,11 @@ const AiVideoSuiteView: React.FC<AiVideoSuiteViewProps> = ({ preset, clearPreset
     const [activeTab, setActiveTab] = useState<TabId>('generation');
 
     const tabs: Tab<TabId>[] = [
-        { id: 'generation', label: "Penjanaan Video" },
-        { id: 'storyboard', label: "Papan Cerita Video" },
-        { id: 'batch', label: "Pemprosesan Berkelompok", adminOnly: true },
-        { id: 'combiner', label: "Penggabung Video", adminOnly: true },
-        { id: 'voice', label: "Studio Suara" }
+        { id: 'generation', label: "Video Generation" },
+        { id: 'storyboard', label: "Video Storyboard" },
+        { id: 'batch', label: "Batch Processing", adminOnly: true },
+        { id: 'combiner', label: "Video Combiner", adminOnly: true },
+        { id: 'voice', label: "Voice Studio" }
     ];
 
     useEffect(() => {
@@ -58,7 +56,6 @@ const AiVideoSuiteView: React.FC<AiVideoSuiteViewProps> = ({ preset, clearPreset
     const renderActiveTabContent = () => {
         switch (activeTab) {
             case 'generation':
-                // FIX: Pass 'language' prop to VideoGenerationView.
                 return <VideoGenerationView 
                             preset={preset} 
                             clearPreset={clearPreset} 
@@ -72,19 +69,15 @@ const AiVideoSuiteView: React.FC<AiVideoSuiteViewProps> = ({ preset, clearPreset
                             onCreateVideo={onCreateVideo} 
                             currentUser={currentUser}
                             onUserUpdate={onUserUpdate}
-// FIX: Pass the 'language' prop to ProductReviewView to fix missing prop error.
                             language={language}
                         />;
             case 'batch':
-                return <BatchProcessorView preset={null} clearPreset={() => {}} />;
+                return <BatchProcessorView preset={null} clearPreset={() => {}} language={language} />;
             case 'combiner':
-                // FIX: Pass 'language' prop to VideoCombinerView.
                 return <VideoCombinerView language={language} />;
             case 'voice':
-                // FIX: Passed language prop to VoiceStudioView to provide the required 'language' prop.
                 return <VoiceStudioView language={language} />;
             default:
-                // FIX: Pass 'language' prop to VideoGenerationView.
                 return <VideoGenerationView 
                             preset={preset} 
                             clearPreset={clearPreset} 

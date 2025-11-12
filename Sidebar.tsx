@@ -8,7 +8,8 @@ import { getTranslations } from '../services/translations';
 
 
 const getNavItems = (language: Language): NavItem[] => {
-    const T = getTranslations(language).sidebar;
+    // FIX: Remove the `language` argument from `getTranslations` call to match the function signature.
+    const T = getTranslations().sidebar;
     return [
         { id: 'home', label: T.home, description: T.homeDesc, section: 'main', icon: BookOpenIcon, isSpecial: true },
         { id: 'get-started', label: T.getStarted, section: 'main', icon: GraduationCapIcon },
@@ -37,7 +38,8 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, onLogout, currentUser, isOpen, onClose, language }) => {
   const navItems = getNavItems(language);
-  const T = getTranslations(language).sidebar;
+  // FIX: Remove the `language` argument from `getTranslations` call to match the function signature.
+  const T = getTranslations().sidebar;
 
   const handleItemClick = async (viewId: View | 'logout') => {
     if (viewId === 'logout') {

@@ -22,8 +22,6 @@ const CacheManagerView: React.FC = () => {
   const loadStats = async () => {
     setIsLoading(true);
     try {
-      // FIX: Calculate percentage here to fix the type error.
-      // We get both formatted stats and raw stats to perform the calculation.
       const formattedStats = await getFormattedCacheStats();
       const rawStats = await getCacheStats();
       const maxSizeBytes = MAX_CACHE_SIZE_MB * 1024 * 1024;

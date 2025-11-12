@@ -50,9 +50,9 @@ interface Message {
   text: string;
 }
 
-const ThemeSwitcher: React.FC<{ theme: string; setTheme: (theme: string) => void, language: Language }> = ({ theme, setTheme, language }) => {
+const ThemeSwitcher: React.FC<{ theme: string; setTheme: (theme: string) => void }> = ({ theme, setTheme }) => {
     // FIX: Correctly access translations via `common` key.
-    const T = getTranslations(language).common;
+    const T = getTranslations().common;
     return (
     <button
         onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
@@ -67,9 +67,9 @@ const ThemeSwitcher: React.FC<{ theme: string; setTheme: (theme: string) => void
     </button>
 )};
 
-const NotificationBanner: React.FC<{ message: string; onDismiss: () => void, language: Language }> = ({ message, onDismiss, language }) => {
+const NotificationBanner: React.FC<{ message: string; onDismiss: () => void }> = ({ message, onDismiss }) => {
     // FIX: Correctly access translations via `common` key.
-    const T = getTranslations(language).common;
+    const T = getTranslations().common;
     return (
     <div className="fixed top-16 left-1/2 -translate-x-1/2 w-full max-w-md z-50 p-4">
         <div className="bg-yellow-100 dark:bg-yellow-900/50 border-l-4 border-yellow-500 text-yellow-800 dark:text-yellow-200 p-4 rounded-r-lg shadow-lg flex items-start gap-3 animate-zoomIn">
@@ -91,12 +91,11 @@ interface AssigningTokenModalProps {
   error: string | null;
   scanProgress: { current: number; total: number };
   onRetry: () => void;
-  language: Language;
 }
 
-const AssigningTokenModal: React.FC<AssigningTokenModalProps> = ({ status, error, scanProgress, onRetry, language }) => {
+const AssigningTokenModal: React.FC<AssigningTokenModalProps> = ({ status, error, scanProgress, onRetry }) => {
     // FIX: Correctly access translations via `assigningTokenModal` key.
-    const T = getTranslations(language).assigningTokenModal;
+    const T = getTranslations().assigningTokenModal;
     
     const statusInfo = {
         scanning: {
@@ -151,7 +150,8 @@ const App: React.FC = () => {
   const [isApiKeyLoading, setIsApiKeyLoading] = useState(true);
   const [activeView, setActiveView] = useState<View>('home');
   const [theme, setTheme] = useState('light'); // Default to light, load async
-  const [language, setLanguage] = useState<Language>('ms');
+  // FIX: Add language state management
+  const [language, setLanguage] = useState<Language>('en');
   const [videoGenPreset, setVideoGenPreset] = useState<VideoGenPreset | null>(null);
   const [imageToReEdit, setImageToReEdit] = useState<ImageEditPreset | null>(null);
   const [imageGenPresetPrompt, setImageGenPresetPrompt] = useState<string | null>(null);
@@ -169,7 +169,7 @@ const App: React.FC = () => {
   const [notification, setNotification] = useState<string | null>(null);
   
   // FIX: Correctly access translations via `app` key.
-  const T = getTranslations(language).app;
+  const T = getTranslations().app;
 
   const handleUserUpdate = useCallback((updatedUser: User) => {
     setCurrentUser(updatedUser);
@@ -217,8 +217,9 @@ const App: React.FC = () => {
     const loadSettings = async () => {
         const savedTheme = await loadData<string>('theme');
         if (savedTheme) setTheme(savedTheme);
-        const savedLanguage = await loadData<Language>('language');
-        if (savedLanguage) setLanguage(savedLanguage);
+        // FIX: Load language from storage
+        const savedLang = await loadData<Language>('language');
+        if (savedLang) setLanguage(savedLang);
     };
     loadSettings();
   }, []);
@@ -233,8 +234,9 @@ const App: React.FC = () => {
     saveData('theme', theme);
   }, [theme]);
   
+  // FIX: Add effect to save language changes
   useEffect(() => {
-      saveData('language', language);
+    saveData('language', language);
   }, [language]);
   
   // Effect to listen for events that require user updates
@@ -616,8 +618,10 @@ const App: React.FC = () => {
         // FIX: Add missing 'language' prop
         return <GetStartedView language={language} />;
       case 'ai-text-suite':
+        // FIX: Add missing 'language' prop
         return <AiTextSuiteView currentUser={currentUser!} language={language} />;
       case 'ai-image-suite':
+        // FIX: Add missing 'language' prop
         return <AiImageSuiteView 
                   onCreateVideo={handleCreateVideoFromImage} 
                   onReEdit={handleReEditImage}
@@ -630,6 +634,7 @@ const App: React.FC = () => {
                   language={language}
                 />;
       case 'ai-video-suite':
+        // FIX: Add missing 'language' prop
         return <AiVideoSuiteView 
                   currentUser={currentUser!}
                   preset={videoGenPreset} 
@@ -640,20 +645,22 @@ const App: React.FC = () => {
                   language={language}
                 />;
       case 'ai-prompt-library-suite':
+          // FIX: Add missing 'language' prop
           return <AiPromptLibrarySuiteView onUsePrompt={handleUsePromptInGenerator} language={language} />;
       case 'gallery':
         // FIX: Add missing 'language' prop
         return <GalleryView onCreateVideo={handleCreateVideoFromImage} onReEdit={handleReEditImage} language={language} />;
       case 'settings':
+          // FIX: Add missing 'language' and 'setLanguage' props
           return <SettingsView 
                     currentUser={currentUser!} 
                     // This prop is now obsolete, but kept for compatibility.
                     tempApiKey={null}
                     onUserUpdate={handleUserUpdate} 
-                    language={language}
-                    setLanguage={setLanguage}
                     veoTokenRefreshedAt={veoTokenRefreshedAt}
                     assignTokenProcess={assignTokenProcess}
+                    language={language}
+                    setLanguage={setLanguage}
                  />;
       default:
         // FIX: Add missing 'language' prop
@@ -673,11 +680,11 @@ const App: React.FC = () => {
     return <WelcomeAnimation onAnimationEnd={() => {
         setIsShowingWelcome(false);
         setActiveView('home');
-    }} language={language} />;
+    }} />;
   }
   
   if (!currentUser) {
-    return <LoginPage onLoginSuccess={handleLoginSuccess} language={language} />;
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
   // --- Access Control Logic for Full Version ---
@@ -752,7 +759,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 font-sans">
-      {showAssignModal && <AssigningTokenModal status={assigningStatus} error={autoAssignError} onRetry={retryAssignment} scanProgress={scanProgress} language={language} />}
+      {showAssignModal && <AssigningTokenModal status={assigningStatus} error={autoAssignError} onRetry={retryAssignment} scanProgress={scanProgress} />}
       <Sidebar 
         activeView={activeView} 
         setActiveView={setActiveView} 
@@ -772,7 +779,7 @@ const App: React.FC = () => {
              <LogoIcon className="w-28 text-neutral-800 dark:text-neutral-200" />
           </div>
           <div className="flex items-center gap-2 pr-2">
-              <ThemeSwitcher theme={theme} setTheme={setTheme} language={language} />
+              <ThemeSwitcher theme={theme} setTheme={setTheme} />
                <button
                   onClick={() => setIsLogSidebarOpen(true)}
                   className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
@@ -795,11 +802,10 @@ const App: React.FC = () => {
                 currentUser={currentUser}
                 assignTokenProcess={assignTokenProcess}
                 onUserUpdate={handleUserUpdate}
-                language={language}
               />
           </div>
         </header>
-        {notification && <NotificationBanner message={notification} onDismiss={() => setNotification(null)} language={language} />}
+        {notification && <NotificationBanner message={notification} onDismiss={() => setNotification(null)} />}
         <div className="flex-1 p-4 md:p-8">
           {PageContent}
         </div>
@@ -807,7 +813,6 @@ const App: React.FC = () => {
       <ConsoleLogSidebar 
         isOpen={isLogSidebarOpen}
         onClose={() => setIsLogSidebarOpen(false)}
-        language={language}
       />
     </div>
   );

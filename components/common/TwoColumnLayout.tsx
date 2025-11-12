@@ -1,6 +1,6 @@
 import React from 'react';
-import { type Language } from '../../types';
 import { getTranslations } from '../../services/translations';
+import { type Language } from '../../types';
 
 interface TwoColumnLayoutProps {
   leftPanel: React.ReactNode;
@@ -8,8 +8,8 @@ interface TwoColumnLayoutProps {
   language: Language;
 }
 
-const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({ leftPanel, rightPanel, language }) => {
-  const T = getTranslations(language).common;
+const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({ leftPanel, rightPanel }) => {
+  const T = getTranslations().common;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
       {/* Left Panel: Controls */}

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LibraryView from './LibraryView';
+import PromptViralMyView from './PromptViralMyView';
+import Tabs, { type Tab } from '../common/Tabs';
 import { type Language } from '../../types';
 
 interface AiPromptLibrarySuiteViewProps {
@@ -7,13 +9,39 @@ interface AiPromptLibrarySuiteViewProps {
     language: Language;
 }
 
+type TabId = 'library' | 'viral-my';
+
 const AiPromptLibrarySuiteView: React.FC<AiPromptLibrarySuiteViewProps> = ({ onUsePrompt, language }) => {
+    const [activeTab, setActiveTab] = useState<TabId>('library');
+
+    const tabs: Tab<TabId>[] = [
+        { id: 'library', label: "Prompt Library" },
+        { id: 'viral-my', label: "Viral Prompts (MY)" },
+    ];
+
+    const renderActiveTabContent = () => {
+        switch (activeTab) {
+            case 'library':
+                return <LibraryView onUsePrompt={onUsePrompt} language={language} />;
+            case 'viral-my':
+                // PromptViralMyView does not require a language prop as its content is curated.
+                return <PromptViralMyView onUsePrompt={onUsePrompt} />;
+            default:
+                return <LibraryView onUsePrompt={onUsePrompt} language={language} />;
+        }
+    };
+
     return (
         <div className="h-full flex flex-col">
-            {/* We no longer render Tabs, just the LibraryView directly */}
+            <div className="flex-shrink-0 mb-6 flex justify-center">
+                <Tabs 
+                    tabs={tabs}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
+            </div>
             <div className="flex-1 overflow-y-auto min-h-0">
-                {/* FIX: Pass language prop to LibraryView */}
-                <LibraryView onUsePrompt={onUsePrompt} language={language} />
+                {renderActiveTabContent()}
             </div>
         </div>
     );

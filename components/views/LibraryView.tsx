@@ -83,7 +83,7 @@ const CaseCard: React.FC<CaseCardProps> = ({ caseItem, onUsePrompt }) => {
                     {caseItem.inputImageUrl ? (
                         <img src={caseItem.inputImageUrl} alt="Input" className="w-full aspect-square object-cover rounded-sm"/>
                     ) : (
-                        <div className="w-full aspect-square bg-neutral-100 dark:bg-neutral-800 rounded-sm flex items-center justify-center text-xs text-neutral-400">Tiada Imej Input</div>
+                        <div className="w-full aspect-square bg-neutral-100 dark:bg-neutral-800 rounded-sm flex items-center justify-center text-xs text-neutral-400">No Input Image</div>
                     )}
                 </div>
                 <div className="p-1">
@@ -91,7 +91,7 @@ const CaseCard: React.FC<CaseCardProps> = ({ caseItem, onUsePrompt }) => {
                     {caseItem.outputImageUrl ? (
                         <img src={caseItem.outputImageUrl} alt="Output" className="w-full aspect-square object-cover rounded-sm"/>
                     ) : (
-                        <div className="w-full aspect-square bg-neutral-100 dark:bg-neutral-800 rounded-sm flex items-center justify-center text-xs text-neutral-400">Tiada Imej Output</div>
+                        <div className="w-full aspect-square bg-neutral-100 dark:bg-neutral-800 rounded-sm flex items-center justify-center text-xs text-neutral-400">No Output Image</div>
                     )}
                 </div>
             </div>
@@ -115,7 +115,7 @@ const CaseCard: React.FC<CaseCardProps> = ({ caseItem, onUsePrompt }) => {
                         className="absolute top-2 right-2 flex items-center gap-1 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-1 px-2 rounded-md hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-xs opacity-0 group-hover:opacity-100"
                     >
                         {copied ? <CheckCircleIcon className="w-3 h-3 text-green-500" /> : <ClipboardIcon className="w-3 h-3" />}
-                        {copied ? 'Disalin!' : 'Salin'}
+                        {copied ? 'Copied!' : 'Copy'}
                     </button>
                 </div>
             </div>
@@ -124,7 +124,7 @@ const CaseCard: React.FC<CaseCardProps> = ({ caseItem, onUsePrompt }) => {
                 onClick={() => onUsePrompt(caseItem.prompt)}
                 className="w-full mt-auto bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors"
             >
-                Guna Prompt Ini
+                Use This Prompt
             </button>
         </div>
     );
@@ -149,14 +149,14 @@ const LibraryView: React.FC<LibraryViewProps> = ({ onUsePrompt }) => {
             try {
                 const response = await fetch(GITHUB_RAW_URL);
                 if (!response.ok) {
-                    throw new Error(`Gagal mengambil: ${response.status} ${response.statusText}`);
+                    throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
                 }
                 const markdown = await response.text();
                 const parsedCases = parseMarkdown(markdown);
                 setCases(parsedCases);
             } catch (err) {
-                const message = err instanceof Error ? err.message : 'Ralat tidak diketahui berlaku';
-                setError(`Tidak dapat memuatkan perpustakaan prompt. ${message}`);
+                const message = err instanceof Error ? err.message : 'An unknown error occurred';
+                setError(`Could not load prompt library. ${message}`);
                 console.error(err);
             } finally {
                 setIsLoading(false);
@@ -180,12 +180,12 @@ const LibraryView: React.FC<LibraryViewProps> = ({ onUsePrompt }) => {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold sm:text-3xl">Perpustakaan Prompt</h1>
-                    <p className="text-neutral-500 dark:text-neutral-400 mt-1">Koleksi prompt dan kes pilihan untuk memberi inspirasi kepada ciptaan anda.</p>
+                    <h1 className="text-2xl font-bold sm:text-3xl">Prompt Library</h1>
+                    <p className="text-neutral-500 dark:text-neutral-400 mt-1">A curated collection of prompts and cases to inspire your creations.</p>
                 </div>
                 <input
                     type="text"
-                    placeholder="Cari perpustakaan..."
+                    placeholder="Search library..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full sm:w-64 bg-white dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
@@ -200,7 +200,7 @@ const LibraryView: React.FC<LibraryViewProps> = ({ onUsePrompt }) => {
 
             {error && (
                 <div className="text-center py-20 text-red-500 dark:text-red-400">
-                    <p className="font-semibold">Ralat Memuatkan Perpustakaan</p>
+                    <p className="font-semibold">Error Loading Library</p>
                     <p className="text-sm">{error}</p>
                 </div>
             )}
@@ -215,8 +215,8 @@ const LibraryView: React.FC<LibraryViewProps> = ({ onUsePrompt }) => {
                 ) : (
                     <div className="text-center py-20 text-neutral-500 dark:text-neutral-400">
                         <LibraryIcon className="w-16 h-16 mx-auto mb-4" />
-                        <p className="font-semibold">Tiada Hasil Ditemui</p>
-                        <p className="text-sm">{searchTerm ? `Tiada kes sepadan dengan carian anda untuk "${searchTerm}".` : "Perpustakaan ini kini kosong."}</p>
+                        <p className="font-semibold">No Results Found</p>
+                        <p className="text-sm">{searchTerm ? `No cases match your search for "${searchTerm}".` : "This library is currently empty."}</p>
                     </div>
                 )
             )}

@@ -17,32 +17,31 @@ import { handleApiError } from '../../services/errorHandler';
 import { editOrComposeWithImagen } from '../../services/imagenV3Service';
 
 
-const vibeOptions = ["Tiada", "Rawak", "Bertenaga & Seronok", "Sinematik & Epik", "Moden & Bersih", "Semula Jadi & Organik", "Teknologi & Futuristik"];
+const vibeOptions = ["None", "Random", "Energetic & Fun", "Cinematic & Epic", "Modern & Clean", "Natural & Organic", "Tech & Futuristic"];
 const backgroundVibes = [
-  "Tiada", "Rawak", "Kafe Estetik", "Perpustakaan Kuno", "Pasar Malam Asia", "Taman Musim Luruh", "Vila Bali", "Pesta Pantai Malam", "Gurun Bohemian",
-  "Rumah Hijau Botani", "Studio Tarian Klasik", "Perpustakaan Klasik", "Terumbu Karang", "Dapur Desa", "Dek Kapal Pesiar", "Bandar Cyberpunk", "Bilik Takhta Fantasi",
-  "Taman Bunga", "Makmal Futuristik", "Kolam Air Panas", "Gelanggang Ais", "Loteng Industri",
-  "Tempatan – Kopitiam Estetik", "Tempatan – Rumah Buluh (Gaya Kampung)", "Tempatan – Ladang Teh Cameron Highlands", "Tempatan – Dataran Merdeka",
-  "Tempatan – Jalan Warisan Melaka", "Tempatan – Rumah Kampung", "Tempatan – Pantai Langkawi", "Tempatan – Gerai Mamak (Suasana Malam)", "Tempatan – Pasar Malam",
-  "Tempatan – Seni Jalanan Penang", "Tempatan – Pemandangan Menara Berkembar Petronas", "Tempatan – Jambatan Putrajaya", "Tempatan – Resort Hutan Hujan", "Tempatan – Sawah Padi",
-  "Tempatan – Kopitiam Jalanan", "Tempatan – Hangar Lapangan Terbang Subang", "Apartmen Mewah", "Lobi Hotel Mewah", "Hutan Ajaib", "Teres Vila Mediterranean",
-  "Studio Minimalis", "Galeri Seni Moden", "Studio Tarian Moden", "Ruang Kerja Moden", "Dek Pemerhatian Gunung", "Gelanggang Bola Keranjang Luar", "Dalaman Istana",
-  "Jalan Paris", "Langit Impian Pastel", "Dapur Profesional", "Denai Hutan Hujan", "Bar Atas Bumbung", "Dalaman Scandinavia", "Puncak Pencakar Langit", "Latar Angkasa / Sci-Fi",
-  "Bar Speakeasy", "Garaj Kereta Sukan", "Atas Bumbung Senja", "Pantai Tropika", "Gaya Bandar (Makan)", "Stesen Kereta Api Vintaj", "Taman Zen"];
+  "None", "Random", "Aesthetic Cafe", "Ancient Library", "Asian Night Market", "Autumn Park", "Bali Villa", "Beach Party at Night", "Bohemian Desert",
+  "Botanical Greenhouse", "Classic Dance Studio", "Classic Library", "Coral Reef", "Cottage Kitchen", "Cruise Ship Deck", "Cyberpunk City", "Fantasy Throne Room",
+  "Flower Garden", "Futuristic Lab", "Hot Spring", "Ice Rink", "Industrial Loft",
+  "Local – Aesthetic Kopitiam", "Local – Bamboo House (Kampung Style)", "Local – Cameron Highlands Tea Plantation", "Local – Dataran Merdeka",
+  "Local – Melaka Heritage Street", "Local – Kampung House", "Local – Langkawi Beach", "Local – Mamak Stall (Night Scene)", "Local – Night Market", "Local – Penang Street Art", "Local – Petronas Twin Towers View", "Local – Putrajaya Bridge", "Local – Rainforest Resort", "Local – Rice Paddy Field",
+  "Local – Street-side Kopitiam", "Local – Subang Airport Hangar", "Luxury Apartment", "Luxury Hotel Lobby", "Magical Forest", "Mediterranean Villa Terrace",
+  "Minimalist Studio", "Modern Art Gallery", "Modern Dance Studio", "Modern Workspace", "Mountain View Deck", "Outdoor Basketball Court", "Palace Interior",
+  "Parisian Street", "Pastel Dreamscape", "Professional Kitchen", "Rainforest Trail", "Rooftop Bar", "Scandinavian Interior", "Skyscraper Summit", "Outer Space / Sci-Fi",
+  "Speakeasy Bar", "Sports Car Garage", "Sunset Rooftop", "Tropical Beach", "Urban-style (Dining)", "Vintage Train Station", "Flower Garden"];
 
 
-const lightingOptions = ["Tiada", "Rawak", "Lampu Studio", "Dramatik", "Cahaya Semula Jadi", "Neon", "Waktu Keemasan", "Cahaya Siang Lembut"];
-const contentTypeOptions = ["Tiada", "Rawak", "Jualan Keras", "Jualan Lembut", "Bercerita", "Masalah/Penyelesaian", "ASMR / Sensori", "Buka Kotak", "Pendidikan", "Testimoni"];
-const languages = ["English", "Bahasa Malaysia"];
-const styleOptions = ["Tiada", "Rawak", "Realisme", "Fotorealistik", "Sinematik", "Anime", "Vintaj", "Animasi 3D", "Cat Air", "Claymation"];
-const cameraOptions = ["Tiada", "Rawak", "Perincian / Makro", "Rakaman Dekat", "Rakaman Sederhana Dekat", "Sederhana / Separuh Badan", "Tiga Suku", "Badan Penuh", "Flatlay", "Rakaman Lebar", "Rakaman Sederhana", "Rakaman Jauh", "Sudut Belanda", "Sudut Rendah", "Sudut Tinggi", "Rakaman Atas"];
-const compositionOptions = ["Tiada", "Rawak", "Peraturan Pertiga", "Garis Panduan", "Simetri", "Nisbah Keemasan", "Tengah", "Tidak Simetri"];
-const lensTypeOptions = ["Tiada", "Rawak", "Lensa Sudut Lebar", "Lensa Telefoto", "Lensa Mata Ikan", "Lensa Makro", "Lensa 50mm", "Lensa 85mm"];
-const filmSimOptions = ["Tiada", "Rawak", "Fujifilm Velvia", "Kodak Portra 400", "Kodachrome Sinematik", "Polaroid Vintaj", "Ilford HP5 (B&W)"];
+const lightingOptions = ["None", "Random", "Studio Light", "Dramatic", "Natural Light", "Neon", "Golden Hour", "Soft Daylight"];
+const contentTypeOptions = ["None", "Random", "Hard-sell", "Soft-sell", "Storytelling", "Problem/Solution", "ASMR / Sensory", "Unboxing", "Educational", "Testimonial"];
+const languages = ["English", "Malay"];
+const styleOptions = ["None", "Random", "Realism", "Photorealistic", "Cinematic", "Anime", "Vintage", "3D Animation", "Watercolor", "Claymation"];
+const cameraOptions = ["None", "Random", "Detail / Macro", "Close-up", "Medium Close-up", "Medium / Half Body", "Three-Quarter", "Full Body", "Flatlay", "Wide Shot", "Medium Shot", "Long Shot", "Dutch Angle", "Low Angle", "High Angle", "Overhead Shot"];
+const compositionOptions = ["None", "Random", "Rule of Thirds", "Leading Lines", "Symmetry", "Golden Ratio", "Centered", "Asymmetrical"];
+const lensTypeOptions = ["None", "Random", "Wide-Angle Lens", "Telephoto Lens", "Fisheye Lens", "Macro Lens", "50mm Lens", "85mm Lens"];
+const filmSimOptions = ["None", "Random", "Fujifilm Velvia", "Kodak Portra 400", "Cinematic Kodachrome", "Vintage Polaroid", "Ilford HP5 (B&W)"];
 const effectOptions = [
-  "Tiada", "Rawak", "Cahaya Bokeh", "Asap Berwarna", "Konfeti", "Zarah Debu", "Api", "Bunga Api", "Terapung di Air", "Kabus / Kabut",
-  "Glitter", "Kilauan Emas", "Silau Lensa", "Jejak Cahaya", "Debu Ajaib", "Letupan Serbuk", "Titisan Hujan", "Cahaya Pelangi",
-  "Salji", "Jejak Bunga Api", "Sinar Matahari", "Kilat Guruh", "Buih Bawah Air", "Percikan Air", "Gerakan Angin Kabur"];
+  "None", "Random", "Bokeh Lights", "Colored Smoke", "Confetti", "Dust Particles", "Fire", "Fireworks", "Floating in Water", "Fog / Mist",
+  "Glitter", "Gold Sparkles", "Lens Flare", "Light Trails", "Magic Dust", "Powder Explosion", "Raindrops", "Rainbow Flares",
+  "Snow", "Sparkler Trails", "Sunbeams", "Thunder Lightning", "Underwater Bubbles", "Water Splash", "Wind Motion Blur"];
 
 
 interface VideoGenPreset {
@@ -86,7 +85,8 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
   const [selectedBackgroundVibe, setSelectedBackgroundVibe] = useState<string>(backgroundVibes[0]);
   const [selectedLighting, setSelectedLighting] = useState<string>(lightingOptions[0]);
   const [selectedContentType, setSelectedContentType] = useState<string>(contentTypeOptions[0]);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("Bahasa Malaysia");
+  // FIX: Initialize with a value that matches the Language type
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(language === 'ms' ? 'Malay' : 'English');
   const [storyboard, setStoryboard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [storyboardError, setStoryboardError] = useState<string | null>(null);
@@ -122,21 +122,22 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
   const [faceImageUploadKey, setFaceImageUploadKey] = useState(Date.now() + 1);
 
   // New creative direction states
-  const [style, setStyle] = useState('Rawak');
-  const [camera, setCamera] = useState('Rawak');
-  const [composition, setComposition] = useState('Rawak');
-  const [lensType, setLensType] = useState('Rawak');
-  const [filmSim, setFilmSim] = useState('Rawak');
-  const [effect, setEffect] = useState('Tiada');
+  const [style, setStyle] = useState('Random');
+  const [camera, setCamera] = useState('Random');
+  const [composition, setComposition] = useState('Random');
+  const [lensType, setLensType] = useState('Random');
+  const [filmSim, setFilmSim] = useState('Random');
+  const [effect, setEffect] = useState('None');
   const [creativityLevel, setCreativityLevel] = useState(5);
 
   // New video generation settings state
   const videoModel = MODELS.videoGenerationDefault;
   const [videoAspectRatio, setVideoAspectRatio] = useState('9:16');
   const [videoResolution, setVideoResolution] = useState('720p');
-  const [videoLanguage, setVideoLanguage] = useState<string>("Bahasa Malaysia");
+  // FIX: Initialize with a value that matches the Language type
+  const [videoLanguage, setVideoLanguage] = useState<string>(language === 'ms' ? 'Malay' : 'English');
 
-  const aivoiceoverAlert = "Sila ambil perhatian: Bahasa suara latar mungkin tidak konsisten. Jika anda tidak berpuas hati, anda boleh menjana semula video secara individu menggunakan butang 'Cipta Video' pada setiap babak.";
+  const aivoiceoverAlert = "Please note: Voiceover language may be inconsistent. If you are not satisfied, you can regenerate the video individually using the 'Create Video' button on each scene.";
 
 
   useEffect(() => {
@@ -193,6 +194,13 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
     videoAspectRatio, videoResolution, videoLanguage
   ]);
 
+  useEffect(() => {
+    // FIX: Update language state when the prop changes
+    const newLang = language === 'ms' ? 'Malay' : 'English';
+    setSelectedLanguage(newLang);
+    setVideoLanguage(newLang);
+  }, [language]);
+
   const generatedVideosRef = useRef(generatedVideos);
   useEffect(() => {
       generatedVideosRef.current = generatedVideos;
@@ -238,7 +246,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
   const handleGenerate = async () => {
     // FIX: Comparison now correctly uses 'Yes' to match the state's type.
     if ((includeModel === 'No' && !productImage) || (includeModel === 'Yes' && (!faceImage || !productImage)) || !productDesc) {
-      setStoryboardError("Sila muat naik imej yang diperlukan dan berikan penerangan produk.");
+      setStoryboardError("Please upload the required images and provide a product description.");
       return;
     }
     setIsLoading(true);
@@ -255,7 +263,6 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
 
     const prompt = getProductReviewStoryboardPrompt({
       productDesc,
-      selectedLanguage,
       selectedVibe,
       selectedBackgroundVibe,
       selectedContentType,
@@ -285,7 +292,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
 
       await addHistoryItem({
         type: 'Storyboard',
-        prompt: `Ulasan Produk: ${productDesc.substring(0, 50)}...`,
+        prompt: `Product Review: ${productDesc.substring(0, 50)}...`,
         result: result,
       });
       
@@ -304,7 +311,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
         const updatedScenes = [...parsedScenes];
         updatedScenes[index] = newText;
 
-        const isMalay = selectedLanguage === 'Bahasa Malaysia';
+        const isMalay = selectedLanguage === 'Malay';
         const sceneTitle = isMalay ? 'Babak' : 'Scene';
         
         // This regex will find all scene titles in the original storyboard.
@@ -351,10 +358,10 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
         includeModel: includeModel,
     });
     
-    const imagesToCompose: { base64: string, mimeType: string, category: string, caption: string }[] = [{ ...productImage, category: 'MEDIA_CATEGORY_SUBJECT', caption: 'produk' }];
+    const imagesToCompose: { base64: string, mimeType: string, category: string, caption: string }[] = [{ ...productImage, category: 'MEDIA_CATEGORY_SUBJECT', caption: 'product' }];
     // FIX: Comparison now correctly uses 'Yes' to match the state's type.
     if (includeModel === 'Yes' && faceImage) {
-      imagesToCompose.push({ ...faceImage, category: 'MEDIA_CATEGORY_SUBJECT', caption: 'wajah model' });
+      imagesToCompose.push({ ...faceImage, category: 'MEDIA_CATEGORY_SUBJECT', caption: 'model face' });
     }
 
     try {
@@ -366,10 +373,10 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
         const imageBase64 = result.imagePanels?.[0]?.generatedImages?.[0]?.encodedImage;
 
         if (!imageBase64) {
-            throw new Error("AI tidak mengembalikan imej. Sila cuba prompt yang berbeza.");
+            throw new Error("The AI did not return an image. Please try a different prompt.");
         }
         
-        await addHistoryItem({ type: 'Image', prompt: `Babak Papan Cerita ${index + 1}: ${parsedScenes[index].substring(0, 50)}...`, result: imageBase64 });
+        await addHistoryItem({ type: 'Image', prompt: `Storyboard Scene ${index + 1}: ${parsedScenes[index].substring(0, 50)}...`, result: imageBase64 });
 
         const updateResult = await incrementImageUsage(currentUser);
         if (updateResult.success && updateResult.user) {
@@ -421,17 +428,17 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                 base64: baseImage, 
                 mimeType: 'image/png', 
                 category: 'MEDIA_CATEGORY_SUBJECT', 
-                caption: 'imej untuk disunting' 
+                caption: 'image to edit' 
             }],
             config: { aspectRatio: '1:1' }
         });
         const imageBase64 = result.imagePanels?.[0]?.generatedImages?.[0]?.encodedImage;
 
         if (!imageBase64) {
-            throw new Error("AI tidak mengembalikan imej yang disunting. Sila cuba prompt yang berbeza.");
+            throw new Error("The AI did not return an edited image. Please try a different prompt.");
         }
         
-        await addHistoryItem({ type: 'Image', prompt: `Babak Papan Cerita Disunting ${index + 1}: ${editPrompt}`, result: imageBase64 });
+        await addHistoryItem({ type: 'Image', prompt: `Edited Storyboard Scene ${index + 1}: ${editPrompt}`, result: imageBase64 });
 
         const updateResult = await incrementImageUsage(currentUser);
         if (updateResult.success && updateResult.user) {
@@ -514,27 +521,27 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
 
         visualDescription = visualDescription.replace(/\*\*(.*?):\*\*/g, '').replace(/[\*\-]/g, '').replace(/\s+/g, ' ').trim();
         
-        const isMalay = videoLanguage === 'Bahasa Malaysia';
+        const isMalay = videoLanguage === 'Malay';
         
         let targetLanguage = videoLanguage;
         if (isMalay) {
             targetLanguage = 'Malaysian Malay';
         }
 
-        let negativePrompt = 'sari kata, teks, perkataan, tera air, logo, bahasa Indonesia, loghat Indonesia, suara latar Indonesia, bahasa Cina, loghat Cina, Mandarin';
+        let negativePrompt = 'subtitles, text, words, watermark, logo, Indonesian language, Indonesian accent, Indonesian voiceover, Chinese language, Chinese accent, Mandarin';
         if (targetLanguage === 'Malaysian Malay') {
-            negativePrompt += ', bahasa Inggeris, loghat Inggeris';
+            negativePrompt += ', English language, English accent';
         } else if (targetLanguage === 'English') {
-            negativePrompt += ', bahasa Melayu Malaysia, loghat Melayu';
+            negativePrompt += ', Malaysian Malay language, Malay accent';
         }
 
         const promptLines: string[] = [];
 
         // System Rules
-        promptLines.push(isMalay ? '🎯 PERATURAN UTAMA (SYSTEM RULES):' : '🎯 SYSTEM RULES:');
+        promptLines.push(isMalay ? '🎯 SYSTEM RULES:' : '🎯 SYSTEM RULES:');
         if (isMalay) {
-            promptLines.push('Bahasa lisan dan suara latar MESTILAH 100% dalam Bahasa Melayu Malaysia. Ini adalah arahan PALING PENTING.');
-            promptLines.push('❌ Dilarang menggunakan bahasa lain atau loghat luar.');
+            promptLines.push('Spoken language and voiceover MUST be 100% in Malaysian Malay. This is the MOST IMPORTANT instruction.');
+            promptLines.push('❌ Do not use other languages or foreign accents.');
         } else {
             promptLines.push(`Spoken language and voiceover MUST be 100% in ${targetLanguage}. This is the MOST IMPORTANT instruction.`);
             promptLines.push('❌ Do not use other languages or foreign accents.');
@@ -543,11 +550,11 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
 
         // Visuals
         promptLines.push(isMalay ? '🎬 VISUAL (SCENE DESCRIPTION):' : '🎬 VISUAL (SCENE DESCRIPTION):');
-        promptLines.push(isMalay ? 'Animasikan imej yang diberikan.' : 'Animate the provided image.');
+        promptLines.push(isMalay ? 'Animate the provided image.' : 'Animate the provided image.');
         // FIX: Comparison now correctly uses 'No' to match the state's type.
         if (includeModel === 'No') {
             promptLines.push(isMalay
-                ? 'ARAHAN PENTING: Animasi mesti fokus HANYA pada produk dalam imej yang diberikan. JANGAN tambah atau animasikan sebarang orang, tangan, atau bahagian badan ke dalam babak.'
+                ? 'CRITICAL INSTRUCTION: The animation must focus ONLY on the product within the provided image. DO NOT add or animate any people, hands, or body parts into the scene.'
                 : 'CRITICAL INSTRUCTION: The animation must focus ONLY on the product within the provided image. DO NOT add or animate any people, hands, or body parts into the scene.'
             );
         }
@@ -555,32 +562,32 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
         promptLines.push('\n---');
 
         // Creative Style
-        promptLines.push(isMalay ? '🎨 GAYA KREATIF (CREATIVE STYLE):' : '🎨 CREATIVE STYLE:');
-        promptLines.push(`• ${isMalay ? 'Gaya artistik' : 'Artistic style'}: ${style === 'Rawak' ? (isMalay ? 'fotorealistik' : 'photorealistic') : style}`);
-        promptLines.push(`• ${isMalay ? 'Pencahayaan' : 'Lighting'}: ${selectedLighting === 'Rawak' ? (isMalay ? 'semula jadi' : 'natural') : selectedLighting}`);
-        promptLines.push(`• ${isMalay ? 'Kamera' : 'Camera'}: ${camera === 'Rawak' ? (isMalay ? 'shot sederhana' : 'medium shot') : camera}`);
+        promptLines.push(isMalay ? '🎨 CREATIVE STYLE:' : '🎨 CREATIVE STYLE:');
+        promptLines.push(`• ${isMalay ? 'Artistic style' : 'Artistic style'}: ${style === 'Random' ? (isMalay ? 'photorealistic' : 'photorealistic') : style}`);
+        promptLines.push(`• ${isMalay ? 'Lighting' : 'Lighting'}: ${selectedLighting === 'Random' ? (isMalay ? 'natural' : 'natural') : selectedLighting}`);
+        promptLines.push(`• ${isMalay ? 'Camera' : 'Camera'}: ${camera === 'Random' ? (isMalay ? 'medium shot' : 'medium shot') : camera}`);
         promptLines.push('\n---');
 
         // Audio
         // FIX: Comparison now correctly uses 'Yes' to match the state's type.
         if (includeVoiceover === 'Yes' && voiceover) {
             promptLines.push(isMalay ? '🔊 AUDIO (DIALOGUE):' : '🔊 AUDIO (DIALOGUE):');
-            promptLines.push(isMalay ? `Gunakan hanya dialog berikut dalam Bahasa Melayu Malaysia:` : `Use only the following dialogue in ${targetLanguage}:`);
+            promptLines.push(isMalay ? `Use only the following dialogue in Malaysian Malay:` : `Use only the following dialogue in ${targetLanguage}:`);
             promptLines.push(`"${voiceover}"`);
-            promptLines.push(isMalay ? 'ARAHAN PENTING: Sebutkan skrip ini dengan lengkap, perkataan demi perkataan. Jangan ubah atau ringkaskan ayat.' : 'CRITICAL INSTRUCTION: Speak this script completely, word for word. Do not change or shorten the sentences.');
-            promptLines.push(isMalay ? `Nada suara: mesra, yakin dan bersemangat.` : 'Voice tone: friendly, confident, and enthusiastic.');
+            promptLines.push(isMalay ? 'CRITICAL INSTRUCTION: Speak this script completely, word for word. Do not change or shorten the sentences.' : 'CRITICAL INSTRUCTION: Speak this script completely, word for word. Do not change or shorten the sentences.');
+            promptLines.push(isMalay ? `Voice tone: friendly, confident, and enthusiastic.` : 'Voice tone: friendly, confident, and enthusiastic.');
             promptLines.push('\n---');
         }
 
         // Additional Reminders
-        promptLines.push(isMalay ? '🚫 PERINGATAN TAMBAHAN:' : '🚫 ADDITIONAL REMINDERS:');
+        promptLines.push(isMalay ? '🚫 ADDITIONAL REMINDERS:' : '🚫 ADDITIONAL REMINDERS:');
         // FIX: Comparison now correctly uses 'Yes' to match the state's type.
         if (includeCaptions === 'Yes' && caption) {
-            promptLines.push(isMalay ? `• Paparkan teks pada skrin ini sahaja: "${caption}".` : `• Display this exact on-screen text: "${caption}".`);
+            promptLines.push(isMalay ? `• Display this exact on-screen text: "${caption}".` : `• Display this exact on-screen text: "${caption}".`);
         } else {
-            promptLines.push(isMalay ? '• Jangan sertakan teks, kapsyen, atau sari kata pada skrin.' : '• Do not include any on-screen text, captions, or subtitles.');
+            promptLines.push(isMalay ? '• Do not include any on-screen text, captions, or subtitles.' : '• Do not include any on-screen text, captions, or subtitles.');
         }
-        promptLines.push(isMalay ? '• Jangan ubah bahasa.' : '• Do not change the language.');
+        promptLines.push(isMalay ? '• Do not change the language.' : '• Do not change the language.');
 
         const fullPrompt = promptLines.join('\n');
         
@@ -623,17 +630,17 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                 return newNames;
             });
 
-            addHistoryItem({ type: 'Video', prompt: `Video Babak ${index + 1}`, result: videoFile }).then(async () => {
+            addHistoryItem({ type: 'Video', prompt: `Video Scene ${index + 1}`, result: videoFile }).then(async () => {
                 const updateResult = await incrementVideoUsage(currentUser);
                 if (updateResult.success && updateResult.user) {
                     onUserUpdate(updateResult.user);
                 }
             }).catch(err => {
-                console.error("Pemprosesan video latar belakang gagal:", err);
+                console.error("Background video processing failed:", err);
                 addLogEntry({
                     model: videoModel,
-                    prompt: `Simpan latar belakang untuk Babak ${index + 1}`,
-                    output: `Gagal menyimpan video ke sejarah/galeri. Ralat: ${err.message}`,
+                    prompt: `Background save for Scene ${index + 1}`,
+                    output: `Failed to save video to history/gallery. Error: ${err.message}`,
                     tokenCount: 0,
                     status: 'Error',
                     error: err.message
@@ -682,7 +689,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
     try {
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Muat turun gagal: ${response.statusText}`);
+            throw new Error(`Download failed: ${response.statusText}`);
         }
         const blob = await response.blob();
         const objectUrl = URL.createObjectURL(blob);
@@ -694,8 +701,8 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
         document.body.removeChild(link);
         URL.revokeObjectURL(objectUrl);
     } catch (error) {
-        console.error("Ralat muat turun:", error);
-        alert("Gagal memuat turun video.");
+        console.error("Download error:", error);
+        alert("Failed to download video.");
     } finally {
         setDownloadingVideoIndex(null);
     }
@@ -709,7 +716,10 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
     setSelectedBackgroundVibe(backgroundVibes[0]);
     setSelectedLighting(lightingOptions[0]);
     setSelectedContentType(contentTypeOptions[0]);
-    setSelectedLanguage("Bahasa Malaysia");
+    // FIX: Correctly reset language based on prop
+    const newLang = language === 'ms' ? 'Malay' : 'English';
+    setSelectedLanguage(newLang);
+    setVideoLanguage(newLang);
     setStoryboard(null);
     setStoryboardError(null);
     // FIX: State updates now use 'No'/'Yes' to match type definitions.
@@ -722,12 +732,12 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
     setImageGenerationErrors(Array(4).fill(null));
     setProductImageUploadKey(Date.now());
     setFaceImageUploadKey(Date.now() + 1);
-    setStyle('Rawak');
-    setCamera('Rawak');
-    setComposition('Rawak');
-    setLensType('Rawak');
-    setFilmSim('Rawak');
-    setEffect('Tiada');
+    setStyle('Random');
+    setCamera('Random');
+    setComposition('Random');
+    setLensType('Random');
+    setFilmSim('Random');
+    setEffect('None');
     setCreativityLevel(5);
 
     setIsGeneratingVideos(false);
@@ -741,7 +751,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
     isVideoCancelledRef.current = false;
     
     sessionStorage.removeItem(SESSION_KEY);
-  }, []);
+  }, [language]);
   
   const step2Disabled = parsedScenes.length === 0;
   const step3Disabled = !generatedImages.some(img => img);
@@ -766,7 +776,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
         return {
             id: `scene-${currentPreviewItemInFilteredList.item.index}`,
             type: 'Image' as const,
-            prompt: parsedScenes[currentPreviewItemInFilteredList.item.index] || `Babak ${currentPreviewItemInFilteredList.item.index + 1}`,
+            prompt: parsedScenes[currentPreviewItemInFilteredList.item.index] || `Scene ${currentPreviewItemInFilteredList.item.index + 1}`,
             result: currentPreviewItemInFilteredList.item.img,
             timestamp: Date.now()
         };
@@ -793,20 +803,20 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">Papan Cerita Video AI</h1>
-        <p className="text-neutral-500 dark:text-neutral-400 mt-1">Aliran kerja 3-langkah yang berkuasa untuk menjana video ulasan produk 4-babak yang lengkap, dari skrip hingga klip akhir.</p>
+        <h1 className="text-2xl font-bold sm:text-3xl">AI Video Storyboard</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 mt-1">A powerful 3-step workflow to generate a complete 4-scene product review video, from script to final clips.</p>
       </div>
 
       {/* Step 1: Inputs and Storyboard Generation */}
       <div className="bg-white dark:bg-neutral-900 p-6 rounded-lg shadow-sm">
-        <h2 className="text-xl font-bold mb-1">Langkah 1: Jana Skrip & Papan Cerita</h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Berikan butiran produk dan arahan kreatif untuk menjana skrip video 4-babak.</p>
+        <h2 className="text-xl font-bold mb-1">Step 1: Generate Script & Storyboard</h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Provide product details and creative direction to generate a 4-scene video script.</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column: Inputs */}
           <div className="space-y-4">
             <div>
-                <h3 className="text-lg font-semibold mb-2">Sertakan Model?</h3>
+                <h3 className="text-lg font-semibold mb-2">Include a Model?</h3>
                 <select 
                     value={includeModel} 
                     // FIX: Use 'Yes'/'No' for value and update onChange handler to match state type.
@@ -820,77 +830,77 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                     }} 
                     className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3"
                 >
-                    <option value="No">Tidak, Produk Sahaja</option>
-                    <option value="Yes">Ya, Dengan Model</option>
+                    <option value="No">No, Product Only</option>
+                    <option value="Yes">Yes, With Model</option>
                 </select>
             </div>
             <div>
-                <h3 className="text-lg font-semibold mb-2">Muat Naik Aset Anda</h3>
+                <h3 className="text-lg font-semibold mb-2">Upload Your Assets</h3>
                 <div className={`grid grid-cols-1 ${includeModel === 'Yes' ? 'sm:grid-cols-2' : ''} gap-4`}>
                     {/* FIX: Add missing 'language' prop to ImageUpload component. */}
-                    <ImageUpload key={productImageUploadKey} id="review-product-upload" onImageUpload={handleProductImageUpload} onRemove={handleRemoveProductImage} title="Foto Produk" language={language} />
+                    <ImageUpload key={productImageUploadKey} id="review-product-upload" onImageUpload={handleProductImageUpload} onRemove={handleRemoveProductImage} title="Product Photo" language={language} />
                     {includeModel === 'Yes' && (
                         /* FIX: Add missing 'language' prop to ImageUpload component. */
-                        <ImageUpload key={faceImageUploadKey} id="review-face-upload" onImageUpload={handleFaceImageUpload} onRemove={handleRemoveFaceImage} title="Foto Wajah Model" language={language} />
+                        <ImageUpload key={faceImageUploadKey} id="review-face-upload" onImageUpload={handleFaceImageUpload} onRemove={handleRemoveFaceImage} title="Model's Face Photo" language={language} />
                     )}
                 </div>
             </div>
              <div>
-                <h3 className="text-lg font-semibold mb-2">Penerangan Produk & Poin Jualan Utama</h3>
-                <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} placeholder='cth., "Ini adalah serum anti-penuaan baru. Poin utama: mengurangkan kedutan dalam 7 hari, mengandungi asid hialuronik, sesuai untuk kulit sensitif..."' rows={4} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
+                <h3 className="text-lg font-semibold mb-2">Product Description & Key Selling Points</h3>
+                <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} placeholder="e.g., 'This is a new anti-aging serum. Key points: reduces wrinkles in 7 days, contains hyaluronic acid, suitable for sensitive skin...'" rows={4} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition" />
             </div>
              <div>
-                <h3 className="text-lg font-semibold mb-2">Arahan Kreatif untuk Imej</h3>
+                <h3 className="text-lg font-semibold mb-2">Creative Direction for Images</h3>
                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                     {/* Row 1 */}
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Jenis Kandungan</label><select value={selectedContentType} onChange={e => setSelectedContentType(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{contentTypeOptions.map(o=><option key={o}>{o}</option>)}</select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Bahasa Output</label><select value={selectedLanguage} onChange={e => { const newLang = e.target.value; setSelectedLanguage(newLang); setVideoLanguage(newLang); }} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{languages.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Content Type</label><select value={selectedContentType} onChange={e => setSelectedContentType(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{contentTypeOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Output Language</label><select value={selectedLanguage} onChange={e => { const newLang = e.target.value; setSelectedLanguage(newLang); setVideoLanguage(newLang); }} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{languages.map(o=><option key={o}>{o}</option>)}</select></div>
                     {/* FIX: Use 'Yes'/'No' for value and update onChange handler to match state type. */}
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Sertakan Skrip Suara Latar?</label><select value={includeVoiceover} onChange={e => setIncludeVoiceover(e.target.value as 'Yes' | 'No')} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm"><option value="Yes">Ya</option><option value="No">Tidak</option></select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Include Voiceover Script?</label><select value={includeVoiceover} onChange={e => setIncludeVoiceover(e.target.value as 'Yes' | 'No')} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm"><option value="Yes">Yes</option><option value="No">No</option></select></div>
                     
                     {/* Row 2 */}
                     {/* FIX: Use 'Yes'/'No' for value and update onChange handler to match state type. */}
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Sertakan Kapsyen Pada Skrin?</label><select value={includeCaptions} onChange={e => setIncludeCaptions(e.target.value as 'Yes' | 'No')} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm"><option value="Yes">Ya</option><option value="No">Tidak</option></select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Suasana Keseluruhan</label><select value={selectedVibe} onChange={e => setSelectedVibe(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{vibeOptions.map(o=><option key={o}>{o}</option>)}</select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Suasana Latar Belakang / Babak</label><select value={selectedBackgroundVibe} onChange={e => setSelectedBackgroundVibe(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{backgroundVibes.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Include On-Screen Captions?</label><select value={includeCaptions} onChange={e => setIncludeCaptions(e.target.value as 'Yes' | 'No')} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Overall Vibe</label><select value={selectedVibe} onChange={e => setSelectedVibe(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{vibeOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Background / Scene Vibe</label><select value={selectedBackgroundVibe} onChange={e => setSelectedBackgroundVibe(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{backgroundVibes.map(o=><option key={o}>{o}</option>)}</select></div>
                     
                     {/* Row 3 */}
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Gaya Artistik</label><select value={style} onChange={e => setStyle(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{styleOptions.map(o=><option key={o}>{o}</option>)}</select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Pencahayaan</label><select value={selectedLighting} onChange={e => setSelectedLighting(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{lightingOptions.map(o=><option key={o}>{o}</option>)}</select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Shot Kamera</label><select value={camera} onChange={e => setCamera(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{cameraOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Artistic Style</label><select value={style} onChange={e => setStyle(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{styleOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Lighting</label><select value={selectedLighting} onChange={e => setSelectedLighting(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{lightingOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Camera Shot</label><select value={camera} onChange={e => setCamera(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{cameraOptions.map(o=><option key={o}>{o}</option>)}</select></div>
                     
                     {/* Row 4 */}
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Komposisi</label><select value={composition} onChange={e => setComposition(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{compositionOptions.map(o=><option key={o}>{o}</option>)}</select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Jenis Lensa</label><select value={lensType} onChange={e => setLensType(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{lensTypeOptions.map(o=><option key={o}>{o}</option>)}</select></div>
-                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Simulasi Filem</label><select value={filmSim} onChange={e => setFilmSim(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{filmSimOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Composition</label><select value={composition} onChange={e => setComposition(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{compositionOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Lens Type</label><select value={lensType} onChange={e => setLensType(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{lensTypeOptions.map(o=><option key={o}>{o}</option>)}</select></div>
+                    <div className="md:col-span-2"><label className="block text-sm font-medium mb-1">Film Simulation</label><select value={filmSim} onChange={e => setFilmSim(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{filmSimOptions.map(o=><option key={o}>{o}</option>)}</select></div>
                     
                     {/* Last Row (2 items) */}
                     <div className="md:col-span-3">
-                        <label className="block text-sm font-medium mb-1">Tahap Kreativiti AI ({creativityLevel})</label>
+                        <label className="block text-sm font-medium mb-1">AI Creativity Level ({creativityLevel})</label>
                         <input type="range" min="0" max="10" value={creativityLevel} onChange={(e) => setCreativityLevel(Number(e.target.value))} className="w-full" />
                     </div>
                     <div className="md:col-span-3">
-                        <label className="block text-sm font-medium mb-1">Kesan Visual</label>
+                        <label className="block text-sm font-medium mb-1">Visual Effect</label>
                         <select value={effect} onChange={e => setEffect(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{effectOptions.map(o=><option key={o}>{o}</option>)}</select>
                     </div>
                 </div>
             </div>
             <div className="flex gap-4 items-center">
                 <button onClick={handleGenerate} disabled={isLoading} className="w-full bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex-grow">
-                    {isLoading ? <Spinner /> : "Jana Papan Cerita"}
+                    {isLoading ? <Spinner /> : "Generate Storyboard"}
                 </button>
                  <button onClick={handleReset} disabled={isLoading} className="bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 font-semibold py-3 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors">
-                    Set Semula Semua
+                    Reset All
                 </button>
             </div>
             {storyboardError && <p className="text-red-500 text-center mt-2">{storyboardError}</p>}
           </div>
           {/* Right Column: Storyboard Output */}
           <div className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg p-4 relative min-h-[300px] flex flex-col">
-            <h3 className="text-lg font-semibold mb-2 flex-shrink-0">Papan Cerita Dijana</h3>
+            <h3 className="text-lg font-semibold mb-2 flex-shrink-0">Generated Storyboard</h3>
             {storyboard && (
                  <button onClick={() => downloadText(storyboard, `monoklix-storyboard-${Date.now()}.txt`)} className="absolute top-4 right-4 text-xs bg-neutral-200 dark:bg-neutral-700 py-1 px-3 rounded-full flex items-center gap-1 z-10">
-                    <DownloadIcon className="w-3 h-3"/> Muat Turun Teks
+                    <DownloadIcon className="w-3 h-3"/> Download Text
                 </button>
             )}
             {isLoading ? <div className="flex-1 flex h-full items-center justify-center"><Spinner /></div> : (
@@ -898,7 +908,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                     <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar space-y-3 pr-2">
                         {parsedScenes.map((scene, index) => (
                             <div key={index} className="bg-white dark:bg-neutral-800/60 p-3 rounded-lg border border-neutral-200 dark:border-neutral-700/50">
-                                <h4 className="font-semibold text-sm mb-2 text-neutral-800 dark:text-neutral-200">Babak {index + 1}</h4>
+                                <h4 className="font-semibold text-sm mb-2 text-neutral-800 dark:text-neutral-200">Scene {index + 1}</h4>
                                 <textarea
                                     value={scene}
                                     onChange={(e) => handleSceneChange(index, e.target.value)}
@@ -909,7 +919,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                         ))}
                     </div>
                 )
-                : <div className="flex-1 flex h-full items-center justify-center text-center text-sm text-neutral-500">Papan cerita yang anda jana akan muncul di sini.</div>
+                : <div className="flex-1 flex h-full items-center justify-center text-center text-sm text-neutral-500">Your generated storyboard will appear here.</div>
             )}
           </div>
         </div>
@@ -917,16 +927,16 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
 
       {/* Step 2: Image Generation */}
       <div className={`bg-white dark:bg-neutral-900 p-6 rounded-lg shadow-sm transition-opacity duration-500 ${step2Disabled ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-        <h2 className="text-xl font-bold mb-1">Langkah 2: Jana Imej Babak</h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Cipta imej AI yang unik untuk setiap babak dari papan cerita anda.</p>
+        <h2 className="text-xl font-bold mb-1">Step 2: Generate Scene Images</h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Create unique AI images for each scene from your storyboard.</p>
         <button onClick={handleGenerateAllImages} disabled={isGeneratingImages || step2Disabled} className="w-full mb-6 bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50">
-            {isGeneratingImages ? <Spinner/> : 'Cipta Semua 4 Imej'}
+            {isGeneratingImages ? <Spinner/> : 'Create All 4 Images'}
         </button>
-        {isGeneratingImages && <p className="text-center text-sm text-neutral-500 -mt-4 mb-4">Ini mungkin mengambil masa seminit...</p>}
+        {isGeneratingImages && <p className="text-center text-sm text-neutral-500 -mt-4 mb-4">This might take a minute...</p>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
                 <div key={`image-scene-${i}`} className="bg-neutral-100 dark:bg-neutral-800/50 p-3 rounded-lg flex flex-col gap-3">
-                    <p className="font-bold text-sm">Babak {i+1}</p>
+                    <p className="font-bold text-sm">Scene {i+1}</p>
                     <div
                         onClick={() => {
                             if (generatedImages[i] && typeof generatedImages[i] === 'string') {
@@ -937,12 +947,12 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                         style={{ aspectRatio: videoAspectRatio.replace(':', ' / ') }}
                         role="button"
                         tabIndex={generatedImages[i] && typeof generatedImages[i] === 'string' ? 0 : -1}
-                        aria-label={`Pratonton babak ${i + 1}`}
+                        aria-label={`Preview scene ${i + 1}`}
                     >
                         {step2Disabled ? (
                             <div className="flex flex-col items-center justify-center text-center text-xs text-neutral-500 p-2">
                                 <ImageIcon className="w-8 h-8 mb-2"/>
-                                <p>Menunggu papan cerita</p>
+                                <p>Waiting for storyboard</p>
                             </div>
                         ) : imageLoadingStatus[i] ? <Spinner/> : imageGenerationErrors[i] ? (
                             <div className="text-center text-red-500 p-2">
@@ -951,10 +961,10 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                             </div>
                         ) : generatedImages[i] && typeof generatedImages[i] === 'string' ? (
                             <>
-                                <img src={`data:image/png;base64,${generatedImages[i]}`} alt={`Babak ${i+1}`} className="w-full h-full object-cover rounded-md"/>
+                                <img src={`data:image/png;base64,${generatedImages[i]}`} alt={`Scene ${i+1}`} className="w-full h-full object-cover rounded-md"/>
                                 <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button onClick={(e) => {e.stopPropagation(); onReEdit({ base64: generatedImages[i]!, mimeType: 'image/png' })}} title="Sunting Semula" className="p-1.5 bg-black/60 text-white rounded-full"><WandIcon className="w-4 h-4"/></button>
-                                    <button onClick={(e) => {e.stopPropagation(); onCreateVideo({ prompt: parsedScenes[i], image: { base64: generatedImages[i]!, mimeType: 'image/png' } })}} title="Cipta Video" className="p-1.5 bg-black/60 text-white rounded-full"><VideoIcon className="w-4 h-4"/></button>
+                                    <button onClick={(e) => {e.stopPropagation(); onReEdit({ base64: generatedImages[i]!, mimeType: 'image/png' })}} title="Re-edit" className="p-1.5 bg-black/60 text-white rounded-full"><WandIcon className="w-4 h-4"/></button>
+                                    <button onClick={(e) => {e.stopPropagation(); onCreateVideo({ prompt: parsedScenes[i], image: { base64: generatedImages[i]!, mimeType: 'image/png' } })}} title="Create Video" className="p-1.5 bg-black/60 text-white rounded-full"><VideoIcon className="w-4 h-4"/></button>
                                 </div>
                             </>
                         ) : null}
@@ -964,7 +974,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                             <textarea
                                 value={editPrompt}
                                 onChange={(e) => setEditPrompt(e.target.value)}
-                                placeholder="cth., jadikan ia hitam putih..."
+                                placeholder="e.g., make it black and white..."
                                 rows={3}
                                 className="w-full text-sm bg-white dark:bg-neutral-700 p-2 rounded-md resize-y focus:ring-1 focus:ring-primary-500 focus:outline-none custom-scrollbar"
                                 autoFocus
@@ -975,13 +985,13 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                                     disabled={imageLoadingStatus[i] || !editPrompt.trim()} 
                                     className="w-full text-sm bg-primary-600 text-white font-semibold py-2 px-3 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center"
                                 >
-                                    {imageLoadingStatus[i] ? <Spinner/> : 'Hantar Suntingan'}
+                                    {imageLoadingStatus[i] ? <Spinner/> : 'Submit Edit'}
                                 </button>
                                 <button 
                                     onClick={() => setEditingSceneIndex(null)} 
                                     className="flex-shrink-0 text-sm bg-neutral-200 dark:bg-neutral-600 font-semibold py-2 px-3 rounded-md hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors"
                                 >
-                                    Batal
+                                    Cancel
                                 </button>
                             </div>
                         </div>
@@ -992,14 +1002,14 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                                 disabled={imageLoadingStatus[i] || !parsedScenes[i]} 
                                 className="w-full text-sm bg-white dark:bg-neutral-700 font-semibold py-2 px-3 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                             >
-                                {imageLoadingStatus[i] ? <Spinner/> : <><ImageIcon className="w-4 h-4"/> Cipta Imej Baru</>}
+                                {imageLoadingStatus[i] ? <Spinner/> : <><ImageIcon className="w-4 h-4"/> Create New Image</>}
                             </button>
                             <button 
                                 onClick={() => { setEditingSceneIndex(i); setEditPrompt(''); }} 
                                 disabled={!generatedImages[i] || typeof generatedImages[i] !== 'string' || imageLoadingStatus[i]} 
                                 className="w-full text-sm bg-white dark:bg-neutral-700 font-semibold py-2 px-3 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                             >
-                                <WandIcon className="w-4 h-4"/> Sunting Imej Ini
+                                <WandIcon className="w-4 h-4"/> Edit This Image
                             </button>
                             <a
                                 href={generatedImages[i] && typeof generatedImages[i] === 'string' ? `data:image/png;base64,${generatedImages[i]}` : undefined}
@@ -1009,7 +1019,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                                 aria-disabled={!generatedImages[i] || typeof generatedImages[i] !== 'string'}
                                 role="button"
                             >
-                                <DownloadIcon className="w-4 h-4"/> Muat Turun
+                                <DownloadIcon className="w-4 h-4"/> Download
                             </a>
                         </div>
                     )}
@@ -1020,16 +1030,16 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
       
        {/* Step 3: Video Generation */}
       <div className={`bg-white dark:bg-neutral-900 p-6 rounded-lg shadow-sm transition-opacity duration-500 ${step3Disabled ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-        <h2 className="text-xl font-bold mb-1">Langkah 3: Jana Video Babak</h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Animasikan imej babak yang anda jana menjadi klip video.</p>
+        <h2 className="text-xl font-bold mb-1">Step 3: Generate Scene Videos</h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Animate your generated scene images into video clips.</p>
         
         <div className="mb-6 p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">Tetapan Penjanaan Video</h3>
+            <h3 className="text-lg font-semibold mb-2">Video Generation Settings</h3>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                 <div><label className="block text-sm font-medium mb-1">Nisbah Aspek</label><select value={videoAspectRatio} onChange={e=>setVideoAspectRatio(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{["9:16", "16:9", "1:1", "4:3", "3:4"].map(o=><option key={o}>{o}</option>)}</select></div>
-                 <div><label className="block text-sm font-medium mb-1">Resolusi</label><select value={videoResolution} onChange={e=>setVideoResolution(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{["720p", "1080p"].map(o=><option key={o}>{o}</option>)}</select></div>
+                 <div><label className="block text-sm font-medium mb-1">Aspect Ratio</label><select value={videoAspectRatio} onChange={e=>setVideoAspectRatio(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{["9:16", "16:9", "1:1", "4:3", "3:4"].map(o=><option key={o}>{o}</option>)}</select></div>
+                 <div><label className="block text-sm font-medium mb-1">Resolution</label><select value={videoResolution} onChange={e=>setVideoResolution(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">{["720p", "1080p"].map(o=><option key={o}>{o}</option>)}</select></div>
                  <div>
-                    <label className="block text-sm font-medium mb-1">Bahasa Suara Latar</label>
+                    <label className="block text-sm font-medium mb-1">Voiceover Language</label>
                     <select value={videoLanguage} onChange={e=>setVideoLanguage(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-sm">
                         {languages.map(o=><option key={o}>{o}</option>)}
                     </select>
@@ -1039,25 +1049,25 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
 
         <div className="flex gap-4 mb-6">
             <button onClick={handleGenerateAllVideos} disabled={isGeneratingVideos || step3Disabled} className="w-full bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50">
-                {isGeneratingVideos ? <Spinner/> : 'Cipta Semua 4 Video'}
+                {isGeneratingVideos ? <Spinner/> : 'Create All 4 Videos'}
             </button>
             {isGeneratingVideos && (
                 <button onClick={handleCancelVideos} className="bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 transition-colors">
-                    Batal
+                    Cancel
                 </button>
             )}
         </div>
-         <p className="text-center text-xs text-neutral-500 -mt-4 mb-4">Proses ini boleh mengambil masa beberapa minit. Anda juga boleh menjana video satu persatu.</p>
+         <p className="text-center text-xs text-neutral-500 -mt-4 mb-4">This process can take several minutes. You can also generate videos one by one.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
                  <div key={`video-scene-${i}`} className="bg-neutral-100 dark:bg-neutral-800/50 p-3 rounded-lg flex flex-col gap-3">
-                    <p className="font-bold text-sm">Babak {i+1}</p>
+                    <p className="font-bold text-sm">Scene {i+1}</p>
                     <div className="bg-neutral-200 dark:bg-neutral-700/50 rounded-md flex items-center justify-center relative group" style={{ aspectRatio: videoAspectRatio.replace(':', ' / ') }}>
                         {step3Disabled || !generatedImages[i] ? (
                             <div className="flex flex-col items-center justify-center text-center text-xs text-neutral-500 p-2">
                                 <VideoIcon className="w-8 h-8 mb-2"/>
-                                <p>Menunggu imej</p>
+                                <p>Waiting for image</p>
                             </div>
                         ) : videoGenerationStatus[i] === 'loading' ? <Spinner/> : videoGenerationStatus[i] === 'error' ? (
                             <div className="text-center text-red-500 p-2"><AlertTriangleIcon className="w-8 h-8 mx-auto mb-2"/><p className="text-xs">{videoGenerationErrors[i]}</p></div>
@@ -1073,12 +1083,12 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                                 className="w-full h-full object-cover rounded-md"
                             />
                         ) : (
-                            <img src={`data:image/png;base64,${generatedImages[i]}`} alt={`Pratonton babak ${i+1}`} className="w-full h-full object-cover rounded-md"/>
+                            <img src={`data:image/png;base64,${generatedImages[i]}`} alt={`Preview scene ${i+1}`} className="w-full h-full object-cover rounded-md"/>
                         )}
                     </div>
                     <div className="grid grid-cols-1 gap-2">
                         <button onClick={() => handleGenerateVideo(i)} disabled={!generatedImages[i] || videoGenerationStatus[i] === 'loading' || isGeneratingVideos} className="w-full text-sm bg-white dark:bg-neutral-700 font-semibold py-2 px-3 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                            {videoGenerationStatus[i] === 'loading' ? <Spinner/> : <><VideoIcon className="w-4 h-4"/> Cipta Video</>}
+                            {videoGenerationStatus[i] === 'loading' ? <Spinner/> : <><VideoIcon className="w-4 h-4"/> Create Video</>}
                         </button>
                         <button 
                             onClick={() => handleDownloadVideo(generatedVideos[i], videoFilenames[i]!, i)} 
@@ -1086,7 +1096,7 @@ export const ProductReviewView: React.FC<ProductReviewViewProps> = ({ onReEdit, 
                             className="w-full text-sm bg-green-600 text-white font-semibold py-2 px-3 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                             {downloadingVideoIndex === i ? <Spinner/> : <DownloadIcon className="w-4 h-4"/>}
-                            Muat Turun
+                            Download
                         </button>
                     </div>
                 </div>

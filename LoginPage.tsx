@@ -2,21 +2,20 @@ import React, { useState } from 'react';
 import { LogoIcon } from './components/Icons';
 import { loginUser } from './services/userService';
 import Spinner from './components/common/Spinner';
-import { type User, type Language } from './types';
+import { type User } from './types';
 import { APP_VERSION } from './services/appConfig';
 import { getTranslations } from './services/translations';
 
 interface LoginPageProps {
     onLoginSuccess: (user: User) => void;
-    language: Language;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, language }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const T = getTranslations(language).loginPage;
-    const commonT = getTranslations(language).common;
+    const T = getTranslations().loginPage;
+    const commonT = getTranslations().common;
     
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();

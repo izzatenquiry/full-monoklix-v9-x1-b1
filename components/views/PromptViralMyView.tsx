@@ -23,7 +23,7 @@ const ViralPromptCard: React.FC<ViralPromptCardProps> = ({ promptItem, onUseProm
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-lg font-bold text-neutral-800 dark:text-white">{promptItem.title}</h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">Oleh: {promptItem.author}</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">By: {promptItem.author}</p>
               </div>
             </div>
             
@@ -45,7 +45,7 @@ const ViralPromptCard: React.FC<ViralPromptCardProps> = ({ promptItem, onUseProm
                         className="absolute top-2 right-2 flex items-center gap-1 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-1 px-2 rounded-md hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-xs opacity-0 group-hover:opacity-100"
                     >
                         {copied ? <CheckCircleIcon className="w-3 h-3 text-green-500" /> : <ClipboardIcon className="w-3 h-3" />}
-                        {copied ? 'Disalin!' : 'Salin'}
+                        {copied ? 'Copied!' : 'Copy'}
                     </button>
                 </div>
             </div>
@@ -54,7 +54,7 @@ const ViralPromptCard: React.FC<ViralPromptCardProps> = ({ promptItem, onUseProm
                 onClick={() => onUsePrompt(promptItem.prompt)}
                 className="w-full mt-auto bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors"
             >
-                Guna Prompt Ini
+                Use This Prompt
             </button>
         </div>
     );
@@ -79,8 +79,8 @@ const PromptViralMyView: React.FC<PromptViralMyViewProps> = ({ onUsePrompt }) =>
                 const fetchedPrompts = await getViralPrompts();
                 setPrompts(fetchedPrompts);
             } catch (err) {
-                const message = err instanceof Error ? err.message : 'Ralat tidak diketahui berlaku';
-                setError(`Tidak dapat memuatkan perpustakaan prompt. ${message}`);
+                const message = err instanceof Error ? err.message : 'An unknown error occurred';
+                setError(`Could not load prompt library. ${message}`);
             } finally {
                 setIsLoading(false);
             }
@@ -103,12 +103,12 @@ const PromptViralMyView: React.FC<PromptViralMyViewProps> = ({ onUsePrompt }) =>
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold sm:text-3xl">Prompt Viral (MY)</h1>
-                    <p className="text-neutral-500 dark:text-neutral-400 mt-1">Senarai prompt yang disusun khas untuk pasaran Malaysia.</p>
+                    <h1 className="text-2xl font-bold sm:text-3xl">Viral Prompts (MY)</h1>
+                    <p className="text-neutral-500 dark:text-neutral-400 mt-1">A list of prompts specially curated for the Malaysian market.</p>
                 </div>
                  <input
                     type="text"
-                    placeholder="Cari perpustakaan..."
+                    placeholder="Search library..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full sm:w-64 bg-white dark:bg-neutral-800/50 border border-neutral-300 dark:border-neutral-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
@@ -123,7 +123,7 @@ const PromptViralMyView: React.FC<PromptViralMyViewProps> = ({ onUsePrompt }) =>
 
             {error && (
                 <div className="text-center py-20 text-red-500 dark:text-red-400">
-                    <p className="font-semibold">Ralat Memuatkan Perpustakaan</p>
+                    <p className="font-semibold">Error Loading Library</p>
                     <p className="text-sm">{error}</p>
                 </div>
             )}
@@ -138,8 +138,8 @@ const PromptViralMyView: React.FC<PromptViralMyViewProps> = ({ onUsePrompt }) =>
                 ) : (
                     <div className="text-center py-20 text-neutral-500 dark:text-neutral-400 bg-white dark:bg-neutral-900 p-6 rounded-lg shadow-sm">
                         <SparklesIcon className="w-16 h-16 mx-auto mb-4 text-primary-500" />
-                        <p className="font-semibold text-xl">Tiada Prompt Ditemui</p>
-                        <p className="text-base mt-2">{searchTerm ? `Tiada prompt sepadan dengan carian anda untuk "${searchTerm}".` : "Perpustakaan ini kini kosong. Data akan muncul setelah ditambah ke jadual Supabase."}</p>
+                        <p className="font-semibold text-xl">No Prompts Found</p>
+                        <p className="text-base mt-2">{searchTerm ? `No prompts match your search for "${searchTerm}".` : "This library is currently empty. Data will appear once added to the Supabase table."}</p>
                     </div>
                 )
             )}

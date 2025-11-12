@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { KeyIcon, CheckCircleIcon, XIcon, AlertTriangleIcon, RefreshCwIcon, SparklesIcon } from './Icons';
 import Spinner from './common/Spinner';
 import { runApiHealthCheck, type HealthCheckResult } from '../services/geminiService';
-import { type User, type Language } from '../types';
+import { type User } from '../types';
 import { saveUserPersonalAuthToken } from '../services/userService';
 import { runComprehensiveTokenTest, type TokenTestResult } from '../services/imagenV3Service';
 import { getTranslations } from '../services/translations';
@@ -12,9 +12,8 @@ const ClaimTokenModal: React.FC<{
   error: string | null;
   onRetry: () => void;
   onClose: () => void;
-  language: Language;
-}> = ({ status, error, onRetry, onClose, language }) => {
-    const T = getTranslations(language).claimTokenModal;
+}> = ({ status, error, onRetry, onClose }) => {
+    const T = getTranslations().claimTokenModal;
     return (
     <div className="fixed inset-0 bg-black/70 flex flex-col items-center justify-center z-50 p-4 animate-zoomIn" aria-modal="true" role="dialog">
         <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl p-8 text-center max-w-sm w-full">
@@ -63,17 +62,20 @@ interface ApiKeyStatusProps {
     currentUser: User;
     assignTokenProcess: () => Promise<{ success: boolean; error: string | null; }>;
     onUserUpdate: (user: User) => void;
-    language: Language;
 }
 
-const ApiKeyStatus: React.FC<ApiKeyStatusProps> = ({ activeApiKey, currentUser, assignTokenProcess, onUserUpdate, language }) => {
-    const T = getTranslations(language).apiKeyStatus;
+const ApiKeyStatus: React.FC<ApiKeyStatusProps> = ({ activeApiKey, currentUser, assignTokenProcess, onUserUpdate }) => {
+    const T = getTranslations().apiKeyStatus;
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isChecking, setIsChecking] = useState(false);
     const [results, setResults] = useState<HealthCheckResult[] | null>(null);
     const popoverRef = useRef<HTMLDivElement>(null);
     const [claimStatus, setClaimStatus] = useState<'idle' | 'searching' | 'success' | 'error'>('idle');
     const [claimError, setClaimError] = useState<string | null>(null);
+
+    const [isEditingToken, setIsEditingToken] = useState(false);
+    const [tokenInput, setTokenInput] = useState('');
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
 
     const handleClaimNewToken = useCallback(async () => {
         setClaimStatus('searching');
@@ -132,6 +134,21 @@ const ApiKeyStatus: React.FC<ApiKeyStatusProps> = ({ activeApiKey, currentUser, 
         }
     };
 
+    const handleSaveToken = async () => {
+        setSaveStatus('saving');
+        const result = await saveUserPersonalAuthToken(currentUser.id, tokenInput.trim() || null);
+        if (result.success) {
+            onUserUpdate(result.user);
+            setSaveStatus('success');
+            setTimeout(() => {
+                setIsEditingToken(false);
+                setSaveStatus('idle');
+            }, 1500);
+        } else {
+            setSaveStatus('error');
+        }
+    };
+
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -160,7 +177,6 @@ const ApiKeyStatus: React.FC<ApiKeyStatusProps> = ({ activeApiKey, currentUser, 
                     error={claimError}
                     onClose={() => setClaimStatus('idle')}
                     onRetry={handleClaimNewToken}
-                    language={language}
                 />
             )}
             <button
@@ -187,12 +203,43 @@ const ApiKeyStatus: React.FC<ApiKeyStatusProps> = ({ activeApiKey, currentUser, 
                                 <span className="text-red-500 font-semibold">{T.notLoaded}</span>
                             )}
                         </div>
-                         <div className="flex justify-between items-center p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md">
-                            <span className="font-semibold text-neutral-600 dark:text-neutral-300">{T.authToken}:</span>
-                            {currentUser.personalAuthToken ? (
-                                <span className="font-mono text-neutral-700 dark:text-neutral-300">...{currentUser.personalAuthToken.slice(-10)}</span>
+                         <div className="p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md">
+                            {isEditingToken ? (
+                                <div className="space-y-2">
+                                    <span className="font-semibold text-neutral-600 dark:text-neutral-300">{T.authToken}:</span>
+                                    <input 
+                                        type="text" 
+                                        value={tokenInput} 
+                                        onChange={(e) => setTokenInput(e.target.value)} 
+                                        className="w-full text-xs font-mono bg-white dark:bg-neutral-700 rounded p-1 border border-neutral-300 dark:border-neutral-600 focus:ring-1 focus:ring-primary-500"
+                                        placeholder={T.enterToken}
+                                        autoFocus
+                                    />
+                                    <div className="flex gap-2 items-center">
+                                        <button onClick={handleSaveToken} disabled={saveStatus === 'saving'} className="text-xs font-semibold py-1 px-3 rounded bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 w-16 text-center">
+                                            {saveStatus === 'saving' ? <Spinner/> : T.save}
+                                        </button>
+                                        <button onClick={() => setIsEditingToken(false)} className="text-xs font-semibold py-1 px-3 rounded bg-neutral-200 dark:bg-neutral-600 hover:bg-neutral-300 dark:hover:bg-neutral-500">
+                                            {T.cancel}
+                                        </button>
+                                        {saveStatus === 'success' && <span className="text-xs text-green-600 font-bold">{T.saved}</span>}
+                                        {saveStatus === 'error' && <span className="text-xs text-red-500 font-bold">{T.saveError}</span>}
+                                    </div>
+                                </div>
                             ) : (
-                                <span className="text-yellow-500 font-semibold">{T.notAssigned}</span>
+                                <div className="flex justify-between items-center gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold text-neutral-600 dark:text-neutral-300 whitespace-nowrap">{T.authToken}:</span>
+                                        <button onClick={() => { setIsEditingToken(true); setTokenInput(currentUser.personalAuthToken || ''); setSaveStatus('idle'); }} className="text-xs font-semibold text-primary-600 hover:underline">
+                                            {T.update}
+                                        </button>
+                                    </div>
+                                    {currentUser.personalAuthToken ? (
+                                        <span className="font-mono text-neutral-700 dark:text-neutral-300 text-xs">...{currentUser.personalAuthToken.slice(-10)}</span>
+                                    ) : (
+                                        <span className="text-yellow-500 font-semibold text-xs">{T.notAssigned}</span>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -235,7 +282,7 @@ const ApiKeyStatus: React.FC<ApiKeyStatusProps> = ({ activeApiKey, currentUser, 
                                             </div>
                                             <div className={`flex items-center gap-1.5 font-semibold text-xs capitalize ${text}`}>
                                                 {icon}
-                                                {statusText}
+                                                <span>{statusText}</span>
                                             </div>
                                         </div>
                                          {(result.message !== 'OK' || result.details) && (

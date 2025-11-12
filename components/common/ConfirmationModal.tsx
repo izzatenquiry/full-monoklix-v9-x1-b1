@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertTriangleIcon } from '../Icons';
-import { type Language } from '../../types';
 import { getTranslations } from '../../services/translations';
+import { type Language } from '../../types';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -26,7 +26,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   confirmButtonClass = 'bg-red-600 hover:bg-red-700',
   language,
 }) => {
-  const T = getTranslations(language).confirmationModal;
+  // FIX: Remove `language` argument from `getTranslations` call.
+  const T = getTranslations().confirmationModal;
   if (!isOpen) return null;
 
   return (

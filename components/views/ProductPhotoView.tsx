@@ -40,14 +40,14 @@ interface ProductPhotoViewProps {
   onUserUpdate: (user: User) => void;
 }
 
-const vibeOptions = ["Rawak", "Latar Belakang Studio", "Atas Meja / Permukaan", "Tekstur Premium", "Cahaya & Bayang", "Warna & Palet", "Semula Jadi & Organik", "Bandar & Industri", "Studio Siang Lembut", "Pastel Bersih", "Putih Kunci Tinggi", "Moody Kunci Rendah", "Blok Warna", "Latar Belakang Gradien", "Latar Belakang Kertas Gulung", "Krim Lancar", "Permainan Bayang / Cahaya Keras", "Atas Meja Marmar", "Pastel Lembut"];
-const styleOptions = ["Rawak", "Realisme", "Fotorealistik", "Sinematik", "Anime", "Vintaj", "Animasi 3D", "Cat Air", "Claymation"];
-const lightingOptions = ["Rawak", "Siang Lembut", "Waktu Keemasan", "Cahaya Keras", "Lampu Belakang Tingkap", "Cahaya Lampu Suam", "Cahaya Campuran", "Lampu Studio", "Dramatik", "Cahaya Semula Jadi", "Neon", "Lampu Belakang", "Pencahayaan Sisi"];
-const cameraOptions = ["Rawak", "Perincian / Makro", "Rakaman Dekat", "Rakaman Sederhana Dekat", "Sederhana / Separuh Badan", "Tiga Suku", "Badan Penuh", "Flatlay", "Rakaman Lebar", "Rakaman Sederhana", "Rakaman Jauh", "Sudut Belanda", "Sudut Rendah", "Sudut Tinggi", "Rakaman Atas"];
-const compositionOptions = ["Rawak", "Peraturan Pertiga", "Garis Panduan", "Simetri", "Nisbah Keemasan", "Tengah", "Tidak Simetri"];
-const lensTypeOptions = ["Rawak", "Lensa Sudut Lebar", "Lensa Telefoto", "Lensa Mata Ikan", "Lensa Makro", "Lensa 50mm", "Lensa 85mm"];
-const filmSimOptions = ["Rawak", "Fujifilm Velvia", "Kodak Portra 400", "Kodachrome Sinematik", "Polaroid Vintaj", "Ilford HP5 (B&W)"];
-const effectOptions = ["Tiada", "Rawak", "Percikan Air", "Asap", "Api", "Terapung di Air", "Titisan Hujan", "Jejak Cahaya", "Konfeti", "Glitter", "Letupan Serbuk"];
+const vibeOptions = ["Random", "Studio Background", "Tabletop / Surface", "Premium Texture", "Light & Shadow", "Color & Palette", "Natural & Organic", "Urban & Industrial", "Soft Daylight Studio", "Clean Pastel", "High-Key White", "Low-Key Moody", "Color Block", "Gradient Background", "Paper Roll Backdrop", "Smooth Cream", "Shadow Play / Hard Light", "Marble Tabletop", "Soft Pastel"];
+const styleOptions = ["Random", "Realism", "Photorealistic", "Cinematic", "Anime", "Vintage", "3D Animation", "Watercolor", "Claymation"];
+const lightingOptions = ["Random", "Soft Daylight", "Golden Hour", "Hard Light", "Window Backlight", "Warm Lamp Light", "Mixed Light", "Studio Light", "Dramatic", "Natural Light", "Neon", "Backlight", "Side Lighting"];
+const cameraOptions = ["Random", "Detail / Macro", "Close-up", "Medium Close-up", "Medium / Half Body", "Three-Quarter", "Full Body", "Flatlay", "Wide Shot", "Medium Shot", "Long Shot", "Dutch Angle", "Low Angle", "High Angle", "Overhead Shot"];
+const compositionOptions = ["Random", "Rule of Thirds", "Leading Lines", "Symmetry", "Golden Ratio", "Centered", "Asymmetrical"];
+const lensTypeOptions = ["Random", "Wide-Angle Lens", "Telephoto Lens", "Fisheye Lens", "Macro Lens", "50mm Lens", "85mm Lens"];
+const filmSimOptions = ["Random", "Fujifilm Velvia", "Kodak Portra 400", "Cinematic Kodachrome", "Vintage Polaroid", "Ilford HP5 (B&W)"];
+const effectOptions = ["None", "Random", "Water Splash", "Smoke", "Fire", "Floating in Water", "Raindrops", "Light Trails", "Confetti", "Glitter", "Powder Explosion"];
 
 const SESSION_KEY = 'productPhotoState';
 
@@ -98,9 +98,10 @@ const ProductPhotoView: React.FC<ProductPhotoViewProps> = ({ onReEdit, onCreateV
   const [imageUploadKey, setImageUploadKey] = useState(Date.now());
   const [progress, setProgress] = useState(0);
   
-  // FIX: Access the correct translation key for this view.
-  const T = getTranslations(language).productPhotoView;
-  const commonT = getTranslations(language).common;
+  // FIX: Remove `language` argument from `getTranslations` call to match the function signature.
+  const T = getTranslations().productPhotoView;
+  // FIX: Remove `language` argument from `getTranslations` call to match the function signature.
+  const commonT = getTranslations().common;
 
   useEffect(() => {
     try {
@@ -222,14 +223,14 @@ const ProductPhotoView: React.FC<ProductPhotoViewProps> = ({ onReEdit, onCreateV
     setProductImage(null);
     setImages([]);
     setError(null);
-    setVibe('Rawak');
-    setStyle('Rawak');
-    setLighting('Rawak');
-    setCamera('Rawak');
-    setComposition('Rawak');
-    setLensType('Rawak');
-    setFilmSim('Rawak');
-    setEffect('Tiada');
+    setVibe('Random');
+    setStyle('Random');
+    setLighting('Random');
+    setCamera('Random');
+    setComposition('Random');
+    setLensType('Random');
+    setFilmSim('Random');
+    setEffect('None');
     setCreativityLevel(5);
     setCustomPrompt('');
     setNumberOfImages(1);

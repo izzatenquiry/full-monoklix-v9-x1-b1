@@ -1,34 +1,31 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getHistory } from '../../services/historyService';
-import { type HistoryItem, type Language } from '../../types';
+import { type HistoryItem } from '../../types';
 import { ImageIcon, VideoIcon, XIcon, CheckCircleIcon } from '../Icons';
 import Spinner from './Spinner';
 import Tabs from './Tabs';
-import { getTranslations } from '../../services/translations';
 
 interface MediaSelectionModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (selected: HistoryItem[]) => void;
-    language: Language;
 }
 
 type ModalTabId = 'images' | 'videos';
 
-const MediaSelectionModal: React.FC<MediaSelectionModalProps> = ({ isOpen, onClose, onConfirm, language }) => {
+const MediaSelectionModal: React.FC<MediaSelectionModalProps> = ({ isOpen, onClose, onConfirm }) => {
     const [allItems, setAllItems] = useState<HistoryItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<ModalTabId>('images');
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [blobUrls, setBlobUrls] = useState<Map<string, string>>(new Map());
-    const T = getTranslations(language).mediaSelectionModal;
 
     const imageItems = allItems.filter(item => (item.type === 'Image' || item.type === 'Canvas') && item.result !== 'unavailable');
     const videoItems = allItems.filter(item => item.type === 'Video' && item.result !== 'unavailable');
 
     const tabs: {id: ModalTabId, label: string, count: number}[] = [
-        { id: 'images', label: T.tabs.images, count: imageItems.length },
-        { id: 'videos', label: T.tabs.videos, count: videoItems.length },
+        { id: 'images', label: 'Images', count: imageItems.length },
+        { id: 'videos', label: 'Videos', count: videoItems.length },
     ];
 
     const getDisplayUrl = useCallback((item: HistoryItem): string => {
@@ -106,7 +103,7 @@ const MediaSelectionModal: React.FC<MediaSelectionModalProps> = ({ isOpen, onClo
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 animate-zoomIn p-4" onClick={onClose} role="dialog" aria-modal="true">
             <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col p-6" onClick={e => e.stopPropagation()}>
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">{T.title}</h2>
+                    <h2 className="text-xl font-bold">Select Media from Gallery</h2>
                     <button onClick={onClose} className="p-1 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700"><XIcon className="w-6 h-6"/></button>
                 </div>
                 
@@ -114,7 +111,7 @@ const MediaSelectionModal: React.FC<MediaSelectionModalProps> = ({ isOpen, onClo
                     <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
                 
-                <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 my-3">{T.subtitle}</p>
+                <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 my-3">You can select up to 4 images OR 1 video.</p>
                 
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     {isLoading ? <div className="flex h-full items-center justify-center"><Spinner /></div> : (
@@ -144,7 +141,7 @@ const MediaSelectionModal: React.FC<MediaSelectionModalProps> = ({ isOpen, onClo
                 
                 <div className="mt-6 flex justify-end">
                     <button onClick={handleConfirm} className="bg-primary-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-primary-700 transition-colors">
-                        {T.confirm}
+                        Confirm Selection
                     </button>
                 </div>
             </div>

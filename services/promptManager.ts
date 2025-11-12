@@ -28,10 +28,10 @@ Example replies:
 - "Baik, saya escalate isu ni kepada team teknikal kami."`;
 
 // --- Content Ideas ---
-export const getContentIdeasPrompt = (topic: string, language: string): string => `
-    Generate a list of 5 engaging content ideas (e.g., blog posts, social media updates, video scripts) for the following topic: "${topic}".
-    The ideas should be trendy, relevant, and aimed at capturing audience attention. For each idea, provide a catchy title and a brief description of the concept.
-    The final output language must be strictly in ${language}.
+export const getContentIdeasPrompt = (topic: string): string => `
+    Hasilkan senarai 5 idea kandungan yang menarik (cth., entri blog, kemas kini media sosial, skrip video) untuk topik berikut: "${topic}".
+    Idea-idea tersebut mestilah sohor kini, relevan, dan bertujuan untuk menarik perhatian audiens. Untuk setiap idea, berikan tajuk yang menarik dan penerangan ringkas tentang konsep tersebut.
+    The final output language must be strictly in English.
 `;
 
 // --- Marketing Copy ---
@@ -40,48 +40,46 @@ export const getMarketingCopyPrompt = (details: {
   targetAudience: string;
   keywords: string;
   selectedTone: string;
-  selectedLanguage: string;
 }): string => `
-    You are an expert marketing copywriter. Generate compelling marketing copy based on the following details.
-    The final output language must be strictly in ${details.selectedLanguage}.
+    Anda adalah seorang penulis iklan pemasaran yang pakar. Hasilkan teks pemasaran yang meyakinkan berdasarkan butiran berikut.
+    The final output language must be strictly in English.
 
-    **Product/Service Details:**
+    **Butiran Produk/Perkhidmatan:**
     ${details.productDetails}
 
-    **Target Audience:**
-    ${details.targetAudience || 'General Audience'}
+    **Sasaran Audiens:**
+    ${details.targetAudience || 'Khalayak Umum'}
 
-    **Tone of Voice:**
+    **Nada Suara:**
     ${details.selectedTone}
 
-    **Keywords to include:**
-    ${details.keywords || 'None'}
+    **Kata Kunci untuk disertakan:**
+    ${details.keywords || 'Tiada'}
 
-    The copy should be engaging, persuasive, and ready for use in social media posts, advertisements, or website content. Structure the output clearly, perhaps with a headline and body.
+    Teks tersebut mestilah menarik, meyakinkan, dan sedia untuk digunakan dalam siaran media sosial, iklan, atau kandungan laman web. Susun output dengan jelas, mungkin dengan tajuk utama dan badan teks.
 `;
 
 // --- Product Ad Storyline ---
 export const getProductAdPrompt = (details: {
   productDesc: string;
-  language: string;
   vibe: string;
   lighting: string;
   contentType: string;
 }): string => `
-    You are an expert advertising copywriter and storyboard artist for social media video ads.
-    Create a compelling 1-scene storyboard for a video ad based on the provided product image and details.
-    The output language for the storyboard must be in ${details.language}.
+    Anda adalah seorang penulis iklan dan artis papan cerita yang pakar untuk iklan video media sosial.
+    Cipta papan cerita 1 babak yang meyakinkan untuk iklan video berdasarkan imej dan butiran produk yang diberikan.
+    The output language for the storyboard must be strictly in English.
 
-    **Product Description:**
+    **Penerangan Produk:**
     ${details.productDesc}
 
-    **Creative Direction:**
-    - Vibe: ${details.vibe}
-    - Lighting: ${details.lighting}
-    - Content Type: ${details.contentType}
+    **Arahan Kreatif:**
+    - Suasana: ${details.vibe}
+    - Pencahayaan: ${details.lighting}
+    - Jenis Kandungan: ${details.contentType}
 
-    Based on all this information, describe one effective scene. What does the viewer see? What is the voiceover or on-screen text?
-    Keep it short, engaging, and optimised for platforms like TikTok or Instagram Reels.
+    Berdasarkan semua maklumat ini, terangkan satu babak yang berkesan. Apa yang penonton lihat? Apakah suara latar atau teks pada skrin?
+    Pastikan ia pendek, menarik, dan dioptimumkan untuk platform seperti TikTok atau Instagram Reels.
 `;
 
 // --- Product Photo (Unified Prompt) ---
@@ -98,27 +96,28 @@ export const getProductPhotoPrompt = (details: {
   effect: string;
 }): string => {
   if (details.customPrompt.trim()) {
-    return details.customPrompt.trim();
+    return details.customPrompt.trim() + '\n\nThe final output language must be strictly in English.';
   }
 
   const promptParts = [
-    `Create a professional, photorealistic product photo for the uploaded image.`,
-    `Do not include any people, models, or text. Focus only on the product itself.`,
+    `Cipta foto produk profesional yang fotorealistik untuk imej yang dimuat naik.`,
+    `Jangan sertakan mana-mana orang, model, atau teks. Fokus hanya pada produk itu sendiri.`,
 
-    `**Creative Direction:**`,
-    `- Background / Vibe: ${details.vibe}`,
-    `- Artistic Style: ${details.style === 'Random' ? 'photorealistic' : details.style}`,
-    `- Lighting: ${details.lighting === 'Random' ? 'interesting, cinematic lighting' : details.lighting}`,
-    `- Camera Shot: ${details.camera === 'Random' ? 'a dynamic angle' : details.camera}`,
-    `- Composition: ${details.composition === 'Random' ? 'well-composed' : details.composition}`,
-    `- Lens Type: ${details.lensType === 'Random' ? 'standard lens' : details.lensType}`,
-    `- Film Simulation: ${details.filmSim === 'Random' ? 'modern digital look' : details.filmSim}`,
-    `- Visual Effect: ${details.effect === 'Random' || details.effect === 'None' ? 'none' : details.effect}`,
-    `- AI Creativity Level: ${details.creativityLevel} out of 10 (0 = literal, 10 = full artistic freedom)`,
+    `**Arahan Kreatif:**`,
+    `- Latar Belakang / Suasana: ${details.vibe}`,
+    `- Gaya Artistik: ${details.style === 'Random' ? 'fotorealistik' : details.style}`,
+    `- Pencahayaan: ${details.lighting === 'Random' ? 'pencahayaan sinematik yang menarik' : details.lighting}`,
+    `- Rakaman Kamera: ${details.camera === 'Random' ? 'sudut yang dinamik' : details.camera}`,
+    `- Komposisi: ${details.composition === 'Random' ? 'komposisi yang baik' : details.composition}`,
+    `- Jenis Lensa: ${details.lensType === 'Random' ? 'lensa standard' : details.lensType}`,
+    `- Simulasi Filem: ${details.filmSim === 'Random' ? 'rupa digital moden' : details.filmSim}`,
+    `- Kesan Visual: ${details.effect === 'Random' || details.effect === 'None' ? 'tiada' : details.effect}`,
+    `- Tahap Kreativiti AI: ${details.creativityLevel} daripada 10 (0 = literal, 10 = kebebasan artistik penuh)`,
     
-    `**Final Requirements:**`,
-    `- The result must be clean, aesthetic, and suitable for e-commerce listings or social media.`,
-    `- CRITICAL: The final image must be purely visual. Do NOT add text, watermarks, or logos.`
+    `**Keperluan Akhir:**`,
+    `- Hasilnya mestilah bersih, estetik, dan sesuai untuk penyenaraian e-dagang atau media sosial.`,
+    `- KRITIKAL: Imej akhir mestilah visual semata-mata. JANGAN tambah teks, tera air, atau logo.`,
+    `- The final output language must be strictly in English.`
   ];
 
   return promptParts.join('\n');
@@ -128,7 +127,6 @@ export const getProductPhotoPrompt = (details: {
 // --- Product Review (Unified Prompt) ---
 export const getProductReviewStoryboardPrompt = (details: {
   productDesc: string;
-  selectedLanguage: string;
   selectedVibe: string;
   selectedBackgroundVibe: string;
   selectedContentType: string;
@@ -144,7 +142,7 @@ export const getProductReviewStoryboardPrompt = (details: {
   effect: string;
   creativityLevel: number;
 }): string => {
-  const isMalay = details.selectedLanguage === 'Bahasa Malaysia';
+  const isMalay = true;
   const sceneTitle = isMalay ? 'Babak' : 'Scene';
   const voiceoverTitle = isMalay ? 'Skrip Suara Latar' : 'Voiceover';
   const captionTitle = isMalay ? 'Kapsyen' : 'Captions';
@@ -152,54 +150,54 @@ export const getProductReviewStoryboardPrompt = (details: {
 
   // Dynamically build the list of required elements and instructions
   const structureElements = [`"**${visualTitle}:**"`];
-  let dynamicExtraInstructions = "For each scene, create a description of the visuals.";
+  let dynamicExtraInstructions = "Untuk setiap babak, cipta penerangan visual.";
 
   if (details.includeVoiceover === 'Yes') {
     structureElements.push(`"**${voiceoverTitle}:**"`);
-    dynamicExtraInstructions += " Also, write a natural-sounding voiceover script (max 120 characters).";
+    dynamicExtraInstructions += " Juga, tulis skrip suara latar yang berbunyi semula jadi (maks 120 aksara).";
   }
 
   if (details.includeCaptions === 'Yes') {
     structureElements.push(`"**${captionTitle}:**"`);
-    dynamicExtraInstructions += " Also, provide short, punchy on-screen captions.";
+    dynamicExtraInstructions += " Juga, sediakan kapsyen pada skrin yang pendek dan menarik.";
   }
 
   return `
-You are an expert AI assistant specialising in creating storyboards for social media product review videos.
-The output language for all generated text (titles, descriptions, scripts) must be strictly in ${details.selectedLanguage}.
+Anda adalah pembantu AI pakar dalam mencipta papan cerita untuk video ulasan produk media sosial.
+The output language for all generated text (titles, descriptions, scripts) must be strictly in English.
 
-Create a **4-scene storyboard** for a short-form video (TikTok, Instagram Reels, YouTube Shorts) based on the following:
+Cipta **papan cerita 4 babak** untuk video bentuk pendek (TikTok, Instagram Reels, YouTube Shorts) berdasarkan perkara berikut:
 
-**Product Description:**
+**Penerangan Produk:**
 ${details.productDesc}
 
-**Creative Direction:**
-- Include a model in the video: ${details.includeModel}
-- Vibe: ${details.selectedVibe}
-- Background Vibe: ${details.selectedBackgroundVibe}
-- Content Type: ${details.selectedContentType}
-- Artistic Style: ${details.style}
-- Lighting: ${details.lighting}
-- Camera Shot Style: ${details.camera}
-- Composition: ${details.composition}
-- Lens Type: ${details.lensType}
-- Film Simulation: ${details.filmSim}
-- Visual Effect: ${details.effect}
-- AI Creativity Level (0-10): ${details.creativityLevel}
-- On-Screen Text/Captions: ${details.includeCaptions}
-- Voiceover Script: ${details.includeVoiceover}
+**Arahan Kreatif:**
+- Sertakan model dalam video: ${details.includeModel}
+- Suasana: ${details.selectedVibe}
+- Suasana Latar Belakang: ${details.selectedBackgroundVibe}
+- Jenis Kandungan: ${details.selectedContentType}
+- Gaya Artistik: ${details.style}
+- Pencahayaan: ${details.lighting}
+- Gaya Rakaman Kamera: ${details.camera}
+- Komposisi: ${details.composition}
+- Jenis Lensa: ${details.lensType}
+- Simulasi Filem: ${details.filmSim}
+- Kesan Visual: ${details.effect}
+- Tahap Kreativiti AI (0-10): ${details.creativityLevel}
+- Teks/Kapsyen Pada Skrin: ${details.includeCaptions}
+- Skrip Suara Latar: ${details.includeVoiceover}
 
-**Task:**
+**Tugasan:**
 ${dynamicExtraInstructions}
-The storyboard must follow a logical flow:  
-1. Introduction (hook & product reveal)  
-2. Demonstration / Features  
-3. Benefits / User experience  
-4. Call-to-action (why buy / final push)
+Papan cerita mesti mengikut aliran yang logik:  
+1. Pengenalan (cangkuk & pendedahan produk)  
+2. Demonstrasi / Ciri-ciri  
+3. Faedah / pengalaman pengguna  
+4. Panggilan untuk bertindak (mengapa beli / desakan terakhir)
 
-**Output Structure:**
-The output must be structured with clear headings for each scene, like "**${sceneTitle} 1:**", "**${sceneTitle} 2:**", etc.
-For each scene, you MUST use the following headings for the required elements: ${structureElements.join(', ')}.
+**Struktur Output:**
+Output mesti distrukturkan dengan tajuk yang jelas untuk setiap babak, seperti "**${sceneTitle} 1:**", "**${sceneTitle} 2:**", dsb.
+Untuk setiap babak, anda MESTI menggunakan tajuk berikut untuk elemen yang diperlukan: ${structureElements.join(', ')}.
 `;
 };
 
@@ -221,55 +219,55 @@ export const getProductReviewImagePrompt = (details: {
   includeModel: 'Yes' | 'No';
 }): string => {
     const promptParts = [
-        'You are an AI image generation expert. Your task is to create a single, photorealistic UGC-style image for a product review video.',
+        'Anda adalah pakar penjanaan imej AI. Tugas anda adalah untuk mencipta satu imej gaya UGC fotorealistik untuk video ulasan produk.',
     ];
 
     if (details.includeModel === 'Yes') {
         promptParts.push(
-            'You will composite a person and a product into a new scene.',
-            '\n**Provided Assets:**',
-            '1. **Person\'s Face:** A reference image of the person to be featured.',
-            '2. **Product:** A reference image of the product being reviewed.'
+            'Anda akan menggabungkan seseorang dan produk ke dalam babak baharu.',
+            '\n**Aset yang Disediakan:**',
+            '1. **Wajah Seseorang:** Imej rujukan orang yang akan dipaparkan.',
+            '2. **Produk:** Imej rujukan produk yang sedang diulas.'
         );
     } else {
         promptParts.push(
-            'You will place a product into a new scene. Do not include any people or models.',
-            '\n**Provided Assets:**',
-            '1. **Product:** A reference image of the product being reviewed.'
+            'Anda akan meletakkan produk ke dalam babak baharu. Jangan sertakan mana-mana orang atau model.',
+            '\n**Aset yang Disediakan:**',
+            '1. **Produk:** Imej rujukan produk yang sedang diulas.'
         );
     }
 
     promptParts.push(
-        '\n**Product Being Reviewed:**',
+        '\n**Produk yang Diulas:**',
         details.productDesc,
-        '\n**Scene Description (what is happening):**',
+        '\n**Penerangan Babak (apa yang berlaku):**',
         details.sceneDescription,
-        '\n**Creative Direction for the Scene:**',
-        `- Vibe: ${details.selectedVibe}`,
-        `- Background Vibe: ${details.selectedBackgroundVibe}`,
-        `- Lighting: ${details.selectedLighting}`,
-        `- Artistic Style: ${details.style === 'Random' ? 'photorealistic' : details.style}`,
-        `- Camera Shot: ${details.camera === 'Random' ? 'a dynamic angle' : details.camera}`,
-        `- Composition: ${details.composition === 'Random' ? 'well-composed' : details.composition}`,
-        `- Lens Type: ${details.lensType === 'Random' ? 'standard lens' : details.lensType}`,
-        `- Film Simulation: ${details.filmSim === 'Random' ? 'modern digital look' : details.filmSim}`,
-        `- Visual Effect: ${details.effect === 'Random' || details.effect === 'None' ? 'none' : details.effect}`,
-        `- AI Creativity Level (0-10): ${details.creativityLevel}`
+        '\n**Arahan Kreatif untuk Babak:**',
+        `- Suasana: ${details.selectedVibe}`,
+        `- Suasana Latar Belakang: ${details.selectedBackgroundVibe}`,
+        `- Pencahayaan: ${details.selectedLighting}`,
+        `- Gaya Artistik: ${details.style === 'Random' ? 'fotorealistik' : details.style}`,
+        `- Rakaman Kamera: ${details.camera === 'Random' ? 'sudut yang dinamik' : details.camera}`,
+        `- Komposisi: ${details.composition === 'Random' ? 'komposisi yang baik' : details.composition}`,
+        `- Jenis Lensa: ${details.lensType === 'Random' ? 'lensa standard' : details.lensType}`,
+        `- Simulasi Filem: ${details.filmSim === 'Random' ? 'rupa digital moden' : details.filmSim}`,
+        `- Kesan Visual: ${details.effect === 'Random' || details.effect === 'None' ? 'tiada' : details.effect}`,
+        `- Tahap Kreativiti AI (0-10): ${details.creativityLevel}`
     );
 
-    promptParts.push('\n**CRITICAL INSTRUCTIONS:**');
+    promptParts.push('\n**ARAHAN KRITIKAL:**');
 
     if (details.includeModel === 'Yes') {
-        promptParts.push('1. **Face Fidelity:** The person\'s face in the final image **MUST be a photorealistic and exact match** to the face from the provided face reference image. **Do not alter** their facial features, structure, or identity. The final image must look like it features the same person.');
+        promptParts.push('1. **Ketepatan Wajah:** Wajah orang dalam imej akhir **MESTI sepadan secara fotorealistik dan tepat** dengan wajah dari imej rujukan wajah yang diberikan. **Jangan ubah** ciri muka, struktur, atau identiti mereka. Imej akhir mesti kelihatan seperti menampilkan orang yang sama.');
     }
 
     promptParts.push(
-        `${details.includeModel === 'Yes' ? '2.' : '1.'} **Product Integration:** Seamlessly and naturally integrate the product from the product reference image into the scene.`,
-        `${details.includeModel === 'Yes' ? '3.' : '2.'} **Final Image Quality:** The result must look like a real, high-quality frame from a short-form video (like TikTok or Reels).`,
-        `${details.includeModel === 'Yes' ? '4.' : '3.'} **No Text:** The output image must be purely visual. Do NOT add any text, watermarks, or logos.`
+        `${details.includeModel === 'Yes' ? '2.' : '1.'} **Integrasi Produk:** Integrasikan produk dari imej rujukan produk ke dalam babak secara lancar dan semula jadi.`,
+        `${details.includeModel === 'Yes' ? '3.' : '2.'} **Kualiti Imej Akhir:** Hasilnya mestilah kelihatan seperti bingkai sebenar berkualiti tinggi dari video bentuk pendek (seperti TikTok atau Reels).`,
+        `${details.includeModel === 'Yes' ? '4.' : '3.'} **Tiada Teks:** Imej output mestilah visual semata-mata. JANGAN tambah sebarang teks, tera air, atau logo.`
     );
 
-    promptParts.push('\nGenerate only the image that perfectly matches this description.');
+    promptParts.push('\nJana hanya imej yang sepadan dengan penerangan ini dengan sempurna. The final output language must be strictly in English.');
 
     return promptParts.join('\n');
 };
@@ -292,149 +290,151 @@ export const getTiktokAffiliatePrompt = (details: {
   filmSim: string;
 }): string => {
   if (details.customPrompt.trim()) {
-    return details.customPrompt.trim();
+    return details.customPrompt.trim() + '\n\nThe final output language must be strictly in English.';
   }
 
   if (details.hasFaceImage) {
     // Use a much stricter prompt when a face is provided to ensure it's preserved.
     return `
-You are an AI image generation expert. Your task is to create a single, photorealistic UGC-style image by compositing a person and a product into a new scene.
+Anda adalah pakar penjanaan imej AI. Tugas anda adalah untuk mencipta satu imej gaya UGC fotorealistik dengan menggabungkan seseorang dan produk ke dalam babak baharu.
+The final output language must be strictly in English.
 
-**Provided Assets:**
-1.  **Person's Face:** A reference image of the person to be featured.
-2.  **Product:** A reference image of the product.
+**Aset yang Disediakan:**
+1.  **Wajah Seseorang:** Imej rujukan orang yang akan dipaparkan.
+2.  **Produk:** Imej rujukan produk.
 
-**Creative Direction for the New Scene:**
--   **Background/Vibe:** ${details.vibe}
--   **Model's Pose:** ${details.pose === 'Random' ? 'a natural and relaxed pose, interacting with the product if appropriate' : details.pose}
--   **Artistic Style:** ${details.style === 'Random' ? 'photorealistic' : details.style}
--   **Lighting:** ${details.lighting === 'Random' ? 'flattering and natural-looking lighting' : details.lighting}
--   **Camera Shot:** ${details.camera === 'Random' ? 'a dynamic angle' : details.camera}
--   **Composition:** ${details.composition === 'Random' ? 'well-composed' : details.composition}
--   **Lens Type:** ${details.lensType === 'Random' ? 'standard lens' : details.lensType}
--   **Film Simulation:** ${details.filmSim === 'Random' ? 'modern digital look' : details.filmSim}
--   **AI Creativity Level (0-10):** ${details.creativityLevel}
+**Arahan Kreatif untuk Babak Baharu:**
+-   **Latar Belakang/Suasana:** ${details.vibe}
+-   **Pose Model:** ${details.pose === 'Random' ? 'pose yang semula jadi dan santai, berinteraksi dengan produk jika sesuai' : details.pose}
+-   **Gaya Artistik:** ${details.style === 'Random' ? 'fotorealistik' : details.style}
+-   **Pencahayaan:** ${details.lighting === 'Random' ? 'pencahayaan yang menyanjung dan kelihatan semula jadi' : details.lighting}
+-   **Rakaman Kamera:** ${details.camera === 'Random' ? 'sudut yang dinamik' : details.camera}
+-   **Komposisi:** ${details.composition === 'Random' ? 'komposisi yang baik' : details.composition}
+-   **Jenis Lensa:** ${details.lensType === 'Random' ? 'lensa standard' : details.lensType}
+-   **Simulasi Filem:** ${details.filmSim === 'Random' ? 'rupa digital moden' : details.filmSim}
+-   **Tahap Kreativiti AI (0-10):** ${details.creativityLevel}
 
-**CRITICAL INSTRUCTIONS:**
-1.  **Face Fidelity:** The person's face in the final image **MUST be a photorealistic and exact match** to the face from the provided reference image. **Do not alter** their facial features, structure, or identity. The gender is determined by the face image.
-2.  **Product Integration:** Seamlessly and naturally integrate the product into the scene with the person.
-3.  **Final Image Quality:** The result must be a high-quality, authentic-looking UGC image suitable for TikTok.
-4.  **No Text:** The output image must be purely visual. Do NOT add any text, watermarks, or logos.
+**ARAHAN KRITIKAL:**
+1.  **Ketepatan Wajah:** Wajah orang dalam imej akhir **MESTI sepadan secara fotorealistik dan tepat** dengan wajah dari imej rujukan yang diberikan. **Jangan ubah** ciri muka, struktur, atau identiti mereka. Jantina ditentukan oleh imej wajah.
+2.  **Integrasi Produk:** Integrasikan produk ke dalam babak dengan orang itu secara lancar dan semula jadi.
+3.  **Kualiti Imej Akhir:** Hasilnya mestilah imej UGC berkualiti tinggi yang kelihatan asli dan sesuai untuk TikTok.
+4.  **Tiada Teks:** Imej output mestilah visual semata-mata. JANGAN tambah sebarang teks, tera air, atau logo.
 
-Generate only the image that perfectly matches this description.
+Jana hanya imej yang sepadan dengan penerangan ini dengan sempurna.
 `;
   } else {
     // The original prompt for when no face is provided (generates a new face).
-    const modelInstruction = `A ${details.gender} model with facial features typical of ${details.modelFace === 'Random' ? 'Southeast Asia' : details.modelFace}. Ensure the face looks realistic and appealing.`;
-    const productInstruction = "Include the product from the uploaded image.";
+    const modelInstruction = `Seorang model ${details.gender} dengan ciri muka tipikal ${details.modelFace === 'Random' ? 'Asia Tenggara' : details.modelFace}. Pastikan wajah kelihatan realistik dan menarik.`;
+    const productInstruction = "Sertakan produk dari imej yang dimuat naik.";
 
     return `
-Create a high-quality, photorealistic User-Generated Content (UGC) image suitable for TikTok affiliate marketing.
-The image must naturally feature the provided product image.
+Cipta imej Kandungan Dijana Pengguna (UGC) berkualiti tinggi dan fotorealistik yang sesuai untuk pemasaran affiliate TikTok.
+Imej tersebut mesti menampilkan imej produk yang diberikan secara semula jadi.
+The final output language must be strictly in English.
 
-**Core Instructions:**
-1. The main subject is the model and the product together. Integrate the product naturally.
+**Arahan Teras:**
+1. Subjek utama ialah model dan produk bersama-sama. Integrasikan produk secara semula jadi.
 2. ${modelInstruction}
-3. The aesthetic must be eye-catching and feel authentic, like real UGC content.
+3. Estetikanya mestilah menarik perhatian dan terasa asli, seperti kandungan UGC sebenar.
 
-**Creative Direction:**
-- Model's Gender: ${details.gender}
-- Model's Pose: ${details.pose === 'Random' ? 'a natural and relaxed pose, interacting with the product if appropriate' : details.pose}
-- Product: ${productInstruction}
-- Background/Vibe: ${details.vibe}
-- Artistic Style: ${details.style === 'Random' ? 'photorealistic' : details.style}
-- Lighting: ${details.lighting === 'Random' ? 'flattering and natural-looking lighting' : details.lighting}
-- Camera Shot: ${details.camera === 'Random' ? 'a dynamic angle' : details.camera}
-- Composition: ${details.composition === 'Random' ? 'well-composed' : details.composition}
-- Lens Type: ${details.lensType === 'Random' ? 'standard lens' : details.lensType}
-- Film Simulation: ${details.filmSim === 'Random' ? 'modern digital look' : details.filmSim}
-- AI Creativity Level (0-10): ${details.creativityLevel}
+**Arahan Kreatif:**
+- Jantina Model: ${details.gender}
+- Pose Model: ${details.pose === 'Random' ? 'pose yang semula jadi dan santai, berinteraksi dengan produk jika sesuai' : details.pose}
+- Produk: ${productInstruction}
+- Latar Belakang/Suasana: ${details.vibe}
+- Gaya Artistik: ${details.style === 'Random' ? 'fotorealistik' : details.style}
+- Pencahayaan: ${details.lighting === 'Random' ? 'pencahayaan yang menyanjung dan kelihatan semula jadi' : details.lighting}
+- Rakaman Kamera: ${details.camera === 'Random' ? 'sudut yang dinamik' : details.camera}
+- Komposisi: ${details.composition === 'Random' ? 'komposisi yang baik' : details.composition}
+- Jenis Lensa: ${details.lensType === 'Random' ? 'lensa standard' : details.lensType}
+- Simulasi Filem: ${details.filmSim === 'Random' ? 'rupa digital moden' : details.filmSim}
+- Tahap Kreativiti AI (0-10): ${details.creativityLevel}
 
-**Final Requirements:**
-- The result must be a high-quality, authentic-looking, and engaging image for affiliate marketing.
-- CRITICAL: The image must be purely visual. Do NOT add text, watermarks, or logos.
+**Keperluan Akhir:**
+- Hasilnya mestilah imej berkualiti tinggi, kelihatan asli, dan menarik untuk pemasaran affiliate.
+- KRITIKAL: Imej mestilah visual semata-mata. JANGAN tambah teks, tera air, atau logo.
 `;
   }
 };
 
 // --- Background Remover ---
 export const getBackgroundRemovalPrompt = (): string => {
-    return "Remove the background from the provided image. The output should be a clean PNG with a transparent background. Isolate the main subject perfectly.";
+    return "Buang latar belakang dari imej yang diberikan. Outputnya hendaklah PNG yang bersih dengan latar belakang lutsinar. Asingkan subjek utama dengan sempurna. The final output language must be strictly in English.";
 };
 
 // --- Image Enhancer ---
 export const getImageEnhancementPrompt = (type: 'upscale' | 'colors'): string => {
     if (type === 'upscale') {
-        return "Enhance the quality of the following image. Increase its resolution, sharpen the details, and reduce any noise or artifacts. The final image should look like a high-resolution, professional photograph. Do not change the content.";
+        return "Tingkatkan kualiti imej berikut. Naikkan resolusinya, tajamkan butirannya, dan kurangkan sebarang hingar atau artifak. Imej akhir sepatutnya kelihatan seperti gambar profesional beresolusi tinggi. Jangan ubah kandungan. The final output language must be strictly in English.";
     }
     // type === 'colors'
-    return "Enhance the colors of the following image. Make them more vibrant, improve the contrast, and adjust the color balance to be more appealing. Do not change the content or resolution, just make the colors pop in a natural way.";
+    return "Tingkatkan warna imej berikut. Jadikan ia lebih bersemangat, perbaiki kontras, dan laraskan keseimbangan warna agar lebih menarik. Jangan ubah kandungan atau resolusi, hanya jadikan warna lebih menonjol secara semula jadi. The final output language must be strictly in English.";
 };
 
 // --- Image Generation (Editing Mode) ---
 export const getImageEditingPrompt = (userPrompt: string): string => `
-You are an expert AI image editor. Your task is to modify the provided reference image(s) based on the user's request.
+Anda adalah seorang penyunting imej AI yang pakar. Tugas anda adalah untuk mengubah suai imej rujukan yang diberikan berdasarkan permintaan pengguna.
+The final output language must be strictly in English.
 
-**User's Request:**
+**Permintaan Pengguna:**
 "${userPrompt}"
 
-**CRITICAL GUIDELINES:**
-1.  **Face Fidelity:** If a reference image contains a person, it is absolutely critical that the person's face in the final image is a **photorealistic and exact match** to the face from the reference image. Do NOT alter their facial features, structure, or identity. The final image must look like the same person.
-2.  **Apply Edits:** Creatively apply the user's request to the image.
-3.  **High Quality:** The final result must be a high-quality, photorealistic image.
-4.  **No Text/Logos:** The final image must be purely visual. Do NOT add any text, watermarks, or logos.
+**GARIS PANDUAN KRITIKAL:**
+1.  **Ketepatan Wajah:** Jika imej rujukan mengandungi seseorang, adalah amat kritikal bahawa wajah orang itu dalam imej akhir adalah **padanan fotorealistik dan tepat** dengan wajah dari imej rujukan. JANGAN ubah ciri muka, struktur, atau identiti mereka. Imej akhir mesti kelihatan seperti orang yang sama.
+2.  **Guna Suntingan:** Gunakan permintaan pengguna secara kreatif pada imej.
+3.  **Kualiti Tinggi:** Hasil akhir mestilah imej fotorealistik berkualiti tinggi.
+4.  **Tiada Teks/Logo:** Imej akhir mestilah visual semata-mata. JANGAN tambah sebarang teks, tera air, atau logo.
 
-Generate only the edited image based on these instructions.
+Jana hanya imej yang disunting berdasarkan arahan ini.
 `;
 
 // --- Staff Monoklix ---
 export const getStaffMonoklixPrompt = (details: {
   agentId: string;
   userInput: string;
-  language: string;
 }): string => {
-    const baseInstruction = `You are a helpful AI assistant. Your final output language must be strictly in ${details.language}.`;
+    const baseInstruction = `Anda adalah pembantu AI yang membantu. The final output language must be strictly in English.`;
     let agentSpecificInstruction = '';
 
     switch (details.agentId) {
         case 'wan':
-            agentSpecificInstruction = `You are Wan, an expert in market research. Based on the product/service "${details.userInput}", create a detailed "Ideal Customer Persona". Include demographics, interests, pain points, and motivations.`;
+            agentSpecificInstruction = `Anda adalah Wan, seorang pakar dalam penyelidikan pasaran. Berdasarkan produk/perkhidmatan "${details.userInput}", cipta "Persona Pelanggan Ideal" yang terperinci. Sertakan demografi, minat, titik kesakitan, dan motivasi.`;
             break;
         case 'tina':
-            agentSpecificInstruction = `You are Tina, a behavioral psychology expert. For the product/service "${details.userInput}", identify the key "Fears" (what the customer wants to avoid) and "Desires" (what the customer wants to achieve).`;
+            agentSpecificInstruction = `Anda adalah Tina, seorang pakar psikologi tingkah laku. Untuk produk/perkhidmatan "${details.userInput}", kenal pasti "Ketakutan" utama (apa yang pelanggan ingin elakkan) dan "Keinginan" (apa yang pelanggan ingin capai).`;
             break;
         case 'jamil':
-            agentSpecificInstruction = `You are Jamil, a marketing strategist. For the product/service "${details.userInput}", brainstorm 3 distinct "Marketing Angles". Each angle should present a unique way to appeal to potential customers.`;
+            agentSpecificInstruction = `Anda adalah Jamil, seorang ahli strategi pemasaran. Untuk produk/perkhidmatan "${details.userInput}", sumbang saran 3 "Sudut Pemasaran" yang berbeza. Setiap sudut harus membentangkan cara yang unik untuk menarik pelanggan berpotensi.`;
             break;
         case 'najwa':
-            agentSpecificInstruction = `You are Najwa, a professional copywriter. Write a short, persuasive marketing copy for the product/service "${details.userInput}". Focus on benefits over features.`;
+            agentSpecificInstruction = `Anda adalah Najwa, seorang penulis iklan profesional. Tulis teks pemasaran yang pendek dan meyakinkan untuk produk/perkhidmatan "${details.userInput}". Fokus pada faedah berbanding ciri.`;
             break;
         case 'saifuz':
-            agentSpecificInstruction = `You are Saifuz, an A/B testing specialist. Take the following sales copy and create 3 different variations of it. Each variation should try a different hook or call-to-action. Original copy: "${details.userInput}"`;
+            agentSpecificInstruction = `Anda adalah Saifuz, seorang pakar ujian A/B. Ambil teks jualan berikut dan cipta 3 variasi yang berbeza daripadanya. Setiap variasi harus mencuba cangkuk atau panggilan untuk bertindak yang berbeza. Teks asal: "${details.userInput}"`;
             break;
         case 'mieya':
-            agentSpecificInstruction = `You are Mieya, an expert in classic marketing formulas. Write a marketing copy for the product/service "${details.userInput}" using the AIDA (Attention, Interest, Desire, Action) formula.`;
+            agentSpecificInstruction = `Anda adalah Mieya, seorang pakar dalam formula pemasaran klasik. Tulis teks pemasaran untuk produk/perkhidmatan "${details.userInput}" menggunakan formula AIDA (Attention, Interest, Desire, Action).`;
             break;
         case 'afiq':
-            agentSpecificInstruction = `You are Afiq, a web content strategist. Outline the key sections for a high-converting sales page for the product/service "${details.userInput}". Include sections like Headline, Problem, Solution, Testimonials, Offer, and Call to Action.`;
+            agentSpecificInstruction = `Anda adalah Afiq, seorang ahli strategi kandungan web. Rangkakan bahagian utama untuk halaman jualan yang menukar tinggi untuk produk/perkhidmatan "${details.userInput}". Sertakan bahagian seperti Tajuk Utama, Masalah, Penyelesaian, Testimoni, Tawaran, dan Panggilan untuk Bertindak.`;
             break;
         case 'julia':
-            agentSpecificInstruction = `You are Julia, a headline specialist. Brainstorm 10 catchy and click-worthy headlines for an advertisement about "${details.userInput}".`;
+            agentSpecificInstruction = `Anda adalah Julia, seorang pakar tajuk utama. Sumbang saran 10 tajuk utama yang menarik dan boleh diklik untuk iklan tentang "${details.userInput}".`;
             break;
         case 'mazrul':
-            agentSpecificInstruction = `You are Mazrul, a video scriptwriter. Write a short (30-60 seconds) video script for a social media ad about "${details.userInput}". Include visual cues and voiceover text.`;
+            agentSpecificInstruction = `Anda adalah Mazrul, seorang penulis skrip video. Tulis skrip video pendek (30-60 saat) untuk iklan media sosial tentang "${details.userInput}". Sertakan petunjuk visual dan teks suara latar.`;
             break;
         case 'musa':
-            agentSpecificInstruction = `You are Musa, a personal branding coach. Based on the input "${details.userInput}", write a compelling personal branding post suitable for the specified platform. Focus on storytelling and providing value.`;
+            agentSpecificInstruction = `Anda adalah Musa, seorang jurulatih penjenamaan peribadi. Berdasarkan input "${details.userInput}", tulis siaran penjenamaan peribadi yang meyakinkan yang sesuai untuk platform yang dinyatakan. Fokus pada penceritaan dan memberi nilai.`;
             break;
         case 'joe_davinci':
-            agentSpecificInstruction = `You are Joe, an AI art prompt engineer. Based on the input "${details.userInput}", create a detailed and effective prompt for an AI image generator to create a stunning visual. Include details about style, lighting, composition, and subject.`;
+            agentSpecificInstruction = `Anda adalah Joe, seorang jurutera prompt seni AI. Berdasarkan input "${details.userInput}", cipta prompt yang terperinci dan berkesan untuk penjana imej AI bagi mencipta visual yang menakjubkan. Sertakan butiran tentang gaya, pencahayaan, komposisi, dan subjek.`;
             break;
         case 'zaki':
-            agentSpecificInstruction = `You are Zaki, a graphic design prompter. Based on the input "${details.userInput}", create a detailed prompt for an AI to generate a promotional poster. Include instructions on text, layout, color scheme, and overall mood.`;
+            agentSpecificInstruction = `Anda adalah Zaki, seorang prompter reka bentuk grafik. Berdasarkan input "${details.userInput}", cipta prompt yang terperinci untuk AI bagi menjana poster promosi. Sertakan arahan mengenai teks, susun atur, skema warna, dan suasana keseluruhan.`;
             break;
         default:
-            agentSpecificInstruction = `Analyze the following user input and provide a helpful response: "${details.userInput}"`;
+            agentSpecificInstruction = `Analisis input pengguna berikut dan berikan respons yang membantu: "${details.userInput}"`;
             break;
     }
 
@@ -445,42 +445,41 @@ export const getStaffMonoklixPrompt = (details: {
 export const getSocialPostStudioCaptionPrompt = (details: {
   agentId: string;
   userInput: string;
-  language: string;
 }): string => {
     let agentPersona = '';
     switch (details.agentId) {
         case 'najwa':
-            agentPersona = 'You are Najwa, a professional copywriter. Focus on benefits over features.';
+            agentPersona = 'Anda adalah Najwa, seorang penulis iklan profesional. Fokus pada faedah berbanding ciri.';
             break;
         case 'julia':
-            agentPersona = 'You are Julia, a headline specialist. Your caption should be extra catchy and click-worthy, like a great headline expanded into a post.';
+            agentPersona = 'Anda adalah Julia, seorang pakar tajuk utama. Kapsyen anda mestilah sangat menarik dan boleh diklik, seperti tajuk utama yang hebat yang diperluaskan menjadi siaran.';
             break;
         case 'musa':
-            agentPersona = 'You are Musa, a personal branding coach. Your caption should focus on storytelling and providing value, in a personal branding style.';
+            agentPersona = 'Anda adalah Musa, seorang jurulatih penjenamaan peribadi. Kapsyen anda harus fokus pada penceritaan dan memberi nilai, dalam gaya penjenamaan peribadi.';
             break;
     }
 
     return `
-You are an expert social media manager and copywriter.
+Anda adalah seorang pengurus media sosial dan penulis iklan yang pakar.
 ${agentPersona}
-Your final output language must be strictly in ${details.language}.
+The final output language must be strictly in English.
 
-**Topic/Description from User:**
+**Topik/Penerangan dari Pengguna:**
 "${details.userInput}"
 
-**Your Task:**
-Generate a valid JSON object with three keys:
-1.  "caption": A compelling and engaging caption for the social media post, following your persona's style. It should be well-structured and may use emojis. **CRITICAL: The caption text MUST be between 400 and 450 characters long.**
-2.  "hashtags": A string of relevant hashtags, separated by spaces (e.g., "#tag1 #tag2 #tag3").
-3.  "cta": A short, clear, and strong call-to-action (CTA) phrase related to the post (maximum 5 words).
+**Tugasan Anda:**
+Hasilkan objek JSON yang sah dengan tiga kunci:
+1.  "caption": Kapsyen yang meyakinkan dan menarik untuk siaran media sosial, mengikut gaya persona anda. Ia harus distrukturkan dengan baik dan boleh menggunakan emoji. **KRITIKAL: Teks kapsyen MESTILAH antara 400 dan 450 aksara panjang.**
+2.  "hashtags": Rentetan hashtag yang relevan, dipisahkan oleh ruang (cth., "#tag1 #tag2 #tag3").
+3.  "cta": Frasa panggilan untuk bertindak (CTA) yang pendek, jelas, dan kuat yang berkaitan dengan siaran (maksimum 5 perkataan).
 
-**Example Output Format:**
+**Contoh Format Output:**
 {
   "caption": "Your generated caption text (400-450 characters) goes here...",
   "hashtags": "#socialmedia #marketing #aipowered",
   "cta": "Your short CTA here"
 }
 
-**CRITICAL:** Only output the raw JSON object. Do not include any other text, explanations, or markdown formatting like \`\`\`json. The JSON must be valid.
+**KRITIKAL:** Hanya output objek JSON mentah. Jangan sertakan sebarang teks lain, penjelasan, atau pemformatan markdown seperti \`\`\`json. JSON mesti sah.
 `;
 };

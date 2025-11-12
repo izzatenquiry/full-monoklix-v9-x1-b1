@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { type ErrorModalContent, type Language } from '../../types';
+import { type ErrorModalContent } from '../../types';
 import { XIcon, AlertTriangleIcon, CheckCircleIcon, SparklesIcon } from '../Icons';
 import Spinner from './Spinner';
 import { getTranslations } from '../../services/translations';
@@ -11,14 +11,13 @@ interface ErrorModalProps {
     onReport: () => Promise<void>;
     onAutoApiKey: () => void;
     onAutoVeoKey: () => Promise<boolean>;
-    language: Language;
 }
 
-const ErrorModal: React.FC<ErrorModalProps> = ({ isOpen, errorContent, onClose, onReport, onAutoApiKey, onAutoVeoKey, language }) => {
+const ErrorModal: React.FC<ErrorModalProps> = ({ isOpen, errorContent, onClose, onReport, onAutoApiKey, onAutoVeoKey }) => {
     const [isReporting, setIsReporting] = useState(false);
     const [reportSuccess, setReportSuccess] = useState(false);
     const [veoStatus, setVeoStatus] = useState<'idle' | 'loading' | 'success' | 'failed'>('idle');
-    const T = getTranslations(language).errorModal;
+    const T = getTranslations().errorModal;
 
     const handleReport = async () => {
         setIsReporting(true);
