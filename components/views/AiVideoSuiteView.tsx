@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import VideoGenerationView from './VideoGenerationView';
 import { VideoCombinerView } from './VideoCombinerView';
 import VoiceStudioView from './VoiceStudioView';
-import { ProductReviewView } from './ProductReviewView';
+import ProductReviewView from './ProductReviewView';
 import Tabs, { type Tab } from '../common/Tabs';
 import { type BatchProcessorPreset, type User, type Language } from '../../types';
 import BatchProcessorView from './BatchProcessorView';

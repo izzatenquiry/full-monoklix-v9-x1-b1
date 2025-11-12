@@ -6,13 +6,11 @@ import { MegaphoneIcon, DownloadIcon, ClipboardIcon, CheckCircleIcon } from '../
 import TwoColumnLayout from '../common/TwoColumnLayout';
 import { getMarketingCopyPrompt } from '../../services/promptManager';
 import { handleApiError } from '../../services/errorHandler';
-// FIX: Add missing Language import.
 import { type Language } from '../../types';
-import { getTranslations } from '../../services/translations';
 
 
-const tones = ["Professional", "Casual", "Humorous", "Persuasive", "Empathetic", "Bold"];
-const languages = ["English", "Malay"];
+const tones = ["Professional", "Casual", "Witty", "Persuasive", "Empathetic", "Bold"];
+const languages = ["English", "Bahasa Malaysia"];
 
 const downloadText = (text: string, fileName: string) => {
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
@@ -29,7 +27,6 @@ const downloadText = (text: string, fileName: string) => {
 const SESSION_KEY = 'marketingCopyState';
 
 interface MarketingCopyViewProps {
-    // FIX: Add 'language' to props interface.
     language: Language;
 }
 
@@ -38,15 +35,11 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
     const [targetAudience, setTargetAudience] = useState('');
     const [keywords, setKeywords] = useState('');
     const [selectedTone, setSelectedTone] = useState(tones[0]);
-    const [selectedLanguage, setSelectedLanguage] = useState(language === 'ms' ? "Malay" : "English");
+    const [selectedLanguage, setSelectedLanguage] = useState("English");
     const [generatedCopy, setGeneratedCopy] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
-
-    const T = getTranslations().marketingCopyView;
-    const commonT = getTranslations().common;
-    const staffT = getTranslations().staffMonoklixView;
 
     useEffect(() => {
         try {
@@ -70,10 +63,6 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
         } catch (e) { console.error("Failed to save state to session storage", e); }
     }, [productDetails, targetAudience, keywords, selectedTone, selectedLanguage, generatedCopy]);
 
-    useEffect(() => {
-        setSelectedLanguage(language === 'ms' ? "Malay" : "English");
-    }, [language]);
-
     const handleGenerate = useCallback(async () => {
         if (!productDetails.trim()) {
             setError("Product/Service details are required to generate marketing copy.");
@@ -84,12 +73,12 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
         setGeneratedCopy('');
         setCopied(false);
 
-        // FIX: Removed `selectedLanguage` as it is not an expected property for this function.
         const prompt = getMarketingCopyPrompt({
             productDetails,
             targetAudience,
             keywords,
             selectedTone,
+            selectedLanguage
         });
 
         try {
@@ -120,57 +109,57 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
         setTargetAudience('');
         setKeywords('');
         setSelectedTone(tones[0]);
-        setSelectedLanguage(language === 'ms' ? "Malay" : "English");
+        setSelectedLanguage("English");
         setGeneratedCopy('');
         setError(null);
         sessionStorage.removeItem(SESSION_KEY);
-    }, [language]);
+    }, []);
 
     const leftPanel = (
         <>
             <div>
-                <h1 className="text-2xl font-bold sm:text-3xl">{T.title}</h1>
-                <p className="text-neutral-500 dark:text-neutral-400 mt-1">{T.subtitle}</p>
+                <h1 className="text-2xl font-bold sm:text-3xl">AI Marketing Copywriter</h1>
+                <p className="text-neutral-500 dark:text-neutral-400 mt-1">Generate persuasive copy for ads, posts, and websites.</p>
             </div>
 
             <div>
-                <label htmlFor="product-details" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{T.productDetailsLabel}</label>
+                <label htmlFor="product-details" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Product/Service Details</label>
                 <textarea
                     id="product-details"
                     value={productDetails}
                     onChange={(e) => setProductDetails(e.target.value)}
-                    placeholder={T.productDetailsPlaceholder}
+                    placeholder="e.g., A high-end coffee maker that brews in 30 seconds..."
                     rows={5}
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
                 />
             </div>
 
             <div>
-                <label htmlFor="target-audience" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{T.targetAudienceLabel}</label>
+                <label htmlFor="target-audience" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Target Audience (Optional)</label>
                 <input
                     id="target-audience"
                     type="text"
                     value={targetAudience}
                     onChange={(e) => setTargetAudience(e.target.value)}
-                    placeholder={T.targetAudiencePlaceholder}
+                    placeholder="e.g., Busy professionals, coffee lovers..."
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
                 />
             </div>
 
             <div>
-                <label htmlFor="keywords" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{T.keywordsLabel}</label>
+                <label htmlFor="keywords" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Keywords to Include (Optional)</label>
                 <input
                     id="keywords"
                     type="text"
                     value={keywords}
                     onChange={(e) => setKeywords(e.target.value)}
-                    placeholder={T.keywordsPlaceholder}
+                    placeholder="e.g., quick, premium, morning coffee"
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
                 />
             </div>
 
             <div>
-                <label htmlFor="tone" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{T.toneLabel}</label>
+                <label htmlFor="tone" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Tone of Voice</label>
                 <select
                     id="tone"
                     value={selectedTone}
@@ -182,7 +171,7 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
             </div>
             
             <div>
-                <label htmlFor="language" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{staffT.outputLanguage}</label>
+                <label htmlFor="language" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Output Language</label>
                 <select
                     id="language"
                     value={selectedLanguage}
@@ -200,14 +189,14 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
                         disabled={isLoading}
                         className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isLoading ? <Spinner /> : T.generateButton}
+                        {isLoading ? <Spinner /> : "Generate Copy"}
                     </button>
                     <button
                         onClick={handleReset}
                         disabled={isLoading}
                         className="flex-shrink-0 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-3 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50"
                     >
-                        {T.resetButton}
+                        Reset
                     </button>
                 </div>
                 {error && <p className="text-red-500 dark:text-red-400 mt-2 text-center">{error}</p>}
@@ -224,13 +213,13 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
                       className="flex items-center gap-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 text-xs font-semibold py-1.5 px-3 rounded-full hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
                     >
                       {copied ? <CheckCircleIcon className="w-4 h-4 text-green-500"/> : <ClipboardIcon className="w-4 h-4"/>}
-                      {copied ? commonT.copied : commonT.copy}
+                      {copied ? "Copied!" : "Copy"}
                     </button>
                     <button
                         onClick={() => downloadText(generatedCopy, `monoklix-marketing-copy-${Date.now()}.txt`)}
                         className="flex items-center gap-1.5 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-semibold py-1.5 px-3 rounded-full hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
                     >
-                        <DownloadIcon className="w-4 h-4" /> {T.download}
+                        <DownloadIcon className="w-4 h-4" /> Download
                     </button>
                 </div>
             )}
@@ -247,14 +236,13 @@ const MarketingCopyView: React.FC<MarketingCopyViewProps> = ({ language }) => {
                  <div className="flex items-center justify-center h-full text-center text-neutral-500 dark:text-neutral-600 p-4">
                     <div>
                         <MegaphoneIcon className="w-16 h-16 mx-auto" />
-                        <p>{T.outputPlaceholder}</p>
+                        <p>Your generated marketing copy will appear here.</p>
                     </div>
                 </div>
             )}
         </>
     );
 
-    // FIX: Pass the 'language' prop to TwoColumnLayout to fix type error.
     return <TwoColumnLayout leftPanel={leftPanel} rightPanel={rightPanel} language={language} />;
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { generateVideo } from '../../services/geminiService';
 import { addHistoryItem } from '../../services/historyService';
 import Spinner from '../common/Spinner';
@@ -75,6 +75,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
   const [effect, setEffect] = useState('None');
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const videoUrlRef = useRef<string | null>(null);
   const [videoFilename, setVideoFilename] = useState<string | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +90,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
   const [imageUploadKey, setImageUploadKey] = useState(Date.now());
   const [voiceoverLanguage, setVoiceoverLanguage] = useState('English');
   const [voiceoverMood, setVoiceoverMood] = useState('Normal');
-  const languages = ["English", "Malay"];
+  const languages = ["English", "Bahasa Malaysia"];
 
   const model = MODELS.videoGenerationDefault;
   const isVeo3 = model.startsWith('veo-3');
@@ -197,15 +198,16 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
       }
   }, [preset, clearPreset]);
 
-  // Cleanup blob URLs to prevent memory leaks
+  // Cleanup blob URL on component unmount to prevent memory leaks
   useEffect(() => {
-      const urlToClean = videoUrl;
-      return () => {
-          if (urlToClean && urlToClean.startsWith('blob:')) {
-              URL.revokeObjectURL(urlToClean);
-          }
-      };
-  }, [videoUrl]);
+    // The ref holds the latest URL. The function captures the ref itself.
+    return () => {
+      if (videoUrlRef.current && videoUrlRef.current.startsWith('blob:')) {
+        URL.revokeObjectURL(videoUrlRef.current);
+      }
+    };
+  }, []); // Empty array ensures it only runs on mount/unmount
+
 
   const handleImageUpload = useCallback((base64: string, mimeType: string, file: File) => {
       setReferenceImage({ base64, mimeType });
@@ -226,7 +228,12 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
 
       setIsLoading(true);
       setError(null);
+      // Manually revoke the old URL before clearing state
+      if (videoUrl && videoUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(videoUrl);
+      }
       setVideoUrl(null);
+      videoUrlRef.current = null;
       setVideoFilename(null);
       setThumbnailUrl(null);
       setStatusMessage('Preparing generation request...');
@@ -314,6 +321,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
               const objectUrl = URL.createObjectURL(videoFile);
               console.log('✅ Video file received and object URL created:', objectUrl);
               setVideoUrl(objectUrl);
+              videoUrlRef.current = objectUrl; // Keep ref in sync for cleanup
               setVideoFilename(videoFile.name);
               setThumbnailUrl(newThumbnailUrl);
               
@@ -339,7 +347,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
           setIsLoading(false);
           setStatusMessage('');
       }
-  }, [prompt, style, lighting, camera, composition, lensType, filmSim, effect, dialogue, dialogueAudio, isVeo3, referenceImage, model, aspectRatio, resolution, negativePrompt, voiceoverLanguage, voiceoverMood, currentUser, onUserUpdate]);
+  }, [prompt, style, lighting, camera, composition, lensType, filmSim, effect, dialogue, dialogueAudio, isVeo3, referenceImage, model, aspectRatio, resolution, negativePrompt, voiceoverLanguage, voiceoverMood, currentUser, onUserUpdate, videoUrl]);
 
   const handleDownloadVideo = async () => {
     if (!videoUrl || !videoFilename) return;
@@ -379,7 +387,11 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ preset, clear
     setFilmSim('Random');
     setEffect('None');
     
+    if (videoUrlRef.current) {
+        URL.revokeObjectURL(videoUrlRef.current);
+    }
     setVideoUrl(null);
+    videoUrlRef.current = null;
     setVideoFilename(null);
     setThumbnailUrl(null);
     setError(null);

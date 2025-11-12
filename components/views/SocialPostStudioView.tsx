@@ -23,7 +23,7 @@ const aiAgents: AiAgent[] = [
     { id: 'julia', name: 'Julia', icon: MegaphoneIcon },
     { id: 'musa', name: 'Musa', icon: UsersIcon },
 ];
-const outputLanguages = ["English", "Malay"];
+const outputLanguages = ["English", "Bahasa Malaysia"];
 
 interface AiWriterModalProps {
   isOpen: boolean;
@@ -76,9 +76,11 @@ const AiWriterModal: React.FC<AiWriterModalProps> = ({ isOpen, onClose, onConfir
         setGeneratedText('');
         setParsedResult(null);
         try {
+            // FIX: Pass the 'language' property to the getSocialPostStudioCaptionPrompt function.
             const prompt = getSocialPostStudioCaptionPrompt({
                 agentId: selectedAgentId,
                 userInput: input,
+                language: outputLanguage
             });
             const result = await generateText(prompt);
             setGeneratedText(result);

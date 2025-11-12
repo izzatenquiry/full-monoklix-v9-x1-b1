@@ -8,9 +8,7 @@ import { TrendingUpIcon, DownloadIcon, ClipboardIcon, CheckCircleIcon } from '..
 import TwoColumnLayout from '../common/TwoColumnLayout';
 import { getContentIdeasPrompt } from '../../services/promptManager';
 import { handleApiError } from '../../services/errorHandler';
-// FIX: Add missing Language import.
 import { type Language } from '../../types';
-import { getTranslations } from '../../services/translations';
 
 
 const downloadText = (text: string, fileName: string) => {
@@ -25,11 +23,10 @@ const downloadText = (text: string, fileName: string) => {
     URL.revokeObjectURL(url);
 };
 
-const languages = ["English", "Malay"];
+const languages = ["English", "Bahasa Malaysia"];
 const SESSION_KEY = 'contentIdeasState';
 
 interface ContentIdeasViewProps {
-    // FIX: Add 'language' to props interface.
     language: Language;
 }
 
@@ -39,10 +36,7 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState(language === 'ms' ? "Malay" : "English");
-    const T = getTranslations().contentIdeasView;
-    const commonT = getTranslations().common;
-    const staffT = getTranslations().staffMonoklixView;
+    const [selectedLanguage, setSelectedLanguage] = useState("English");
     
     useEffect(() => {
         try {
@@ -63,10 +57,6 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
         } catch (e) { console.error("Failed to save state to session storage", e); }
     }, [topic, response, selectedLanguage]);
 
-    useEffect(() => {
-        setSelectedLanguage(language === 'ms' ? "Malay" : "English");
-    }, [language]);
-
 
     const handleGenerate = useCallback(async () => {
         if (!topic.trim()) {
@@ -78,8 +68,7 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
         setResponse(null);
         setCopied(false);
 
-        // FIX: Removed `selectedLanguage` argument to match the function signature.
-        const prompt = getContentIdeasPrompt(topic);
+        const prompt = getContentIdeasPrompt(topic, selectedLanguage);
 
         try {
             const result = await generateContentWithGoogleSearch(prompt);
@@ -108,31 +97,31 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
         setTopic('');
         setResponse(null);
         setError(null);
-        setSelectedLanguage(language === 'ms' ? "Malay" : "English");
+        setSelectedLanguage("English");
         sessionStorage.removeItem(SESSION_KEY);
-    }, [language]);
+    }, []);
 
     const leftPanel = (
         <>
             <div>
-                <h1 className="text-2xl font-bold sm:text-3xl">{T.title}</h1>
-                <p className="text-neutral-500 dark:text-neutral-400 mt-1">{T.subtitle}</p>
+                <h1 className="text-2xl font-bold sm:text-3xl">AI Content Idea Generator</h1>
+                <p className="text-neutral-500 dark:text-neutral-400 mt-1">Discover trending and engaging content ideas for any topic.</p>
             </div>
             
             <div className="flex-1 flex flex-col justify-center gap-4">
                 <div>
-                    <label htmlFor="topic-input" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{T.topicLabel}</label>
+                    <label htmlFor="topic-input" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Your Topic or Niche</label>
                     <textarea
                         id="topic-input"
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
-                        placeholder={T.topicPlaceholder}
+                        placeholder={'e.g., "digital marketing for small business" or "healthy breakfast recipes"'}
                         rows={4}
                         className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:outline-none transition"
                     />
                 </div>
                 <div>
-                    <label htmlFor="language-select" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{staffT.outputLanguage}</label>
+                    <label htmlFor="language-select" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Output Language</label>
                     <select
                         id="language-select"
                         value={selectedLanguage}
@@ -151,14 +140,14 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
                         disabled={isLoading}
                         className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isLoading ? <Spinner /> : T.generateButton}
+                        {isLoading ? <Spinner /> : "Generate Ideas"}
                     </button>
                     <button
                         onClick={handleReset}
                         disabled={isLoading}
                         className="flex-shrink-0 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-semibold py-3 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors disabled:opacity-50"
                     >
-                        {T.resetButton}
+                        Reset
                     </button>
                 </div>
                 {error && <p className="text-red-500 dark:text-red-400 mt-2 text-center">{error}</p>}
@@ -177,13 +166,13 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
                       className="flex items-center gap-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 text-xs font-semibold py-1.5 px-3 rounded-full hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
                     >
                       {copied ? <CheckCircleIcon className="w-4 h-4 text-green-500"/> : <ClipboardIcon className="w-4 h-4"/>}
-                      {copied ? commonT.copied : commonT.copy}
+                      {copied ? "Copied!" : "Copy"}
                     </button>
                     <button
                         onClick={() => downloadText(response.text ?? '', `monoklix-content-ideas-${Date.now()}.txt`)}
                         className="flex items-center gap-1.5 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-semibold py-1.5 px-3 rounded-full hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
                     >
-                        <DownloadIcon className="w-4 h-4" /> {T.download}
+                        <DownloadIcon className="w-4 h-4" /> Download
                     </button>
                 </div>
             )}
@@ -194,11 +183,10 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
                 </div>
             ) : response ? (
                 <div className="w-full h-full overflow-y-auto pr-2 custom-scrollbar">
-                    {/* FIX: Pass 'language' prop to MarkdownRenderer. */}
                     <MarkdownRenderer content={response.text ?? ''} language={language} />
                      {groundingMetadata && groundingMetadata.length > 0 && (
                         <div className="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-700">
-                            <h3 className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 mb-2">{T.sources}</h3>
+                            <h3 className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 mb-2">Sources:</h3>
                             <ul className="space-y-2">
                                 {(groundingMetadata as any[]).map((chunk, index) => (
                                     <li key={index} className="text-xs">
@@ -215,14 +203,13 @@ const ContentIdeasView: React.FC<ContentIdeasViewProps> = ({ language }) => {
                  <div className="flex items-center justify-center h-full text-center text-neutral-500 dark:text-neutral-600 p-4">
                     <div>
                         <TrendingUpIcon className="w-16 h-16 mx-auto" />
-                        <p>{T.outputPlaceholder}</p>
+                        <p>Your generated content ideas will appear here.</p>
                     </div>
                 </div>
             )}
         </>
     );
 
-    // FIX: Pass the 'language' prop to TwoColumnLayout to fix type error.
     return <TwoColumnLayout leftPanel={leftPanel} rightPanel={rightPanel} language={language} />;
 };
 
